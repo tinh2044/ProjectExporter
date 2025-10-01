@@ -1,8 +1,11 @@
+import ProjectInfoForm from "../components/Home/ProjectInfoForm";
 
 const Home = () => {
   return (
-    <div>Home</div>
-  )
-}
+    <div className="flex justify-center items-center">
+      <ProjectInfoForm />
+    </div>
+  );
+};
 
-export default Home
+export default Home;
