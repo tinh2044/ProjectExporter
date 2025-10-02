@@ -1,9 +1,67 @@
-import { Form, Input, Card, Row, Col, type FormInstance } from "antd";
+import { Form, Input, Card, Row, Col, type FormInstance, Button } from "antd";
 import { TeamOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { loadLegalInfo } from "../../services/legal";
+import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields } from "../../utils/formatters";
+import SelectLegal from "./SelectLegal";
+import { NotepadTextIcon } from "lucide-react";
+import { generateDocxFromTemplateUrl } from "../../services/docx";
 
 const { TextArea } = Input;
+const defaultLegals = [
+  "Căn cứ Luật Đấu thầu số 22/2023/QH15 ngày 23 tháng 6 năm 2023;",
+  "Căn cứ Luật số 57/2024/QH15 ngày 29 tháng 11 năm 2024 về sửa đổi bổ sung một số điều của Luật Quy hoạch, Luật Đầu tư, Luật Đầu tư theo phương thức đối tác công tư và Luật Đấu thầu;",
+  "Căn cứ Luật số 90/2025/QH15 ngày 25 tháng 6 năm 2025 về sửa đổi bổ sung một số điều của luật đấu thầu, luật đầu tư theo phương thức đối tác công tư, luật hải quan, luật thuế giá trị gia tăng, luật thuế xuất khẩu, thuế nhập khẩu, luật đầu tư, luật đầu tư công, luật quản lý; sử dụng tài sản công;",
+  "Căn cứ Nghị định số 214/2025/NĐ-CP ngày 04 tháng 8 năm 2025 của Chính phủ về quy định chi tiết một số điều và biện pháp thi hành luật đấu thầu về lựa chọn nhà thầu;",
+];
 
 export default function ContractorSelectionForm({ form }: { form: FormInstance }) {
+  const [legalData, setLegalData] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchLegalData();
+  }, []);
+
+  useEffect(() => {
+    if (legalData.length > 0) {
+      const defaultIndices = findIndicesInArray(legalData, defaultLegals);
+      form.setFieldsValue({
+        thongTinPhapLiChonNhaThau: defaultIndices,
+      });
+    }
+  }, [legalData, form]);
+
+  const fetchLegalData = async () => {
+    setLoading(true);
+    try {
+      const data = await loadLegalInfo();
+      setLegalData(data);
+    } catch (error) {
+      console.error("Error fetching legal data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const options = legalData.map((text, index) => ({
+    value: index,
+    label: text,
+    searchText: text.toLowerCase(),
+  }));
+
+  const handleGenerateTemplate = async () => {
+    const raw = form.getFieldsValue();
+    const data = buildDocxData(raw, [
+      applyLegalIndicesToText("thongTinPhapLiChonNhaThau", legalData),
+      applyYearRange("thoiGian"),
+      applyMoneyFields([{ numberField: "tongHopDuToan", wordsField: "duToanStr" }]),
+    ]);
+    const template1Url = new URL("../../assets/template4.docx", import.meta.url)
+      .href;
+    await generateDocxFromTemplateUrl(template1Url, data, "template-4.docx");
+  };
+
   return (
     <Card
       title={
@@ -21,14 +79,18 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
           <Col xs={24}>
             <Form.Item
               label="Thông tin pháp lí"
-              name="toTrinhPhapLi"
+              name="thongTinPhapLiChonNhaThau"
               rules={[
                 { required: true, message: "Vui lòng nhập thông tin pháp lí!" },
               ]}
             >
-              <TextArea
-                rows={3}
-                placeholder="Nhập thông tin pháp lí của tờ trình"
+              <SelectLegal
+                loading={loading}
+                options={options}
+                value={form.getFieldValue("thongTinPhapLiChonNhaThau")}
+                onChange={(value) =>
+                  form.setFieldValue("thongTinPhapLiChonNhaThau", value)
+                }
               />
             </Form.Item>
           </Col>
@@ -47,6 +109,10 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
               <TextArea
                 rows={4}
                 placeholder="Mô tả các công việc đã hoàn thành"
+                value={form.getFieldValue("congViecDaThucHien")}
+                onChange={(value) =>
+                  form.setFieldValue("congViecDaThucHien", value)
+                }
               />
             </Form.Item>
           </Col>
@@ -59,6 +125,10 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
               <TextArea
                 rows={3}
                 placeholder="Mô tả các công việc không áp dụng được hình thức lựa chọn nhà thầu (nếu có)"
+                value={form.getFieldValue("congViecKhongApDung")}
+                onChange={(value) =>
+                  form.setFieldValue("congViecKhongApDung", value)
+                }
               />
             </Form.Item>
           </Col>
@@ -78,6 +148,10 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
               <TextArea
                 rows={4}
                 placeholder="Mô tả các công việc thuộc kế hoạch lựa chọn nhà thầu"
+                value={form.getFieldValue("congViecKeHoach")}
+                onChange={(value) =>
+                  form.setFieldValue("congViecKeHoach", value)
+                }
               />
             </Form.Item>
           </Col>
@@ -104,6 +178,10 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
             </Form.Item>
           </Col> */}
         </Row>
+        <Button type="primary" onClick={handleGenerateTemplate}>
+          <NotepadTextIcon />
+          Tạo mẫu 4
+        </Button> 
       </Form>
     </Card>
   );

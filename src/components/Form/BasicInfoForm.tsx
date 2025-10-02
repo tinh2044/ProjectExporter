@@ -8,6 +8,7 @@ import {
   Row,
   Col,
   type FormInstance,
+  Button,
 } from "antd";
 import {
   ProjectOutlined,
@@ -15,17 +16,34 @@ import {
   UserOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
+import { defaultFormInformation } from "../../constants";
 
 const { RangePicker } = DatePicker;
 
-export default function BasicInfoForm({form}: {form: FormInstance}) {
+export default function BasicInfoForm({ form }: { form: FormInstance }) {
+  const handleDefaultValues = () => {
+    form.setFieldsValue(defaultFormInformation);
+  };
   return (
     <Card
       className="!w-2/3 !mt-20 !p-8"
       title={
-        <div style={{ textAlign: "center" }}>
-          <ProjectOutlined style={{ fontSize: 32, marginBottom: 8 }} />
-          <div style={{ fontSize: 20, fontWeight: 600 }}>Thông Tin Dự Án</div>
+        <div
+          style={{ textAlign: "center" }}
+          className="flex items-center justify-between gap-2"
+        >
+          <div className="flex items-center gap-2">
+            <ProjectOutlined style={{ fontSize: 32, marginBottom: 8 }} />
+            <div style={{ fontSize: 20, fontWeight: 600 }}>Thông Tin Dự Án</div>
+          </div>
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            onClick={handleDefaultValues}
+          >
+            Điền giá trị mặc định
+          </Button>
         </div>
       }
     >
@@ -113,12 +131,6 @@ export default function BasicInfoForm({form}: {form: FormInstance}) {
             </Form.Item>
           </Col>
         </Row>
-
-        {/* <Form.Item style={{ marginBottom: 0, textAlign: "center" }}>
-          <Button type="primary" htmlType="submit" size="large">
-            Bắt đầu tạo form
-          </Button>
-        </Form.Item> */}
       </Form>
     </Card>
   );

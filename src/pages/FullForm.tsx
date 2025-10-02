@@ -1,6 +1,5 @@
 import { Form } from "antd";
 import BasicInfoForm from "../components/Form/BasicInfoForm";
-import { Button } from "antd";
 import PreparationPhaseForm from "../components/Form/PreparationPhaseForm";
 import DecisionForm from "../components/Form/DecisionForm";
 import ContractorSelectionForm from "../components/Form/ContractorSelectionForm";
@@ -11,15 +10,11 @@ const FullForm = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16, alignItems: "center" }}>
-      <BasicInfoForm form={form} />
+      <BasicInfoForm form={form}  />
       <PreparationPhaseForm form={form} />
       <DecisionForm form={form} />
       <ContractorSelectionForm form={form} />
       <ApprovalDecisionForm form={form} />
-
-      <Button type="primary" onClick={() => form.submit()}>
-        Submit tất cả
-      </Button>
     </div>
   );
 };
