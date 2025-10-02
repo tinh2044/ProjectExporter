@@ -111,7 +111,7 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
                 rows={8}
                 placeholder="Nhập mục tiêu của dự án"
                 value={form.getFieldValue("mucTieu")}
-                onChange={(value) => form.setFieldValue("mucTieu", value)}
+                onChange={(e) => form.setFieldValue("mucTieu", e.target.value)}
               />
             </Form.Item>
           </Col>
@@ -126,7 +126,7 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
                 rows={8}
                 placeholder="Nhập quy mô dự án (diện tích, công suất...)"
                 value={form.getFieldValue("quyMo")}
-                onChange={(value) => form.setFieldValue("quyMo", value)}
+                onChange={(e) => form.setFieldValue("quyMo", e.target.value)}
               />
             </Form.Item>
           </Col>
@@ -146,7 +146,7 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
                 rows={8}
                 placeholder="Nhập lý do và sự cần thiết phải đầu tư dự án này"
                 value={form.getFieldValue("suCanThiet")}
-                onChange={(value) => form.setFieldValue("suCanThiet", value)}
+                onChange={(e) => form.setFieldValue("suCanThiet", e.target.value)}
               />
             </Form.Item>
           </Col>
@@ -163,7 +163,7 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
                 style={{ width: "100%" }}
                 placeholder="Nhập nguồn kinh phí"
                 value={form.getFieldValue("nguonKinhPhi")}
-                onChange={(value) => form.setFieldValue("nguonKinhPhi", value)}
+                onChange={(e) => form.setFieldValue("nguonKinhPhi", e.target.value)}
               />
             </Form.Item>
           </Col>
@@ -174,7 +174,7 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
                 rows={5}
                 placeholder="Ghi chú về dự toán (nếu có)"
                 value={form.getFieldValue("ghiChuDuToan")}
-                onChange={(value) => form.setFieldValue("ghiChuDuToan", value)}
+                onChange={(e) => form.setFieldValue("ghiChuDuToan", e.target.value)}
               />
             </Form.Item>
           </Col>

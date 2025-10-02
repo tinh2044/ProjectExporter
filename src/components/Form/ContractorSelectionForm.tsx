@@ -110,8 +110,8 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
                 rows={4}
                 placeholder="Mô tả các công việc đã hoàn thành"
                 value={form.getFieldValue("congViecDaThucHien")}
-                onChange={(value) =>
-                  form.setFieldValue("congViecDaThucHien", value)
+                onChange={(e) =>
+                  form.setFieldValue("congViecDaThucHien", e.target.value)
                 }
               />
             </Form.Item>
@@ -126,8 +126,8 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
                 rows={3}
                 placeholder="Mô tả các công việc không áp dụng được hình thức lựa chọn nhà thầu (nếu có)"
                 value={form.getFieldValue("congViecKhongApDung")}
-                onChange={(value) =>
-                  form.setFieldValue("congViecKhongApDung", value)
+                onChange={(e) =>
+                  form.setFieldValue("congViecKhongApDung", e.target.value)
                 }
               />
             </Form.Item>
@@ -149,8 +149,8 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
                 rows={4}
                 placeholder="Mô tả các công việc thuộc kế hoạch lựa chọn nhà thầu"
                 value={form.getFieldValue("congViecKeHoach")}
-                onChange={(value) =>
-                  form.setFieldValue("congViecKeHoach", value)
+                onChange={(e) =>
+                  form.setFieldValue("congViecKeHoach", e.target.value)
                 }
               />
             </Form.Item>
