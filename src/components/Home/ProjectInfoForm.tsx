@@ -14,11 +14,14 @@ import {
   UserOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router";
+import { nanoid } from "nanoid";
 
 const { RangePicker } = DatePicker;
 
 export default function ProjectInfoForm() {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   return (
     <Card
@@ -105,7 +108,15 @@ export default function ProjectInfoForm() {
         </Row>
 
         <Form.Item style={{ marginBottom: 0, textAlign: "center" }}>
-          <Button type="primary" htmlType="submit" size="large">
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            onClick={() => {
+              const formId = nanoid(6);
+              navigate(`/forms/${formId}`, { state: form.getFieldsValue() });
+            }}
+          >
             Bắt đầu tạo form
           </Button>
         </Form.Item>

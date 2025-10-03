@@ -2,7 +2,7 @@ import { Layout } from "antd";
 import { Outlet } from "react-router";
 const { Header, Content, Footer } = Layout;
 
-export const HomeLayout = () => {
+const HomeLayout = () => {
   return (
     <Layout className="!min-h-screen flex flex-col">
       <Header></Header>

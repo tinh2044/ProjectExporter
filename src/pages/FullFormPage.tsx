@@ -5,12 +5,19 @@ import DecisionForm from "../components/Form/DecisionForm";
 import ContractorSelectionForm from "../components/Form/ContractorSelectionForm";
 import ApprovalDecisionForm from "../components/Form/ApprovalDecisionForm";
 
-const FullForm = () => {
+const FullFormPage = () => {
   const [form] = Form.useForm();
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16, alignItems: "center" }}>
-      <BasicInfoForm form={form}  />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        alignItems: "center",
+      }}
+    >
+      <BasicInfoForm form={form} />
       <PreparationPhaseForm form={form} />
       <DecisionForm form={form} />
       <ContractorSelectionForm form={form} />
@@ -19,4 +26,4 @@ const FullForm = () => {
   );
 };
 
-export default FullForm;
+export default FullFormPage;
