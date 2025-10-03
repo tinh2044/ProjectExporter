@@ -16,7 +16,7 @@ import {
   UserOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
-import { defaultFormInformation } from "../../constants";
+import { defaultFormInformation } from "@/constants";
 
 const { RangePicker } = DatePicker;
 

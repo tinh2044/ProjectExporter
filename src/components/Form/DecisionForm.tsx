@@ -2,9 +2,9 @@ import { Form, Card, type FormInstance, Button } from "antd";
 import { SolutionOutlined } from "@ant-design/icons";
 import SelectLegal from "./SelectLegal";
 import { useEffect, useState } from "react";
-import { loadLegalInfo } from "../../services/legal";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields } from "../../utils/formatters";
-import { generateDocxFromTemplateUrl } from "../../services/docx";
+import { loadLegalInfo } from "@/services/legal";
+import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields } from "@/utils/formatters";
+import { generateDocxFromTemplateUrl } from "@/services/docx";
 import { NotepadTextIcon } from "lucide-react";
 
 const defaultLegals = [

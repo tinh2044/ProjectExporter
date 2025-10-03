@@ -1,11 +1,11 @@
 import { Form, Input, Card, Row, Col, type FormInstance, Button } from "antd";
 import { FileTextOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
-import { loadLegalInfo } from "../../services/legal";
+import { loadLegalInfo } from "@/services/legal";
 import { NotepadTextIcon } from "lucide-react";
 import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields } from "../../utils/formatters";
 import SelectLegal from "./SelectLegal";
-import { generateDocxFromTemplateUrl } from "../../services/docx";
+import { generateDocxFromTemplateUrl } from "@/services/docx";
 
 
 const { TextArea } = Input;
