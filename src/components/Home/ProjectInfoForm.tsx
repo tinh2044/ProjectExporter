@@ -38,7 +38,7 @@ export default function ProjectInfoForm() {
           <Col xs={24} md={12}>
             <Form.Item
               label="Tên dự án"
-              name="tenDuAn"
+              name="name"
               rules={[{ required: true, message: "Vui lòng nhập tên dự án!" }]}
             >
               <Input
@@ -51,7 +51,7 @@ export default function ProjectInfoForm() {
           <Col xs={24} md={12}>
             <Form.Item
               label="Kinh phí (VNĐ)"
-              name="kinhPhi"
+              name="buget"
               rules={[{ required: true, message: "Vui lòng nhập kinh phí!" }]}
             >
               <InputNumber
@@ -69,7 +69,7 @@ export default function ProjectInfoForm() {
           <Col xs={24} md={12}>
             <Form.Item
               label="Chủ đầu tư"
-              name="chuDauTu"
+              name="investor"
               rules={[{ required: true, message: "Vui lòng nhập chủ đầu tư!" }]}
             >
               <Input
@@ -82,7 +82,7 @@ export default function ProjectInfoForm() {
           <Col xs={24} md={12}>
             <Form.Item
               label="Địa điểm thực hiện"
-              name="diaDiem"
+              name="place"
               rules={[{ required: true, message: "Vui lòng nhập địa điểm!" }]}
             >
               <Input
@@ -95,7 +95,7 @@ export default function ProjectInfoForm() {
           <Col xs={24}>
             <Form.Item
               label="Thời gian thực hiện"
-              name="thoiGian"
+              name="time"
               rules={[{ required: true, message: "Vui lòng chọn thời gian!" }]}
             >
               <RangePicker
@@ -114,7 +114,9 @@ export default function ProjectInfoForm() {
             size="large"
             onClick={() => {
               const formId = nanoid(6);
-              navigate(`/forms/${formId}`, { state: form.getFieldsValue() });
+              navigate(`/forms/${formId}`, {
+                state: form.getFieldsValue(),
+              });
             }}
           >
             Bắt đầu tạo form
