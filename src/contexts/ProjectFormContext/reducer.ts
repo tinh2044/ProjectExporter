@@ -41,6 +41,70 @@ export const formReducer = (
           return section;
         }),
       };
+    case "ADD_TEXT_EDITOR_ITEM":
+      return {
+        ...state,
+        sections: state.sections.map((section: Section) => {
+          if (section.id === action.payload) {
+            return {
+              ...section,
+              items: [
+                ...section.items,
+                {
+                  id: nanoid(6),
+                  title: "",
+                  content: "",
+                },
+              ],
+            };
+          }
+          return section;
+        }),
+      };
+    case "ADD_SELECTION_ITEM":
+      return {
+        ...state,
+        sections: state.sections.map((section: Section) => {
+          if (section.id === action.payload) {
+            return {
+              ...section,
+              items: [
+                ...section.items,
+                {
+                  id: nanoid(6),
+                  title: "",
+                  values: [],
+                  options: [],
+                },
+              ],
+            };
+          }
+          return section;
+        }),
+      };
+    case "DELETE_ITEM":
+      return {
+        ...state,
+        sections: state.sections.map((section: Section) => {
+          if (section.id === action.payload.sectionId) {
+            return {
+              ...section,
+              items: section.items.filter(
+                (item) => item.id !== action.payload.itemId
+              ),
+            };
+          }
+          return section;
+        }),
+      };
+    case "UPDATE_PROJECT":
+      return {
+        ...state,
+        project: {
+          ...state.project,
+          ...action.payload,
+        },
+      };
     default:
       return state;
   }
