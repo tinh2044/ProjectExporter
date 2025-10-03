@@ -5,7 +5,7 @@ import type { Section } from "../../models/project-form/section";
 export const formReducer = (
   state: ProjectFormState,
   action: ProjectFormAction
-) => {
+): ProjectFormState => {
   switch (action.type) {
     case "ADD_SECTION":
       return {
@@ -17,6 +17,7 @@ export const formReducer = (
             title: "",
             content: "",
             receiver: "",
+            items: [],
           },
         ],
       };

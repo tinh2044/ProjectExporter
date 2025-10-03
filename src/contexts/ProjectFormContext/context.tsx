@@ -1,7 +1,7 @@
 import { createContext, useReducer } from "react";
 import type { ProjectFormContextValue } from "./types";
-import { formReducer } from "./reducer";
 import type { Project } from "../../models/project";
+import { formReducer } from "./reducer";
 
 const ProjectFormContext = createContext<ProjectFormContextValue | null>(null);
 
