@@ -1,6 +1,6 @@
 import { useLocation, useParams } from "react-router";
-import { ProjectFormProvider } from "../contexts/ProjectFormContext/context";
-import ProjectFormInfo from "../components/ProjectFrom/ProjectFormInfo";
+import { ProjectFormProvider } from "@/contexts/ProjectFormContext/context";
+import ProjectFormEditor from "@/components/ProjectFrom/ProjectFormEditor";
 
 const ProjectFormPage = () => {
   const { id } = useParams();
@@ -16,7 +16,7 @@ const ProjectFormPage = () => {
 
   return (
     <ProjectFormProvider id={id} project={state}>
-      <ProjectFormInfo />
+      <ProjectFormEditor />
     </ProjectFormProvider>
   );
 };
