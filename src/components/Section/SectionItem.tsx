@@ -56,7 +56,13 @@ function SectionItem({
 
         {itemType === 'text' && (
           <Suspense fallback={null}>
-            <TextEditorLazy textEditor={item as TextEditorModel} />
+            <TextEditorLazy
+              textEditor={item as TextEditorModel}
+              onChange={(content) => {
+                const updated: TextEditorModel = { ...item, content } as TextEditorModel
+                onChange(updated as unknown as Item)
+              }}
+            />
           </Suspense>
         )}
       </Space>

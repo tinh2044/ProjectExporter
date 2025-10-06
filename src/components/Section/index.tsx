@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useCallback } from 'react'
-import type { Section as SectionModel } from '@/models/project-form/section'
+import type { Section as SectionModel} from '@/models/project-form/section'
 import type { Item } from '@/models/project-form/item'
 import SectionItem from '@/components/Section/SectionItem'
 import { nanoid } from 'nanoid'
 import { Button, Card, Empty, Input, Space, Select } from 'antd'
 import type { Selection as SelectionModel } from '@/models/project-form/selection'
 import type { TextEditor as TextEditorModel } from '@/models/project-form/text-editor'
+import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { addItemToSection, removeItemFromSection, updateSectionTitle, updateItemInSection } from '@/store/slices/projectFormSlice'
+import type { RootState } from '@/store'
 
 const ITEM_TYPES = {
   text: {
@@ -57,50 +60,38 @@ const itemTypes = Object.values(ITEM_TYPES).map(type => ({
 
 function Section({
   sectionModel,
-  onUpdate,
   onDelete,
 }: {
   sectionModel: SectionModel
-  onUpdate: (updated: SectionModel) => void
   onDelete: (sectionId: string) => void
 }) {
-
+  const dispatch = useAppDispatch()
   const [title, setTitle] = useState<string>(sectionModel.title || '')
-  const [items, setItems] = useState<Item[]>(sectionModel.items || [])
   const [itemType, setItemType] = useState<keyof typeof ITEM_TYPES>('text')
 
-  const sync = useCallback((nextItems: Item[] = items, nextTitle: string = title) => {
-    const updated: SectionModel = {
-      ...sectionModel,
-      title: nextTitle,
-      items: nextItems,
-    }
-    onUpdate(updated)
-  }, [sectionModel, onUpdate, items, title])
+  // Get current section from Redux state
+  const currentSection = useAppSelector((state: RootState) =>
+    state.projectForm.sections.find((s: SectionModel) => s.id === sectionModel.id)
+  )
+  const items = currentSection?.items || []
 
   const handleAddItem = () => {
     const newItem = ITEM_TYPES[itemType].createItem()
-    const next = [...items, newItem]
-    setItems(next)
-    sync(next)
+    dispatch(addItemToSection({ sectionId: sectionModel.id, item: newItem }))
   }
 
   const handleRemoveItem = (itemId: string) => {
-    const next = items.filter((i) => i.id !== itemId)
-    setItems(next)
-    sync(next)
+    dispatch(removeItemFromSection({ sectionId: sectionModel.id, itemId }))
   }
 
   const handleChangeItem = useCallback((changed: Item) => {
-    const next = items.map((i) => {
-      if (i.id === changed.id) {
-        return { ...changed } 
-      }
-      return i
-    })  
-    setItems(next)
-    sync(next) // Add sync to update parent
-  }, [items, sync])
+    dispatch(updateItemInSection({ sectionId: sectionModel.id, item: changed }))
+  }, [dispatch, sectionModel.id])
+
+  const handleTitleChange = (value: string) => {
+    setTitle(value)
+    dispatch(updateSectionTitle({ sectionId: sectionModel.id, title: value }))
+  }
 
   return (
     <Card>
@@ -108,11 +99,7 @@ function Section({
         <Space.Compact style={{ width: '100%' }}>
           <Input
             value={title}
-            onChange={(e) => {
-              const val = e.target.value
-              setTitle(val)
-              sync(items, val)
-            }}
+            onChange={(e) => handleTitleChange(e.target.value)}
             placeholder="Tiêu đề của tờ trình"
           />
           <Button danger onClick={() => onDelete(sectionModel.id)}>
@@ -123,7 +110,7 @@ function Section({
         <hr className="my-1 border-0 border-t-1 border-gray-500" />
 
         <Space direction="vertical" size={8} style={{ width: '100%' }}>
-          {items.map((item) => (
+          {items.map((item: Item) => (
             <SectionItem
               key={item.id}
               item={item}

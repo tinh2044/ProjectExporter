@@ -1,19 +1,18 @@
 import type { Section } from "@/models/project-form/section";
 import SectionComponent from "@/components/Section";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Button, Card, Empty, Space } from "antd";
 import { nanoid } from "nanoid";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { addSection, removeSection } from "@/store/slices/projectFormSlice";
 
 
 const ProjectFormEditor = () => {
-  const [sections, setSections] = useState<Section[]>(() => []);
+  const dispatch = useAppDispatch();
+  const { sections } = useAppSelector((state) => state.projectForm);
 
   const handleRemoveSection = (sectionId: string) => {
-    setSections((prev) => prev.filter((s) => s.id !== sectionId));
-  };
-
-  const handleUpdateSection = (updated: Section) => {
-    setSections((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+    dispatch(removeSection(sectionId));
   };
 
   const emptyState = useMemo(() => sections.length === 0, [sections.length]);
@@ -26,7 +25,6 @@ const ProjectFormEditor = () => {
           <SectionComponent
             key={section.id}
             sectionModel={section}
-            onUpdate={handleUpdateSection}
             onDelete={handleRemoveSection}
           />
         ))}
@@ -48,7 +46,7 @@ const ProjectFormEditor = () => {
               receiver: "",
               items: [],
             };
-            setSections((prev) => [...prev, newSection]);
+            dispatch(addSection(newSection));
           }}
         >
           Thêm tờ trình

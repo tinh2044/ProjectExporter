@@ -4,11 +4,12 @@ import legalInfo from './legal.json';
  * load legal info
  * @returns {Promise<string[]>} list legal info
  */
-export const loadLegalInfo = async () => {
+export const loadLegalInfo = async (): Promise<string[]> => {
   try {
     return legalInfo;
   } catch (error) {
     console.error('Error loading legal info:', error);
+    return [];
   }
 };
 

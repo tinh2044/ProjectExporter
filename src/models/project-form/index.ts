@@ -3,6 +3,6 @@ import type { Section } from "./section";
 
 export interface ProjectForm {
   id: string;
-  project: Project;
+  project: Project | undefined;
   sections: Section[];
 }

@@ -3,15 +3,17 @@ import type { TextEditor } from "@/models/project-form/text-editor";
 import { ProjectOutlined } from "@ant-design/icons";
 function TextEditor({
   textEditor,
+  onChange,
 }: {
   textEditor: TextEditor;
+  onChange: (content: string) => void;
 }) {
   return (
     <Input
       prefix={<ProjectOutlined />}
       placeholder="Nhập nội dung"
       value={textEditor.content}
-      onChange={(e) => { textEditor.content = e.target.value }}
+      onChange={(e) => onChange(e.target.value)}
     />
   );
 }
