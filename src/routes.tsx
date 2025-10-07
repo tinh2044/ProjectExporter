@@ -1,26 +1,17 @@
 import { createBrowserRouter } from "react-router";
 import HomeLayout from "./components/Home/HomeLayout";
-import Home from "./pages/HomePage";
 import FullForm from "./pages/FullFormPage";
-import ProjectFormLayout from "./components/ProjectFrom/ProjectFormLayout";
-import ProjectForm from "./pages/ProjectFormPage";
+import HomePage from "./pages/HomePage";
+import EditorLayout from "./components/Editor/EditorLayout";
+import EditorPage from "./pages/EditorPage";
 
 const routes = createBrowserRouter([
-  // {
-  //   element: <HomeLayout />,
-  //   children: [
-  //     {
-  //       path: "/",
-  //       element: <Home />,
-  //     },
-  //   ],
-  // },
   {
-    element: <ProjectFormLayout />,
+    element: <EditorLayout />,
     children: [
       {
-        path: "/forms/:id",
-        element: <ProjectForm />,
+        path: "/editors/:id",
+        element: <EditorPage />,
       },
     ],
   },
@@ -28,12 +19,12 @@ const routes = createBrowserRouter([
     element: <HomeLayout />,
     children: [
       {
-        path: "/",
+        path: "/full-form",
         element: <FullForm />,
       },
       {
-        path: "/home",
-        element: <Home />,
+        path: "/",
+        element: <HomePage />,
       },
     ],
   },

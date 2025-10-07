@@ -2,8 +2,14 @@ import { Form, Input, Card, Row, Col, type FormInstance, Button } from "antd";
 import { TeamOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields } from "@/utils/formatters";
-import SelectLegal from "./SelectLegal";
+import {
+  findIndicesInArray,
+  buildDocxData,
+  applyLegalIndicesToText,
+  applyYearRange,
+  applyMoneyFields,
+} from "@/utils/formatters";
+import SelectLegal from "./UI/SelectLegal";
 import { NotepadTextIcon } from "lucide-react";
 import { generateDocxFromTemplateUrl } from "@/services/docx";
 
@@ -15,8 +21,14 @@ const defaultLegals = [
   "Căn cứ Nghị định số 214/2025/NĐ-CP ngày 04 tháng 8 năm 2025 của Chính phủ về quy định chi tiết một số điều và biện pháp thi hành luật đấu thầu về lựa chọn nhà thầu;",
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function ContractorSelectionForm({ form, basicInfo }: { form: FormInstance, basicInfo: any }) {
+export default function ContractorSelectionSection({
+  form,
+  basicInfo,
+}: {
+  form: FormInstance;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  basicInfo: any;
+}) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -53,10 +65,12 @@ export default function ContractorSelectionForm({ form, basicInfo }: { form: For
 
   const handleGenerateTemplate = async () => {
     const raw = form.getFieldsValue();
-    const data = buildDocxData({...raw, ...basicInfo}, [
+    const data = buildDocxData({ ...raw, ...basicInfo }, [
       applyLegalIndicesToText("thongTinPhapLiChonNhaThau", legalData),
       applyYearRange("thoiGian"),
-      applyMoneyFields([{ numberField: "tongHopDuToan", wordsField: "duToanStr" }]),
+      applyMoneyFields([
+        { numberField: "tongHopDuToan", wordsField: "duToanStr" },
+      ]),
     ]);
     const template1Url = new URL("../../assets/template4.docx", import.meta.url)
       .href;
@@ -182,7 +196,7 @@ export default function ContractorSelectionForm({ form, basicInfo }: { form: For
         <Button type="primary" onClick={handleGenerateTemplate}>
           <NotepadTextIcon />
           Tạo mẫu 4
-        </Button> 
+        </Button>
       </Form>
     </Card>
   );

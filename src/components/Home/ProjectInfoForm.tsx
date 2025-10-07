@@ -140,7 +140,7 @@ export default function ProjectInfoForm() {
             size="large"
             onClick={() => {
               const formId = nanoid(6);
-              navigate(`/forms/${formId}`, {
+              navigate(`/editors/${formId}`, {
                 state: form.getFieldsValue(),
               });
             }}

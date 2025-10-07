@@ -4,11 +4,16 @@ import { FileTextOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { loadLegalInfo } from "@/services/legal";
 import { NotepadTextIcon } from "lucide-react";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields } from "../../utils/formatters";
-import SelectLegal from "./SelectLegal";
+import {
+  findIndicesInArray,
+  buildDocxData,
+  applyLegalIndicesToText,
+  applyYearRange,
+  applyMoneyFields,
+} from "../../utils/formatters";
+import SelectLegal from "./UI/SelectLegal";
 import { generateDocxFromTemplateUrl } from "@/services/docx";
 import { defaultFormInformation } from "@/constants";
-
 
 const { TextArea } = Input;
 const defaultLegals = [
@@ -23,7 +28,13 @@ const defaultLegals = [
   "Căn cứ Công văn số 490/UBND-VX ngày 24 tháng 7 năm 2025 của Ủy ban nhân dân Thành phố về điều chỉnh chủ trương thực hiện các hoạt động ứng dụng công nghệ thông tin sử dụng kinh phí chi thường xuyên năm 2025;",
 ];
 
-export default function PreparationPhaseForm({ form, basicInfo }: { form: FormInstance, basicInfo: any }) {
+export default function PreparationPhaseSection({
+  form,
+  basicInfo,
+}: {
+  form: FormInstance;
+  basicInfo: any;
+}) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -60,12 +71,15 @@ export default function PreparationPhaseForm({ form, basicInfo }: { form: FormIn
 
   const handleGenerateTemplate = async () => {
     const raw = form.getFieldsValue();
-    const data = buildDocxData({...raw, ...basicInfo}, [
+    const data = buildDocxData({ ...raw, ...basicInfo }, [
       applyLegalIndicesToText("thongTinPhapLiChuanBi", legalData),
       applyYearRange("thoiGian"),
-      applyMoneyFields([{ numberField: "tongHopDuToan", wordsField: "duToanStr" }]),
+      applyMoneyFields([
+        { numberField: "tongHopDuToan", wordsField: "duToanStr" },
+      ]),
     ]);
-    const template1Url = new URL("../../assets/template1.docx", import.meta.url).href;
+    const template1Url = new URL("../../assets/template1.docx", import.meta.url)
+      .href;
     await generateDocxFromTemplateUrl(template1Url, data, "template-1.docx");
   };
 

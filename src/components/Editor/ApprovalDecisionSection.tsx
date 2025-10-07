@@ -1,9 +1,15 @@
 import { Form, Card, type FormInstance, Button } from "antd";
-import { SolutionOutlined } from "@ant-design/icons";
-import SelectLegal from "./SelectLegal";
+import { CheckCircleOutlined } from "@ant-design/icons";
+import SelectLegal from "./UI/SelectLegal";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields } from "@/utils/formatters";
+import {
+  findIndicesInArray,
+  buildDocxData,
+  applyLegalIndicesToText,
+  applyYearRange,
+  applyMoneyFields,
+} from "../../utils/formatters";
 import { generateDocxFromTemplateUrl } from "@/services/docx";
 import { NotepadTextIcon } from "lucide-react";
 
@@ -13,10 +19,18 @@ const defaultLegals = [
   "Căn cứ Luật số 90/2025/QH15 ngày 25 tháng 6 năm 2025 về sửa đổi bổ sung một số điều của luật đấu thầu, luật đầu tư theo phương thức đối tác công tư, luật hải quan, luật thuế giá trị gia tăng, luật thuế xuất khẩu, thuế nhập khẩu, luật đầu tư, luật đầu tư công, luật quản lý; sử dụng tài sản công;",
   "Căn cứ Nghị định số 214/2025/NĐ-CP ngày 04 tháng 8 năm 2025 của Chính phủ về quy định chi tiết một số điều và biện pháp thi hành luật đấu thầu về lựa chọn nhà thầu;",
 ];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function DecisionForm({ form, basicInfo }: { form: FormInstance, basicInfo: any }) {
+
+export default function ApprovalDecisionSection({
+  form,
+  basicInfo,
+}: {
+  form: FormInstance;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  basicInfo: any;
+}) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     fetchLegalData();
   }, []);
@@ -25,7 +39,7 @@ export default function DecisionForm({ form, basicInfo }: { form: FormInstance, 
     if (legalData.length > 0) {
       const defaultIndices = findIndicesInArray(legalData, defaultLegals);
       form.setFieldsValue({
-        thongTinPhapLiDuToan: defaultIndices,
+        pheDuyetPhapLiDuyetNhaThau: defaultIndices,
       });
     }
   }, [legalData, form]);
@@ -50,17 +64,19 @@ export default function DecisionForm({ form, basicInfo }: { form: FormInstance, 
 
   const handleGenerateTemplate = async () => {
     const raw = form.getFieldsValue();
-    const data = buildDocxData({...raw, ...basicInfo}, [
-      applyLegalIndicesToText("thongTinPhapLiDuToan", legalData),
+    const data = buildDocxData({ ...raw, ...basicInfo }, [
+      applyLegalIndicesToText("pheDuyetPhapLiDuyetNhaThau", legalData),
       applyYearRange("thoiGian"),
-      applyMoneyFields([{ numberField: "tongHopDuToan", wordsField: "duToanStr" }]),
+      applyMoneyFields([
+        { numberField: "tongHopDuToan", wordsField: "duToanStr" },
+      ]),
     ]);
     if (typeof data.nguoiNhan === "string") {
       data.nguoiNhan = (data.nguoiNhan as string).toUpperCase();
     }
-    const template1Url = new URL("../../assets/template2.docx", import.meta.url)
+    const template1Url = new URL("../../assets/template6.docx", import.meta.url)
       .href;
-    await generateDocxFromTemplateUrl(template1Url, data, "template-2.docx");
+    await generateDocxFromTemplateUrl(template1Url, data, "template-6.docx");
   };
 
   return (
@@ -68,9 +84,10 @@ export default function DecisionForm({ form, basicInfo }: { form: FormInstance, 
       className="!w-full"
       title={
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <SolutionOutlined />
+          <CheckCircleOutlined />
           <span>
-            QUYẾT ĐỊNH "Phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án"
+            QUYẾT ĐỊNH Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn
+            bị đầu tư dự án{" "}
           </span>
         </div>
       }
@@ -78,7 +95,7 @@ export default function DecisionForm({ form, basicInfo }: { form: FormInstance, 
       <Form form={form} layout="vertical" autoComplete="off">
         <Form.Item
           label="Thông tin pháp lí"
-          name="thongTinPhapLiDuToan"
+          name="pheDuyetPhapLiDuyetNhaThau"
           rules={[
             { required: true, message: "Vui lòng nhập thông tin pháp lí!" },
           ]}
@@ -86,13 +103,15 @@ export default function DecisionForm({ form, basicInfo }: { form: FormInstance, 
           <SelectLegal
             loading={loading}
             options={options}
-            value={form.getFieldValue("thongTinPhapLiDuToan")}
-            onChange={(value) => form.setFieldValue("thongTinPhapLiDuToan", value)}
+            value={form.getFieldValue("pheDuyetPhapLiDuyetNhaThau")}
+            onChange={(value) =>
+              form.setFieldValue("pheDuyetPhapLiDuyetNhaThau", value)
+            }
           />
         </Form.Item>
         <Button type="primary" onClick={handleGenerateTemplate}>
           <NotepadTextIcon />
-          Tạo mẫu 2 
+          Tạo mẫu 6
         </Button>
       </Form>
     </Card>

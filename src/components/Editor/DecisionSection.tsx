@@ -1,9 +1,15 @@
 import { Form, Card, type FormInstance, Button } from "antd";
-import { CheckCircleOutlined } from "@ant-design/icons";
-import SelectLegal from "./SelectLegal";
+import { SolutionOutlined } from "@ant-design/icons";
+import SelectLegal from "./UI/SelectLegal";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields } from "../../utils/formatters";
+import {
+  findIndicesInArray,
+  buildDocxData,
+  applyLegalIndicesToText,
+  applyYearRange,
+  applyMoneyFields,
+} from "@/utils/formatters";
 import { generateDocxFromTemplateUrl } from "@/services/docx";
 import { NotepadTextIcon } from "lucide-react";
 
@@ -14,11 +20,16 @@ const defaultLegals = [
   "Căn cứ Nghị định số 214/2025/NĐ-CP ngày 04 tháng 8 năm 2025 của Chính phủ về quy định chi tiết một số điều và biện pháp thi hành luật đấu thầu về lựa chọn nhà thầu;",
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function ApprovalDecisionForm({ form, basicInfo }: { form: FormInstance, basicInfo: any }) {
+export default function DecisionSection({
+  form,
+  basicInfo,
+}: {
+  form: FormInstance;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  basicInfo: any;
+}) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     fetchLegalData();
   }, []);
@@ -27,7 +38,7 @@ export default function ApprovalDecisionForm({ form, basicInfo }: { form: FormIn
     if (legalData.length > 0) {
       const defaultIndices = findIndicesInArray(legalData, defaultLegals);
       form.setFieldsValue({
-        pheDuyetPhapLiDuyetNhaThau: defaultIndices,
+        thongTinPhapLiDuToan: defaultIndices,
       });
     }
   }, [legalData, form]);
@@ -52,34 +63,37 @@ export default function ApprovalDecisionForm({ form, basicInfo }: { form: FormIn
 
   const handleGenerateTemplate = async () => {
     const raw = form.getFieldsValue();
-    const data = buildDocxData({...raw, ...basicInfo}, [
-      applyLegalIndicesToText("pheDuyetPhapLiDuyetNhaThau", legalData),
+    const data = buildDocxData({ ...raw, ...basicInfo }, [
+      applyLegalIndicesToText("thongTinPhapLiDuToan", legalData),
       applyYearRange("thoiGian"),
-      applyMoneyFields([{ numberField: "tongHopDuToan", wordsField: "duToanStr" }]),
+      applyMoneyFields([
+        { numberField: "tongHopDuToan", wordsField: "duToanStr" },
+      ]),
     ]);
     if (typeof data.nguoiNhan === "string") {
       data.nguoiNhan = (data.nguoiNhan as string).toUpperCase();
     }
-    const template1Url = new URL("../../assets/template6.docx", import.meta.url)
+    const template1Url = new URL("../../assets/template2.docx", import.meta.url)
       .href;
-    await generateDocxFromTemplateUrl(template1Url, data, "template-6.docx");
+    await generateDocxFromTemplateUrl(template1Url, data, "template-2.docx");
   };
 
   return (
     <Card
-          className="!w-full"
+      className="!w-full"
       title={
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <CheckCircleOutlined />
-          <span>QUYẾT ĐỊNH 
-Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị đầu tư dự án </span>
+          <SolutionOutlined />
+          <span>
+            QUYẾT ĐỊNH "Phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án"
+          </span>
         </div>
       }
     >
       <Form form={form} layout="vertical" autoComplete="off">
         <Form.Item
           label="Thông tin pháp lí"
-          name="pheDuyetPhapLiDuyetNhaThau"
+          name="thongTinPhapLiDuToan"
           rules={[
             { required: true, message: "Vui lòng nhập thông tin pháp lí!" },
           ]}
@@ -87,13 +101,15 @@ Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn b�
           <SelectLegal
             loading={loading}
             options={options}
-            value={form.getFieldValue("pheDuyetPhapLiDuyetNhaThau")}
-            onChange={(value) => form.setFieldValue("pheDuyetPhapLiDuyetNhaThau", value)}
+            value={form.getFieldValue("thongTinPhapLiDuToan")}
+            onChange={(value) =>
+              form.setFieldValue("thongTinPhapLiDuToan", value)
+            }
           />
         </Form.Item>
         <Button type="primary" onClick={handleGenerateTemplate}>
           <NotepadTextIcon />
-          Tạo mẫu 6
+          Tạo mẫu 2
         </Button>
       </Form>
     </Card>
