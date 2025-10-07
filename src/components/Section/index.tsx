@@ -75,10 +75,11 @@ function Section({
   )
   const items = currentSection?.items || []
 
-  const handleAddItem = () => {
-    const newItem = ITEM_TYPES[itemType].createItem()
-    dispatch(addItemToSection({ sectionId: sectionModel.id, item: newItem }))
-  }
+  const handleAddItem = (value: keyof typeof ITEM_TYPES) => {
+    // console.log()
+    const newItem = ITEM_TYPES[value].createItem();
+    dispatch(addItemToSection({ sectionId: sectionModel.id, item: newItem }));
+  };
 
   const handleRemoveItem = (itemId: string) => {
     dispatch(removeItemFromSection({ sectionId: sectionModel.id, itemId }))
@@ -95,21 +96,18 @@ function Section({
 
   return (
     <Card>
-      <Space direction="vertical" size={12} style={{ width: '100%' }}>
-        <Space.Compact style={{ width: '100%' }}>
+      <Space direction="vertical" size={12} style={{ width: "100%" }}>
+        <Space.Compact style={{ width: "100%" }}>
           <Input
             value={title}
             onChange={(e) => handleTitleChange(e.target.value)}
             placeholder="Tiêu đề của tờ trình"
           />
-          <Button danger onClick={() => onDelete(sectionModel.id)}>
-            Xóa
-          </Button>
         </Space.Compact>
 
         <hr className="my-1 border-0 border-t-1 border-gray-500" />
 
-        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+        <Space direction="vertical" size={8} style={{ width: "100%" }}>
           {items.map((item: Item) => (
             <SectionItem
               key={item.id}
@@ -118,32 +116,41 @@ function Section({
               onDelete={handleRemoveItem}
             />
           ))}
-          {items.length === 0 && <Empty description="Chưa có mục nào trong phần này." />}
+          {items.length === 0 && (
+            <Empty description="Chưa có mục nào trong phần này." />
+          )}
         </Space>
 
         <Space>
           <Select
-            value={itemType}
-            onChange={setItemType}
+            value={[]}
+            onSelect={(value) => {
+              // setItemType()
+              console.log(value);
+              handleAddItem(value as keyof typeof ITEM_TYPES);
+            }}
             options={itemTypes}
             style={{ width: 120 }}
-            placeholder="Chọn loại mục"
+            placeholder="Thêm mục"
           />
-          <Button type="dashed" onClick={handleAddItem}>
+          {/* <Button type="dashed" onClick={}>
             Thêm mục
-          </Button>
-          <Button 
-            type="primary" 
+          </Button> */}
+          <Button
+            type="primary"
             onClick={() => {
-              console.log('Section Model:', sectionModel)
+              console.log("Section Model:", sectionModel);
             }}
           >
             Tạo tờ trình
           </Button>
+          <Button danger onClick={() => onDelete(sectionModel.id)}>
+            Xóa
+          </Button>
         </Space>
       </Space>
     </Card>
-  )
+  );
 }
 
 export default Section

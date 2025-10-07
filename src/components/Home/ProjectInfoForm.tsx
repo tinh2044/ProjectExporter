@@ -16,6 +16,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router";
 import { nanoid } from "nanoid";
+import { defaultFormInformation } from "@/constants";
 
 const { RangePicker } = DatePicker;
 
@@ -27,9 +28,26 @@ export default function ProjectInfoForm() {
     <Card
       className="!w-2/3 !mt-20 !p-8"
       title={
-        <div style={{ textAlign: "center" }}>
-          <ProjectOutlined style={{ fontSize: 32, marginBottom: 8 }} />
-          <div style={{ fontSize: 20, fontWeight: 600 }}>Thông Tin Dự Án</div>
+        <div
+          style={{ textAlign: "center" }}
+          className="flex items-center justify-between gap-2"
+        >
+          <div className="flex items-center gap-2">
+            <ProjectOutlined style={{ fontSize: 32, marginBottom: 8 }} />
+            <div style={{ fontSize: 20, fontWeight: 600 }}>Thông Tin Dự Án</div>
+          </div>
+          <div>
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              onClick={() => {
+                form.setFieldsValue(defaultFormInformation);
+              }}
+            >
+              Điền giá trị mặc định
+            </Button>
+          </div>
         </div>
       }
     >
@@ -38,7 +56,7 @@ export default function ProjectInfoForm() {
           <Col xs={24} md={12}>
             <Form.Item
               label="Tên dự án"
-              name="name"
+              name="tenDuAn"
               rules={[{ required: true, message: "Vui lòng nhập tên dự án!" }]}
             >
               <Input
@@ -51,7 +69,7 @@ export default function ProjectInfoForm() {
           <Col xs={24} md={12}>
             <Form.Item
               label="Kinh phí (VNĐ)"
-              name="buget"
+              name="tongHopDuToan"
               rules={[{ required: true, message: "Vui lòng nhập kinh phí!" }]}
             >
               <InputNumber
@@ -69,7 +87,7 @@ export default function ProjectInfoForm() {
           <Col xs={24} md={12}>
             <Form.Item
               label="Chủ đầu tư"
-              name="investor"
+              name="chuDauTu"
               rules={[{ required: true, message: "Vui lòng nhập chủ đầu tư!" }]}
             >
               <Input
@@ -82,7 +100,7 @@ export default function ProjectInfoForm() {
           <Col xs={24} md={12}>
             <Form.Item
               label="Địa điểm thực hiện"
-              name="place"
+              name="diaDiem"
               rules={[{ required: true, message: "Vui lòng nhập địa điểm!" }]}
             >
               <Input
@@ -91,11 +109,19 @@ export default function ProjectInfoForm() {
               />
             </Form.Item>
           </Col>
-
-          <Col xs={24}>
+          <Col xs={24} md={12}>
+            <Form.Item
+              label="Người Nhận"
+              name="nguoiNhan"
+              rules={[{ required: true, message: "Vui lòng nhập người nhận!" }]}
+            >
+              <Input placeholder="Nhập người nhận" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
             <Form.Item
               label="Thời gian thực hiện"
-              name="time"
+              name="thoiGian"
               rules={[{ required: true, message: "Vui lòng chọn thời gian!" }]}
             >
               <RangePicker

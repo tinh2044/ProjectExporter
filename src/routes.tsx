@@ -1,4 +1,3 @@
-import Form from "./pages/FormPage";
 import { createBrowserRouter } from "react-router";
 import HomeLayout from "./components/Home/HomeLayout";
 import Home from "./pages/HomePage";
@@ -16,10 +15,6 @@ const routes = createBrowserRouter([
   //     },
   //   ],
   // },
-  {
-    path: "/form/:id",
-    element: <Form />,
-  },
   {
     element: <ProjectFormLayout />,
     children: [

@@ -1,5 +1,5 @@
 import type { Selection as SelectionModel } from "@/models/project-form/selection";
-import { Select, Spin, Space } from "antd";
+import { Select, Spin, Flex } from "antd";
 import { useState, useEffect } from "react";
 import { sectionTypesData } from "@/data/section-types";
 
@@ -62,25 +62,23 @@ function Selection({
     }
   }, [selectedSectionType]);
 
-  useEffect(() => {
-  console.log(selectionModel.values)
-  }, [selectionModel.values]);
-
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Flex justify="space-between" gap="small" style={{ width: "100%" }}>
       <Select
+        
         placeholder="Chọn loại section"
         value={selectedSectionType}
         onChange={handleSectionTypeChange}
-        style={{ width: '100%' }}
-        options={sectionTypesData.sectionTypes.map(type => ({
+        className="w-1/4"
+        options={sectionTypesData.sectionTypes.map((type) => ({
           value: type.id,
-          label: type.name
+          label: type.name,
         }))}
       />
-      
+
       {selectedSectionType && (
         <Select
+          className="w-3/4"
           mode={mode}
           placeholder={placeholder}
           showSearch
@@ -95,10 +93,9 @@ function Selection({
           }}
           options={availableOptions}
           maxTagCount="responsive"
-          className="w-full"
         />
       )}
-    </Space>
+    </Flex>
   );
 }
 

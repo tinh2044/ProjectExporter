@@ -147,6 +147,7 @@ export function buildDocxData(
   transforms: Array<(d: PlainData) => void> = []
 ): PlainData {
   const data: PlainData = { ...raw };
+  console.log(data);
   for (const apply of transforms) apply(data);
   return data;
 }
