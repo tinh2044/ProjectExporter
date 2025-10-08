@@ -1,5 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, Input, Card, Row, Col, type FormInstance, Button } from "antd";
+import {
+  Form,
+  Input,
+  Card,
+  Row,
+  Col,
+  Select,
+  type FormInstance,
+  Button,
+} from "antd";
 import { FileTextOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { loadLegalInfo } from "@/services/legal";
@@ -10,9 +18,10 @@ import {
   applyLegalIndicesToText,
   applyYearRange,
   applyMoneyFields,
+  formatAdditionalstimate,
 } from "../../utils/formatters";
-import SelectLegal from "./UI/SelectLegal";
 import { generateDocxFromTemplateUrl } from "@/services/docx";
+import SelectLegal from "./UI/SelectLegal";
 import { defaultFormInformation } from "@/constants";
 
 const { TextArea } = Input;
@@ -28,12 +37,15 @@ const defaultLegals = [
   "Căn cứ Công văn số 490/UBND-VX ngày 24 tháng 7 năm 2025 của Ủy ban nhân dân Thành phố về điều chỉnh chủ trương thực hiện các hoạt động ứng dụng công nghệ thông tin sử dụng kinh phí chi thường xuyên năm 2025;",
 ];
 
-export default function PreparationPhaseSection({
+export default function PreparationPhaseForm({
   form,
   basicInfo,
+  isDefaultFilled,
 }: {
   form: FormInstance;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   basicInfo: any;
+  isDefaultFilled: boolean;
 }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -42,6 +54,11 @@ export default function PreparationPhaseSection({
     fetchLegalData();
   }, []);
 
+   useEffect(() => {
+     if (isDefaultFilled) {
+       form.setFieldsValue(defaultFormInformation);
+     }
+   }, [isDefaultFilled, form]);
   useEffect(() => {
     if (legalData.length > 0) {
       const defaultIndices = findIndicesInArray(legalData, defaultLegals);
@@ -62,7 +79,6 @@ export default function PreparationPhaseSection({
       setLoading(false);
     }
   };
-
   const options = legalData.map((text, index) => ({
     value: index,
     label: text,
@@ -71,6 +87,7 @@ export default function PreparationPhaseSection({
 
   const handleGenerateTemplate = async () => {
     const raw = form.getFieldsValue();
+    raw["ghiChuDuToan"] = formatAdditionalstimate(raw["baoCaoOptions"], raw["soTienBaoCao"], raw["chiPhiOptions"], raw["soTienChiPhi"]);
     const data = buildDocxData({ ...raw, ...basicInfo }, [
       applyLegalIndicesToText("thongTinPhapLiChuanBi", legalData),
       applyYearRange("thoiGian"),
@@ -86,24 +103,12 @@ export default function PreparationPhaseSection({
   return (
     <Card
       title={
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <FileTextOutlined />
-            <span>
-              Tờ trình "V/v đề nghị phê duyệt dự toán giai đoạn chuẩn bị đầu tư
-              dự án"
-            </span>
-          </div>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="large"
-            onClick={() => {
-              form.setFieldsValue(defaultFormInformation);
-            }}
-          >
-            Điền giá trị mặc định
-          </Button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <FileTextOutlined />
+          <span>
+            Tờ trình "V/v đề nghị phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự
+            án"
+          </span>
         </div>
       }
     >
@@ -201,14 +206,79 @@ export default function PreparationPhaseSection({
 
           <Col xs={24}>
             <Form.Item label="Ghi chú dự toán" name="ghiChuDuToan">
-              <TextArea
-                rows={5}
-                placeholder="Ghi chú về dự toán (nếu có)"
-                value={form.getFieldValue("ghiChuDuToan")}
-                onChange={(e) =>
-                  form.setFieldValue("ghiChuDuToan", e.target.value)
-                }
-              />
+              <div className="flex flex-col gap-4">
+                <Row gutter={16} align="middle">
+                  <Col xs={24} sm={12}>
+                    <Form.Item name="baoCaoOptions">
+                      <Select
+                        style={{ width: "100%" }}
+                        placeholder="Chọn loại báo cáo cần lập/thẩm tra"
+                        options={[
+                          {
+                            label: "Chi phí lập báo cáo kinh tế - kỹ thuật",
+                            value: "Chi phí lập báo cáo kinh tế - kỹ thuật",
+                          },
+                          {
+                            label: "Lập báo cáo nghiên cứu khả thi",
+                            value: "Lập báo cáo nghiên cứu khả thi",
+                          },
+                          {
+                            label: "Lập kế hoạch thuê dịch vụ",
+                            value: "Lập kế hoạch thuê dịch vụ",
+                          },
+                        ]}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item name="soTienBaoCao">
+                      <Input
+                        type="number"
+                        placeholder="Nhập số tiền"
+                        addonAfter="VNĐ"
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                <Row gutter={16} align="middle">
+                  <Col xs={24} sm={12}>
+                    <Form.Item name="chiPhiOptions">
+                      <Select
+                        style={{ width: "100%" }}
+                        placeholder="Chọn loại chi phí"
+                        options={[
+                          {
+                            label:
+                              "Chi phí thẩm tra báo cáo kinh tế - kỹ thuật",
+                            value: "Chi phí thẩm tra báo cáo kinh tế - kỹ thuật",
+                          },
+                          {
+                            label: "Chi phí thẩm định giá",
+                            value: "Chi phí thẩm định giá",
+                          },
+                        ]}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item name="soTienChiPhi">
+                      <Input
+                        type="number"
+                        placeholder="Nhập số tiền"
+                        addonAfter="VNĐ"
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                <Form.Item label="Ghi chú bổ sung" name="ghiChuBoSung">
+                  <TextArea
+                    rows={3}
+                    placeholder="Nhập ghi chú bổ sung về dự toán (nếu có)"
+                  />
+                </Form.Item>
+              </div>
             </Form.Item>
           </Col>
         </Row>

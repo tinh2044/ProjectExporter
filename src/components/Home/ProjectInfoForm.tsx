@@ -17,12 +17,14 @@ import {
 import { useNavigate } from "react-router";
 import { nanoid } from "nanoid";
 import { defaultFormInformation } from "@/constants";
+import { useState } from "react";
 
 const { RangePicker } = DatePicker;
 
 export default function ProjectInfoForm() {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [isDefaultFilled, setIsDefaulFilled] = useState(false);
 
   return (
     <Card
@@ -43,6 +45,7 @@ export default function ProjectInfoForm() {
               size="large"
               onClick={() => {
                 form.setFieldsValue(defaultFormInformation);
+                setIsDefaulFilled(true);
               }}
             >
               Điền giá trị mặc định
@@ -141,7 +144,10 @@ export default function ProjectInfoForm() {
             onClick={() => {
               const formId = nanoid(6);
               navigate(`/editors/${formId}`, {
-                state: form.getFieldsValue(),
+                state: {
+                  BasicInfoForm: form.getFieldsValue(),
+                  isDefaultFilled,
+                },
               });
             }}
           >

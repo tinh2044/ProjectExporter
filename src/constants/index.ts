@@ -55,6 +55,10 @@ export const defaultFormInformation = {
     Xem Phụ lục I đính kèm.
     2.	Giải trình nội dung kế hoạch lựa chọn nhà thầu:
     Xem Phụ lục II đính kèm.
-
+    
         `,
+  baoCaoOptions: "Lập kế hoạch thuê dịch vụ",
+  soTienBaoCao: 243377018,
+  chiPhiOptions: "Chi phí thẩm tra báo cáo kinh tế - kỹ thuật",
+  soTienChiPhi: 11794425,
 };

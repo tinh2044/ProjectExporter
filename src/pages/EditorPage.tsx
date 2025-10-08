@@ -7,10 +7,11 @@ import { useLocation, useParams } from "react-router";
 
 export default function EditorPage() {
   const { id } = useParams();
-  const { state } = useLocation();
+  const { state: { BasicInfoForm, isDefaultFilled } } = useLocation();
   const [form] = Form.useForm();
+  
 
-  if (!id || !state) {
+  if (!id || !BasicInfoForm) {
     return (
       <div>
         <h1>Error</h1>
@@ -18,12 +19,14 @@ export default function EditorPage() {
     );
   }
 
+  
+
   return (
     <Flex align="center" justify="center" gap={16} vertical>
-      <PreparationPhaseSection form={form} basicInfo={state} />
-      <DecisionSection form={form} basicInfo={state} />
-      <ContractorSelectionSection form={form} basicInfo={state} />
-      <ApprovalDecisionSection form={form} basicInfo={state} />
+      <PreparationPhaseSection form={form} basicInfo={BasicInfoForm} isDefaultFilled={isDefaultFilled} />
+      <DecisionSection form={form} basicInfo={BasicInfoForm} />
+      <ContractorSelectionSection form={form} basicInfo={BasicInfoForm} />
+      <ApprovalDecisionSection form={form} basicInfo={BasicInfoForm} />
     </Flex>
   );
 }

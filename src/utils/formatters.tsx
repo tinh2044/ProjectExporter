@@ -139,7 +139,6 @@ export function renderWithRegistry(
   return <span className="whitespace-pre-wrap">{String(value)}</span>;
 }
 
-// ---------- DOCX data builders/transforms ----------
 export type PlainData = Record<string, unknown>;
 
 export function buildDocxData(
@@ -227,3 +226,19 @@ export function findIndicesByKey<T, K extends keyof T>(
   return indices;
 }
 
+export function formatAdditionalstimate(
+  baoCaoOptions: string,
+  soTienBaoCao: string,
+  chiPhiOptions: string,
+  soTienChiPhi: string
+) {
+  console.log(baoCaoOptions, soTienBaoCao, chiPhiOptions, soTienChiPhi)
+  return `
+    - ${baoCaoOptions || "Chưa chọn"}: ${formatCurrencyVND(
+    String(soTienBaoCao || "0") 
+  )} Đ
+    - ${chiPhiOptions || "Chưa chọn"}: ${formatCurrencyVND(
+    String(soTienChiPhi || "0")
+  )} Đ
+  `;
+}
