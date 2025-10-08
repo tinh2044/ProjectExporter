@@ -3,7 +3,7 @@ import { CheckCircleOutlined } from "@ant-design/icons";
 import SelectLegal from "./SelectLegal";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields } from "../../utils/formatters";
+import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields, formatAdditionalstimate } from "../../utils/formatters";
 import { generateDocxFromTemplateUrl } from "@/services/docx";
 import { NotepadTextIcon } from "lucide-react";
 
@@ -51,6 +51,12 @@ export default function ApprovalDecisionForm({ form }: { form: FormInstance }) {
 
   const handleGenerateTemplate = async () => {
     const raw = form.getFieldsValue();
+    raw["ghiChuDuToan"] = formatAdditionalstimate(
+      raw["baoCaoOptions"],
+      raw["soTienBaoCao"],
+      raw["chiPhiOptions"],
+      raw["soTienChiPhi"]
+    );
     const data = buildDocxData(raw, [
       applyLegalIndicesToText("pheDuyetPhapLiDuyetNhaThau", legalData),
       applyYearRange("thoiGian"),

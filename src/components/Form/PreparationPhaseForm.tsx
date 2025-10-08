@@ -247,12 +247,12 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
                   </Col>
                 </Row>
 
-                <Form.Item label="Ghi chú bổ sung" name="ghiChuBoSung">
+                {/* <Form.Item label="Ghi chú bổ sung" name="ghiChuBoSung">
                   <TextArea
                     rows={3}
                     placeholder="Nhập ghi chú bổ sung về dự toán (nếu có)"
                   />
-                </Form.Item>
+                </Form.Item> */}
               </div>
             </Form.Item>
           </Col>

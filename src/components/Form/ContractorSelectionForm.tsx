@@ -2,7 +2,7 @@ import { Form, Input, Card, Row, Col, type FormInstance, Button } from "antd";
 import { TeamOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields } from "@/utils/formatters";
+import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields, formatAdditionalstimate } from "@/utils/formatters";
 import SelectLegal from "./SelectLegal";
 import { NotepadTextIcon } from "lucide-react";
 import { generateDocxFromTemplateUrl } from "@/services/docx";
@@ -52,6 +52,12 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
 
   const handleGenerateTemplate = async () => {
     const raw = form.getFieldsValue();
+    raw["ghiChuDuToan"] = formatAdditionalstimate(
+      raw["baoCaoOptions"],
+      raw["soTienBaoCao"],
+      raw["chiPhiOptions"],
+      raw["soTienChiPhi"]
+    );
     const data = buildDocxData(raw, [
       applyLegalIndicesToText("thongTinPhapLiChonNhaThau", legalData),
       applyYearRange("thoiGian"),
