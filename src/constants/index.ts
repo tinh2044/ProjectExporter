@@ -62,3 +62,79 @@ export const defaultFormInformation = {
   chiPhiOptions: "Chi phí thẩm tra báo cáo kinh tế - kỹ thuật",
   soTienChiPhi: 11794425,
 };
+
+
+
+export const investor = {
+  "Sở An toàn thực phẩm": "18 Cách Mạng Tháng Tám, phường Bến Thành, Tp Hồ Chí Minh",
+  "Sở Công Thương": "163 Hai Bà Trưng, Phường Xuân Hòa, Tp Hồ Chí Minh",
+  "Sở Du lịch": "201 Võ Thị Sáu, Phường Xuân Hòa, Tp Hồ Chí Minh",
+  "Sở Dân tộc và Tôn giáo": "177 Lý Chính Thắng, Phường Xuân Hòa, Tp Hồ Chí Minh",
+  "Sở Giáo dục và Đào tạo": "66 - 68 Lê Thánh Tôn, Phường Sài Gòn, Tp Hồ Chí Minh",
+  "Sở Khoa học và Công nghệ": "244 Điện Biên Phủ, phường Xuân Hòa, Tp Hồ Chí Minh",
+  "Sở Nội vụ": "86B Lê Thánh Tôn, phường Sài Gòn, Tp Hồ Chí Minh",
+  "Sở Tư pháp": "141-143 Pasteur, phường Xuân Hòa, Tp Hồ Chí Minh",
+  "Sở Văn hóa và Thể thao": "164 Đồng Khởi, phường Sài Gòn, Tp Hồ Chí Minh",
+  "Sở Y tế": "59 Nguyễn Thị Minh Khai, phường Bến Thành, Tp Hồ Chí Minh",
+  "Ban Quản lý các Khu chế xuất và công nghiệp Thành phố": "35 Nguyễn Bỉnh Khiêm, phường Tân Định, Tp Hồ Chí Minh",
+  "Ban Quản lý Khu công nghệ cao Thành phố": "Lô T2-3, đường D1, phường Tăng Nhơn Phú, Tp Hồ Chí Minh",
+  "Thanh tra Thành phố": "13 Trần Quốc Thảo, phường Xuân Hòa, Tp Hồ Chí Minh",
+  "Trung tâm Phục vụ Hành chính côngThành phố (cơ sở Bình Dương)": "Tòa nhà Trung tâm hành chính tỉnh, đường Lê Lợi,phường Bình Dương",
+  "Trung tâm Phục vụ Hành chính côngThành phố (cơ sở Bà Rịa – Vũng Tàu)": "Số 4 Nguyễn Tất Thành, phường Bà Rịa",
+  "Sở Nông nghiệp và Môi trường": [
+    {
+      "linhVuc": "Khí tượng thủy văn; Tài nguyên nước; Địa chất và Khoáng sản; Biển và Hải đảo; Môi trường; Đo đạc bản đồ; Đất đai",
+      "diaChi": "63 Lý Tự Trọng, phường Sài Gòn, Tp Hồ Chí Minh"
+    },
+    {
+      "linhVuc": "Nông nghiệp; Khoa học, công nghệ và môi trường; Doanh nghiệp; Quản lý chất lượng nông lâm sản và thủy sản; Kinh tế hợp tác và phát triển nông thôn; Thủy lợi; Phòng chống thiên tai",
+      "diaChi": "176 Hai Bà Trưng, phường Tân Định, Tp Hồ Chí Minh"
+    },
+    {
+      "linhVuc": "Thủy sản",
+      "diaChi": "126GH Phan Đăng Lưu, phường Đức Nhuận, Tp Hồ Chí Minh"
+    },
+    {
+      "linhVuc": "Bảo vệ thực vật; Trồng trọt; Giáo thông vận tải",
+      "diaChi": "10 Nguyễn Huy Tưởng, phường Gia Định, Tp Hồ Chí Minh"
+    },
+    {
+      "linhVuc": "Thú y; Chăn nuôi",
+      "diaChi": "151 Lý Thường Kiệt, phường Minh Phụng, Tp Hồ Chí Minh"
+    },
+    {
+      "linhVuc": "Lâm nghiệp; Kiểm lâm",
+      "diaChi": "Số 1 Đỗ Ngọc Thạnh, phường Chợ Lớn, Tp Hồ Chí Minh"
+    }
+  ],
+  "Sở Tài chính": [
+    {
+      "linhVuc": "Trụ sở 1",
+      "diaChi": "32 Lê Thánh Tôn, phường Sài Gòn, Tp Hồ Chí Minh"
+    },
+    {
+      "linhVuc": "Trụ sở 2",
+      "diaChi": "90G, Trần Quốc Toản, phường Xuân Hòa, Tp Hồ Chí Minh"
+    }
+  ],
+  "Sở Xây dựng": [
+    {
+      "linhVuc": "Cơ sở 1",
+      "diaChi": "60 Trương Định, phường Xuân Hòa, Tp Hồ Chí Minh"
+    },
+    {
+      "linhVuc": "Cơ sở 2",
+      "diaChi": "63 Lý Tự Trọng, phường Sài Gòn, Tp Hồ Chí Minh"
+    }
+  ],
+  
+};
+
+export const baseRequiredKeys = [
+  "tenDuAn",
+  "tongHopDuToan",
+  "chuDauTu",
+  "diaDiem",
+  "nguoiNhan",
+  "thoiGian",
+];

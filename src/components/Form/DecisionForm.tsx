@@ -1,11 +1,11 @@
-import { Form, Card, type FormInstance, Button } from "antd";
-import { SolutionOutlined } from "@ant-design/icons";
+import { Divider, Form, type FormInstance } from "antd";
 import SelectLegal from "./SelectLegal";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields, formatAdditionalstimate } from "@/utils/formatters";
-import { generateDocxFromTemplateUrl } from "@/services/docx";
+import { findIndicesInArray, formatAdditionalstimate } from "@/utils/formatters";
 import { NotepadTextIcon } from "lucide-react";
+import BaseForm from "./BaseForm";
+import { getBaseRequiredKeys } from "@/services/constants";
 
 const defaultLegals = [
   "Căn cứ Luật Đấu thầu số 22/2023/QH15 ngày 23 tháng 6 năm 2023;",
@@ -47,38 +47,41 @@ export default function DecisionForm({ form }: { form: FormInstance }) {
     searchText: text.toLowerCase(),
   }));
 
-  const handleGenerateTemplate = async () => {
-    const raw = form.getFieldsValue();
-    raw["ghiChuDuToan"] = formatAdditionalstimate(
-      raw["baoCaoOptions"],
-      raw["soTienBaoCao"],
-      raw["chiPhiOptions"],
-      raw["soTienChiPhi"]
-    );
-    const data = buildDocxData(raw, [
-      applyLegalIndicesToText("thongTinPhapLiDuToan", legalData),
-      applyYearRange("thoiGian"),
-      applyMoneyFields([{ numberField: "tongHopDuToan", wordsField: "duToanStr" }]),
-    ]);
-    if (typeof data.nguoiNhan === "string") {
-      data.nguoiNhan = (data.nguoiNhan as string).toUpperCase();
-    }
-    const template1Url = new URL("../../assets/template2.docx", import.meta.url)
-      .href;
-    await generateDocxFromTemplateUrl(template1Url, data, "template-2.docx");
-  };
+  const requiredKeys: Array<string | string[]> = [
+    ...getBaseRequiredKeys(),
+    "thongTinPhapLiDuToan",
+  ];
 
   return (
-    <Card
-      className="!w-full"
+    <BaseForm
+      form={form}
       title={
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <SolutionOutlined />
-          <span>
+        <div className="flex flex-col items-start gap-2">
+          {/* <SolutionOutlined /> */}
+          <p className="text-3xl font-bold">
             QUYẾT ĐỊNH "Phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án"
-          </span>
+          </p>
+          <Divider size="large" />
         </div>
       }
+      requiredKeys={requiredKeys}
+      legalFieldKey="thongTinPhapLiDuToan"
+      legalList={legalData}
+      templateRelativeUrl="../../assets/template2.docx"
+      outputFileName="template-2.docx"
+      submitText="Tạo mẫu 2"
+      submitIcon={<NotepadTextIcon />}
+      useCollapse={true}
+      collapseDefaultActiveKey={["1"]}
+      beforeBuild={(raw) => {
+        raw["ghiChuDuToan"] = formatAdditionalstimate(
+          (raw["selectedItems"] as string[]) || [],
+          (raw["itemAmounts"] as number[]) || []
+        );
+        if (typeof raw.nguoiNhan === "string")
+          raw.nguoiNhan = (raw.nguoiNhan as string).toUpperCase();
+      }}
+      // cardClassName="!w-full"
     >
       <Form form={form} layout="vertical" autoComplete="off">
         <Form.Item
@@ -92,14 +95,12 @@ export default function DecisionForm({ form }: { form: FormInstance }) {
             loading={loading}
             options={options}
             value={form.getFieldValue("thongTinPhapLiDuToan")}
-            onChange={(value) => form.setFieldValue("thongTinPhapLiDuToan", value)}
+            onChange={(value) =>
+              form.setFieldValue("thongTinPhapLiDuToan", value)
+            }
           />
         </Form.Item>
-        <Button type="primary" onClick={handleGenerateTemplate}>
-          <NotepadTextIcon />
-          Tạo mẫu 2 
-        </Button>
       </Form>
-    </Card>
+    </BaseForm>
   );
 }

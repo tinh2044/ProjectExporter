@@ -1,11 +1,12 @@
-import { Form, Input, Card, Row, Col, type FormInstance, Button } from "antd";
-import { TeamOutlined } from "@ant-design/icons";
+import { Form, Input, Row, Col, type FormInstance, Divider } from "antd";
+// import { TeamOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields, formatAdditionalstimate } from "@/utils/formatters";
+import { findIndicesInArray } from "@/utils/formatters";
 import SelectLegal from "./SelectLegal";
 import { NotepadTextIcon } from "lucide-react";
-import { generateDocxFromTemplateUrl } from "@/services/docx";
+import BaseForm from "./BaseForm";
+import { getBaseRequiredKeys } from "@/services/constants";
 
 const { TextArea } = Input;
 const defaultLegals = [
@@ -50,35 +51,36 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
     searchText: text.toLowerCase(),
   }));
 
-  const handleGenerateTemplate = async () => {
-    const raw = form.getFieldsValue();
-    raw["ghiChuDuToan"] = formatAdditionalstimate(
-      raw["baoCaoOptions"],
-      raw["soTienBaoCao"],
-      raw["chiPhiOptions"],
-      raw["soTienChiPhi"]
-    );
-    const data = buildDocxData(raw, [
-      applyLegalIndicesToText("thongTinPhapLiChonNhaThau", legalData),
-      applyYearRange("thoiGian"),
-      applyMoneyFields([{ numberField: "tongHopDuToan", wordsField: "duToanStr" }]),
-    ]);
-    const template1Url = new URL("../../assets/template4.docx", import.meta.url)
-      .href;
-    await generateDocxFromTemplateUrl(template1Url, data, "template-4.docx");
-  };
+  const requiredKeys: Array<string | string[]> = [
+    ...getBaseRequiredKeys(),
+    "thongTinPhapLiChonNhaThau",
+    "congViecDaThucHien",
+    "congViecKeHoach",
+  ];
 
   return (
-    <Card
+    <BaseForm
+      form={form}
       title={
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <TeamOutlined />
-          <span>
+        <div className="flex flex-col items-start gap-2">
+          {/* <TeamOutlined /> */}
+          {/* <TeamOutlined /> */}
+          <p className="text-3xl font-bold">
             TỜ TRÌNH Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị
             đầu tư dự án
-          </span>
+          </p>
+          <Divider size="large" />
         </div>
       }
+      requiredKeys={requiredKeys}
+      legalFieldKey="thongTinPhapLiChonNhaThau"
+      legalList={legalData}
+      templateRelativeUrl="../../assets/template4.docx"
+      outputFileName="template-4.docx"
+      submitText="Tạo mẫu 4"
+      submitIcon={<NotepadTextIcon />}
+      useCollapse={true}
+      collapseDefaultActiveKey={["1"]}
     >
       <Form form={form} layout="vertical" autoComplete="off">
         <Row gutter={16}>
@@ -90,14 +92,7 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
                 { required: true, message: "Vui lòng nhập thông tin pháp lí!" },
               ]}
             >
-              <SelectLegal
-                loading={loading}
-                options={options}
-                value={form.getFieldValue("thongTinPhapLiChonNhaThau")}
-                onChange={(value) =>
-                  form.setFieldValue("thongTinPhapLiChonNhaThau", value)
-                }
-              />
+              <SelectLegal loading={loading} options={options} />
             </Form.Item>
           </Col>
 
@@ -115,10 +110,6 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
               <TextArea
                 rows={4}
                 placeholder="Mô tả các công việc đã hoàn thành"
-                value={form.getFieldValue("congViecDaThucHien")}
-                onChange={(e) =>
-                  form.setFieldValue("congViecDaThucHien", e.target.value)
-                }
               />
             </Form.Item>
           </Col>
@@ -131,10 +122,6 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
               <TextArea
                 rows={3}
                 placeholder="Mô tả các công việc không áp dụng được hình thức lựa chọn nhà thầu (nếu có)"
-                value={form.getFieldValue("congViecKhongApDung")}
-                onChange={(e) =>
-                  form.setFieldValue("congViecKhongApDung", e.target.value)
-                }
               />
             </Form.Item>
           </Col>
@@ -154,10 +141,6 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
               <TextArea
                 rows={4}
                 placeholder="Mô tả các công việc thuộc kế hoạch lựa chọn nhà thầu"
-                value={form.getFieldValue("congViecKeHoach")}
-                onChange={(e) =>
-                  form.setFieldValue("congViecKeHoach", e.target.value)
-                }
               />
             </Form.Item>
           </Col>
@@ -184,11 +167,7 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
             </Form.Item>
           </Col> */}
         </Row>
-        <Button type="primary" onClick={handleGenerateTemplate}>
-          <NotepadTextIcon />
-          Tạo mẫu 4
-        </Button> 
       </Form>
-    </Card>
+    </BaseForm>
   );
 }

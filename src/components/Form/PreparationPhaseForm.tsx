@@ -1,11 +1,11 @@
-import { Form, Input, Card, Row, Col, type FormInstance, Button, Select } from "antd";
-import { FileTextOutlined } from "@ant-design/icons";
+import { Form, Input, Row, Col, type FormInstance, Select, Divider } from "antd";
 import { useState, useEffect } from "react";
 import { loadLegalInfo } from "@/services/legal";
 import { NotepadTextIcon } from "lucide-react";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields, formatAdditionalstimate } from "../../utils/formatters";
+import { findIndicesInArray, formatAdditionalstimate } from "@/utils/formatters";
 import SelectLegal from "./SelectLegal";
-import { generateDocxFromTemplateUrl } from "@/services/docx";
+import BaseForm from "./BaseForm";
+import { getBaseRequiredKeys } from "@/services/constants";
 
 
 const { TextArea } = Input;
@@ -56,37 +56,45 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
     searchText: text.toLowerCase(),
   }));
 
-  const handleGenerateTemplate = async () => {
-    const raw = form.getFieldsValue();
-    raw["ghiChuDuToan"] = formatAdditionalstimate(
-      raw["baoCaoOptions"],
-      raw["soTienBaoCao"],
-      raw["chiPhiOptions"],
-      raw["soTienChiPhi"]
-    );
-
-    const data = buildDocxData(raw, [
-      applyLegalIndicesToText("thongTinPhapLiChuanBi", legalData),
-      applyYearRange("thoiGian"),
-      applyMoneyFields([{ numberField: "tongHopDuToan", wordsField: "duToanStr" }]),
-    ]);
-    const template1Url = new URL("../../assets/template1.docx", import.meta.url).href;
-    await generateDocxFromTemplateUrl(template1Url, data, "template-1.docx");
-  };
+  const requiredKeys: Array<string | string[]> = [
+    ...getBaseRequiredKeys(),
+    "thongTinPhapLiChuanBi",
+    "mucTieu",
+    "quyMo",
+    "suCanThiet",
+    "nguonKinhPhi",
+  ];
 
   return (
-    <Card
+    <BaseForm
+      form={form}
       title={
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <FileTextOutlined />
-          <span>
+        <div className="flex flex-col items-start gap-2">
+          {/* <FileTextOutlined  size={40}/> */}
+          <p className="text-3xl font-bold">
             Tờ trình "V/v đề nghị phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự
             án"
-          </span>
+          </p>
+          <Divider size="large" />
         </div>
       }
+      requiredKeys={requiredKeys}
+      legalFieldKey="thongTinPhapLiChuanBi"
+      legalList={legalData}
+      templateRelativeUrl="../../assets/template1.docx"
+      outputFileName="template-1.docx"
+      submitText="Tạo mẫu 1"
+      submitIcon={<NotepadTextIcon />}
+      useCollapse={true}
+      collapseDefaultActiveKey={["1"]}
+      beforeBuild={(raw) => {
+        raw["ghiChuDuToan"] = formatAdditionalstimate(
+          (raw["selectedItems"] as string[]) || [],
+          (raw["itemAmounts"] as number[]) || []
+        );
+      }}
     >
-      <Form form={form} layout="vertical" autoComplete="off">
+      <Row gutter={16}>
         <Row gutter={16}>
           <Col xs={24}>
             <Form.Item
@@ -179,89 +187,98 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
           </Col>
 
           <Col xs={24}>
-            <Form.Item label="Ghi chú dự toán" name="ghiChuDuToan">
+            <Form.Item label="Ghi chú dự toán">
               <div className="flex flex-col gap-4">
-                <Row gutter={16} align="middle">
-                  <Col xs={24} sm={12}>
-                    <Form.Item name="baoCaoOptions">
-                      <Select
-                        style={{ width: "100%" }}
-                        placeholder="Chọn loại báo cáo cần lập/thẩm tra"
-                        options={[
-                          {
-                            label: "Chi phí lập báo cáo kinh tế - kỹ thuật",
-                            value: "Chi phí lập báo cáo kinh tế - kỹ thuật",
-                          },
-                          {
-                            label: "Lập báo cáo nghiên cứu khả thi",
-                            value: "Lập báo cáo nghiên cứu khả thi",
-                          },
-                          {
-                            label: "Lập kế hoạch thuê dịch vụ",
-                            value: "Lập kế hoạch thuê dịch vụ",
-                          },
-                        ]}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={12}>
-                    <Form.Item name="soTienBaoCao">
-                      <Input
-                        type="number"
-                        placeholder="Nhập số tiền"
-                        addonAfter="VNĐ"
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
+                <div>
+                  <label className="block mb-2 font-bold">
+                    Chọn loại báo cáo/chi phí:
+                  </label>
+                  <Form.Item name="selectedItems">
+                    <Select
+                      mode="multiple"
+                      className="w-full"
+                      placeholder="Chọn loại báo cáo hoặc chi phí"
+                      options={[
+                        {
+                          label: "Lập/ thẩm tra báo cáo kinh tế kỹ thuật",
+                          value: "lapThamTraBCKTKT",
+                        },
+                        {
+                          label: "Lập báo cáo nghiên cứu khả thi",
+                          value: "lapBCNCKT",
+                        },
+                        {
+                          label: "Lập kế hoạch thuê dịch vụ",
+                          value: "lapKeHoachThueDV",
+                        },
+                        {
+                          label: "Chi phí quản lý dự án",
+                          value: "chiPhiQuanLyDuAn",
+                        },
+                        {
+                          label: "Chi phí thẩm định giá",
+                          value: "chiPhiThamDinhGia",
+                        },
+                      ]}
+                    />
+                  </Form.Item>
+                </div>
 
-                <Row gutter={16} align="middle">
-                  <Col xs={24} sm={12}>
-                    <Form.Item name="chiPhiOptions">
-                      <Select
-                        style={{ width: "100%" }}
-                        placeholder="Chọn loại chi phí"
-                        options={[
-                          {
-                            label:
-                              "Chi phí thẩm tra báo cáo kinh tế - kỹ thuật",
-                            value:
-                              "Chi phí thẩm tra báo cáo kinh tế - kỹ thuật",
-                          },
-                          {
-                            label: "Chi phí thẩm định giá",
-                            value: "Chi phí thẩm định giá",
-                          },
-                        ]}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} sm={12}>
-                    <Form.Item name="soTienChiPhi">
-                      <Input
-                        type="number"
-                        placeholder="Nhập số tiền"
-                        addonAfter="VNĐ"
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
+                <Form.Item
+                  noStyle
+                  shouldUpdate={(prev, curr) =>
+                    prev.selectedItems !== curr.selectedItems
+                  }
+                >
+                  {({ getFieldValue }) => {
+                    const selectedItems = getFieldValue("selectedItems") || [];
+                    const itemLabels: { [key: string]: string } = {
+                      lapThamTraBCKTKT:
+                        "Lập/ thẩm tra báo cáo kinh tế kỹ thuật",
+                      lapBCNCKT: "Lập báo cáo nghiên cứu khả thi",
+                      lapKeHoachThueDV: "Lập kế hoạch thuê dịch vụ",
+                      chiPhiQuanLyDuAn: "Chi phí quản lý dự án",
+                      chiPhiThamDinhGia: "Chi phí thẩm định giá",
+                    };
 
-                {/* <Form.Item label="Ghi chú bổ sung" name="ghiChuBoSung">
+                    return (
+                      <div className="flex flex-col gap-4">
+                        {selectedItems.map((item: string, index: number) => (
+                          <Row key={item} gutter={16} className="mb-4">
+                            <Col xs={24} sm={12}>
+                              <label>{itemLabels[item] || item}:</label>
+                            </Col>
+                            <Col xs={24} sm={12}>
+                              <Form.Item
+                                name={["itemAmounts", index]}
+                                noStyle
+                                className="w-full"
+                              >
+                                <Input
+                                  type="number"
+                                  placeholder="Nhập số tiền"
+                                  addonAfter="VNĐ"
+                                />
+                              </Form.Item>
+                            </Col>
+                          </Row>
+                        ))}
+                      </div>
+                    );
+                  }}
+                </Form.Item>
+
+                <Form.Item label="Ghi chú bổ sung" name="ghiChuBoSung">
                   <TextArea
                     rows={3}
                     placeholder="Nhập ghi chú bổ sung về dự toán (nếu có)"
                   />
-                </Form.Item> */}
+                </Form.Item>
               </div>
             </Form.Item>
           </Col>
         </Row>
-        <Button type="primary" onClick={handleGenerateTemplate}>
-          <NotepadTextIcon />
-          Tạo mẫu 1
-        </Button>
-      </Form>
-    </Card>
+      </Row>
+    </BaseForm>
   );
 }

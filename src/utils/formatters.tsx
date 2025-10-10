@@ -227,18 +227,20 @@ export function findIndicesByKey<T, K extends keyof T>(
 }
 
 export function formatAdditionalstimate(
-  baoCaoOptions: string,
-  soTienBaoCao: string,
-  chiPhiOptions: string,
-  soTienChiPhi: string
+  selectedItems: string[],
+  itemAmounts: number[]
 ) {
-  console.log(baoCaoOptions, soTienBaoCao, chiPhiOptions, soTienChiPhi)
-  return `
-    - ${baoCaoOptions || "Chưa chọn"}: ${formatCurrencyVND(
-    String(soTienBaoCao || "0") 
-  )} Đ
-    - ${chiPhiOptions || "Chưa chọn"}: ${formatCurrencyVND(
-    String(soTienChiPhi || "0")
-  )} Đ
-  `;
+  const itemLabels: { [key: string]: string } = {
+    'lapThamTraBCKTKT': 'Lập/ thẩm tra báo cáo kinh tế kỹ thuật',
+    'lapBCNCKT': 'Lập báo cáo nghiên cứu khả thi',
+    'lapKeHoachThueDV': 'Lập kế hoạch thuê dịch vụ',
+    'chiPhiQuanLyDuAn': 'Chi phí quản lý dự án',
+    'chiPhiThamDinhGia': 'Chi phí thẩm định giá'
+  };
+
+  const lines = selectedItems?.map((item, index) =>
+    `- ${itemLabels[item] || item}: ${formatCurrencyVND(String(itemAmounts[index] || 0))}`
+  ).join('\n') || '';
+
+  return lines;
 }

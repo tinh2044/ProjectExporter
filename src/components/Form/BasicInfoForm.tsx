@@ -3,38 +3,101 @@ import {
   Input,
   DatePicker,
   InputNumber,
-  // Button,
   Card,
   Row,
   Col,
   type FormInstance,
   Button,
+  AutoComplete,
 } from "antd";
 import {
   ProjectOutlined,
   DollarOutlined,
-  UserOutlined,
-  EnvironmentOutlined,
+  // EnvironmentOutlined,
 } from "@ant-design/icons";
-import { defaultFormInformation } from "@/constants";
+import { getDefaultFormInformation, getSortedInvestorKeys, getInvestorAddresses, getDistrictAdminCenter } from "@/services/constants";
+import { useState } from "react";
 
 const { RangePicker } = DatePicker;
 
 export default function BasicInfoForm({ form }: { form: FormInstance }) {
+  const [useCustomInvestor, setUseCustomInvestor] = useState(false);
+  const [addressList, setAddressList] = useState<string[]>([]);
+  const [districtList, setDistrictList] = useState<string[]>([]);
+
   const handleDefaultValues = () => {
-    form.setFieldsValue(defaultFormInformation);
+    form.setFieldsValue(getDefaultFormInformation());
+    setUseCustomInvestor(false);
   };
+
+  const handleInvestorChange = (value: string) => {
+    if (!value) {
+      form.setFieldsValue({ chuDauTu: undefined, diaDiem: '' });
+      setUseCustomInvestor(true);
+      setAddressList([]);
+      setDistrictList([]);
+      return;
+    }
+
+    // Check if the value exists in investor data
+    const investorKeys = getSortedInvestorKeys();
+    if (investorKeys.includes(value)) {
+      const addresses = getInvestorAddresses(value);
+      if (addresses.length > 1) {
+        // Multiple addresses
+        setAddressList(addresses);
+        setDistrictList([]);
+        form.setFieldsValue({ chuDauTu: value, diaDiem: undefined });
+        setUseCustomInvestor(false);
+      } else if (addresses.length === 1) {
+        // Single address
+        setAddressList([]);
+        setDistrictList([]);
+        form.setFieldsValue({ chuDauTu: value, diaDiem: addresses[0] });
+        setUseCustomInvestor(false);
+      }
+    } else {
+      // Custom input - load district addresses for address search
+      const districtData = getDistrictAdminCenter();
+      const addresses = Object.values(districtData)
+        .filter((addr): addr is string => typeof addr === 'string')
+        .sort((a, b) => a.localeCompare(b, 'vi'));
+      setDistrictList(addresses);
+      setAddressList([]);
+      form.setFieldsValue({ chuDauTu: value, diaDiem: '' });
+      setUseCustomInvestor(true);
+    }
+  };
+
+  const handleInvestorSelect = (value: string) => {
+    const addresses = getInvestorAddresses(value);
+    if (addresses.length > 1) {
+      setAddressList(addresses);
+      setDistrictList([]);
+      form.setFieldsValue({ chuDauTu: value, diaDiem: undefined });
+      setUseCustomInvestor(false);
+    } else if (addresses.length === 1) {
+      setAddressList([]);
+      setDistrictList([]);
+      form.setFieldsValue({ chuDauTu: value, diaDiem: addresses[0] });
+      setUseCustomInvestor(false);
+    }
+  };
+
+  const handleAddressSelect = (value: string) => {
+    form.setFieldsValue({ diaDiem: value });
+  };
+
   return (
     <Card
       className="!w-2/3 !mt-20 !p-8"
       title={
         <div
-          style={{ textAlign: "center" }}
-          className="flex items-center justify-between gap-2"
+          className="flex items-center justify-between gap-2 text-center"
         >
           <div className="flex items-center gap-2">
-            <ProjectOutlined style={{ fontSize: 32, marginBottom: 8 }} />
-            <div style={{ fontSize: 20, fontWeight: 600 }}>Thông Tin Dự Án</div>
+            {/* <ProjectOutlined className="text-3xl mb-2" /> */}
+            <div className="text-3xl font-bold">Thông Tin Dự Án</div>
           </div>
           <Button
             type="primary"
@@ -73,7 +136,7 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
               <InputNumber
                 prefix={<DollarOutlined />}
                 placeholder="Nhập tổng hợp dự toán (VNĐ)"
-                style={{ width: "100%" }}
+                className="!w-full"
                 formatter={(value) =>
                   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
@@ -88,9 +151,15 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
               name="chuDauTu"
               rules={[{ required: true, message: "Vui lòng nhập chủ đầu tư!" }]}
             >
-              <Input
-                prefix={<UserOutlined />}
-                placeholder="Nhập tên chủ đầu tư"
+              <AutoComplete
+                placeholder="Chọn hoặc nhập chủ đầu tư"
+                options={getSortedInvestorKeys().map(key => ({ value: key }))}
+                onChange={handleInvestorChange}
+                onSelect={handleInvestorSelect}
+                allowClear
+                filterOption={(inputValue, option) =>
+                  (option?.value ?? '').toLowerCase().includes(inputValue.toLowerCase())
+                }
               />
             </Form.Item>
           </Col>
@@ -101,9 +170,36 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
               name="diaDiem"
               rules={[{ required: true, message: "Vui lòng nhập địa điểm!" }]}
             >
-              <Input
-                prefix={<EnvironmentOutlined />}
-                placeholder="Nhập địa điểm thực hiện"
+              <AutoComplete
+                placeholder={
+                  addressList.length > 0
+                    ? "Chọn địa chỉ từ danh sách"
+                    : districtList.length > 0
+                      ? "Tìm kiếm địa chỉ hoặc nhập địa chỉ tùy chỉnh"
+                      : useCustomInvestor
+                        ? "Nhập địa chỉ tùy chỉnh"
+                        : (() => {
+                            const selectedInvestor = form.getFieldValue('chuDauTu');
+                            if (selectedInvestor && getInvestorAddresses(selectedInvestor).length === 1) {
+                              return "Địa chỉ đã tự động điền từ chủ đầu tư được chọn";
+                            }
+                            return "Nhập địa điểm thực hiện";
+                          })()
+                }
+                options={[
+                  // Address list from investor (if available)
+                  ...addressList.map(addr => ({ value: addr, label: addr })),
+                  // District addresses for search (if available)
+                  ...districtList.map(addr => ({ value: addr, label: addr }))
+                ]}
+                value={form.getFieldValue('diaDiem')}
+                onSelect={handleAddressSelect}
+                onChange={(val) => form.setFieldsValue({ diaDiem: val })}
+                allowClear
+                filterOption={(inputValue, option) =>
+                  (option?.value ?? '').toLowerCase().includes(String(inputValue).toLowerCase()) ||
+                  (option?.label ?? '').toLowerCase().includes(String(inputValue).toLowerCase())
+                }
               />
             </Form.Item>
           </Col>
@@ -125,7 +221,7 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
             >
               <RangePicker
                 placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
-                style={{ width: "100%" }}
+                className="w-full"
                 format="DD/MM/YYYY"
               />
             </Form.Item>

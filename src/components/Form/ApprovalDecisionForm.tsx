@@ -1,12 +1,12 @@
-import { Form, Card, type FormInstance, Button } from "antd";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import { Divider, Form, type FormInstance } from "antd";
+// import { CheckCircleOutlined } from "@ant-design/icons";
 import SelectLegal from "./SelectLegal";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
-import { findIndicesInArray, buildDocxData, applyLegalIndicesToText, applyYearRange, applyMoneyFields, formatAdditionalstimate } from "../../utils/formatters";
-import { generateDocxFromTemplateUrl } from "@/services/docx";
+import { findIndicesInArray } from "../../utils/formatters";
 import { NotepadTextIcon } from "lucide-react";
-
+import BaseForm from "./BaseForm";
+import { getBaseRequiredKeys } from "@/services/constants";
 const defaultLegals = [
   "Căn cứ Luật Đấu thầu số 22/2023/QH15 ngày 23 tháng 6 năm 2023;",
   "Căn cứ Luật số 57/2024/QH15 ngày 29 tháng 11 năm 2024 về sửa đổi bổ sung một số điều của Luật Quy hoạch, Luật Đầu tư, Luật Đầu tư theo phương thức đối tác công tư và Luật Đấu thầu;",
@@ -49,37 +49,34 @@ export default function ApprovalDecisionForm({ form }: { form: FormInstance }) {
     searchText: text.toLowerCase(),
   }));
 
-  const handleGenerateTemplate = async () => {
-    const raw = form.getFieldsValue();
-    raw["ghiChuDuToan"] = formatAdditionalstimate(
-      raw["baoCaoOptions"],
-      raw["soTienBaoCao"],
-      raw["chiPhiOptions"],
-      raw["soTienChiPhi"]
-    );
-    const data = buildDocxData(raw, [
-      applyLegalIndicesToText("pheDuyetPhapLiDuyetNhaThau", legalData),
-      applyYearRange("thoiGian"),
-      applyMoneyFields([{ numberField: "tongHopDuToan", wordsField: "duToanStr" }]),
-    ]);
-    if (typeof data.nguoiNhan === "string") {
-      data.nguoiNhan = (data.nguoiNhan as string).toUpperCase();
-    }
-    const template1Url = new URL("../../assets/template6.docx", import.meta.url)
-      .href;
-    await generateDocxFromTemplateUrl(template1Url, data, "template-6.docx");
-  };
+  const requiredKeys: Array<string | string[]> = [
+    ...getBaseRequiredKeys(),
+    "pheDuyetPhapLiDuyetNhaThau",
+  ];
 
   return (
-    <Card
-          className="!w-full"
+    <BaseForm
+      form={form}
       title={
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <CheckCircleOutlined />
-          <span>QUYẾT ĐỊNH 
-Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị đầu tư dự án </span>
+        <div className="flex flex-col items-start gap-2">
+          {/* <CheckCircleOutlined /> */}
+          <p className="text-3xl font-bold">
+            QUYẾT ĐỊNH Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn
+            bị đầu tư dự án{" "}
+          </p>
+          <Divider size="large" />
         </div>
       }
+      requiredKeys={requiredKeys}
+      legalFieldKey="pheDuyetPhapLiDuyetNhaThau"
+      legalList={legalData}
+      templateRelativeUrl="../../assets/template6.docx"
+      outputFileName="template-6.docx"
+      submitText="Tạo mẫu 6"
+      submitIcon={<NotepadTextIcon />}
+      useCollapse={true}
+      collapseDefaultActiveKey={["1"]}
+      // cardClassName="!w-full"
     >
       <Form form={form} layout="vertical" autoComplete="off">
         <Form.Item
@@ -93,14 +90,12 @@ Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn b�
             loading={loading}
             options={options}
             value={form.getFieldValue("pheDuyetPhapLiDuyetNhaThau")}
-            onChange={(value) => form.setFieldValue("pheDuyetPhapLiDuyetNhaThau", value)}
+            onChange={(value) =>
+              form.setFieldValue("pheDuyetPhapLiDuyetNhaThau", value)
+            }
           />
         </Form.Item>
-        <Button type="primary" onClick={handleGenerateTemplate}>
-          <NotepadTextIcon />
-          Tạo mẫu 6
-        </Button>
       </Form>
-    </Card>
+    </BaseForm>
   );
 }
