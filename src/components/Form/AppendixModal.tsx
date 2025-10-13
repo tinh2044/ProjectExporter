@@ -1,5 +1,6 @@
 import { Modal, Form, Input, Table, type FormInstance } from "antd";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { formatNumberWithDots } from "@/utils/formatters";
 
 export type AppendixRow = {
   stt: number; // auto-generated
@@ -52,10 +53,32 @@ export default function AppendixModal(props: AppendixModalProps) {
     setLocalRows(rows);
   };
 
-  // Initialize when opened
+  // Initialize when opened first time
   if (open && localRows.length === 0) {
     bootstrapRows();
   }
+
+  // Keep rows in sync when selectedItems/itemAmounts change while modal is open
+  useEffect(() => {
+    if (!open) return;
+    // Prefer values already saved in form, otherwise use current localRows to preserve notes
+    const persisted = (form.getFieldValue(appendixFieldName) || []) as AppendixRow[];
+    const source = Array.isArray(persisted) && persisted.length > 0 ? persisted : localRows;
+
+    const nextRows: AppendixRow[] = (selectedItems || []).map((key, idx) => {
+      const noiDung = itemLabels[key] || key;
+      const matched = source.find((r) => r.noiDung === noiDung);
+      return {
+        stt: idx + 1,
+        noiDung,
+        giaTriTamTinh: Number(itemAmounts?.[idx] || 0),
+        dienGiai: matched?.dienGiai || "",
+        ghiChu: matched?.ghiChu || "",
+      };
+    });
+
+    setLocalRows(nextRows);
+  }, [open, selectedItems, itemAmounts, itemLabels, appendixFieldName]);
 
   // ensure syncing STT when rows change
   const normalizedRows = useMemo(() =>
@@ -82,37 +105,16 @@ export default function AppendixModal(props: AppendixModalProps) {
       title: "Nội dung",
       dataIndex: "noiDung",
       width: 100,
-      render: (_: unknown, record: AppendixRow, index: number) => (
-        <Input
-          value={record.noiDung}
-          onChange={(e) => {
-            const value = e.target.value;
-            setLocalRows((prev) =>
-              prev.map((row, i) =>
-                i === index ? { ...row, noiDung: value } : row
-              )
-            );
-          }}
-        />
+      render: (_: unknown, record: AppendixRow) => (
+        <span className="whitespace-pre-wrap">{record.noiDung}</span>
       ),
     },
     {
       title: "Giá trị tạm tính (đồng)",
       dataIndex: "giaTriTamTinh",
       width: 220,
-      render: (_: unknown, record: AppendixRow, index: number) => (
-        <Input
-          type="number"
-          value={record.giaTriTamTinh}
-          onChange={(e) => {
-            const value = Number(e.target.value || 0);
-            setLocalRows((prev) =>
-              prev.map((row, i) =>
-                i === index ? { ...row, giaTriTamTinh: value } : row
-              )
-            );
-          }}
-        />
+      render: (_: unknown, record: AppendixRow) => (
+        <span>{formatNumberWithDots(record.giaTriTamTinh)} VNĐ</span>
       ),
     },
     {

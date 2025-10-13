@@ -17,6 +17,8 @@ import {
   type ITableRowOptions,
   type ITableCellOptions,
   TableLayoutType,
+  PageOrientation,
+  SectionType,
 } from "docx";
 import {
   formatAdditionalstimate,
@@ -303,12 +305,18 @@ const createDocumentFooter = (
 /**
  * Tạo Document với header và content
  */
-export const createDocument = (children: FileChild[]): Document => {
+export const createDocument = (
+  children: FileChild[],
+  appendix?: Table
+): Document => {
   return new Document({
     sections: [
       {
         properties: {
           page: {
+            size: {
+              orientation: PageOrientation.PORTRAIT, // Explicit set
+            },
             margin: {
               top: CONSTANTS.MARGIN.TOP,
               right: CONSTANTS.MARGIN.RIGHT,
@@ -316,8 +324,41 @@ export const createDocument = (children: FileChild[]): Document => {
               left: CONSTANTS.MARGIN.LEFT,
             },
           },
+          type: SectionType.NEXT_PAGE,
         },
         children: [createDocumentHeader(), ...children],
+      },
+      {
+        properties: {
+          page: {
+            size: {
+              orientation: PageOrientation.LANDSCAPE,
+              // Hoặc dùng string: orientation: "landscape"
+              // width: 16838, // A4 landscape width
+              // height: 11906, // A4 landscape height
+            },
+             margin: {
+              top: CONSTANTS.MARGIN.TOP,
+              right: CONSTANTS.MARGIN.RIGHT,
+              bottom: CONSTANTS.MARGIN.BOTTOM,
+              left: CONSTANTS.MARGIN.LEFT,
+            },
+          },
+        },
+        children: appendix
+          ? [
+              createParagraph(
+                createTextBold("PHỤ LỤC - DỰ TOÁN CHI PHÍ MUA SẮM"),
+                { pageBreakBefore: true }
+              ),
+              createParagraph(
+                createTextItalics(
+                  `(Kèm theo Tờ trình ngày     tháng    năm ${new Date().getFullYear()})`
+                )
+              ),
+              appendix,
+            ]
+          : [],
       },
     ],
   });
@@ -397,7 +438,7 @@ const createProjectBasicInfo = (form: FormInstance): Paragraph[] => {
 
 export const createAppendixTable = (form: FormInstance): Table => {
   const appendixRows = form.getFieldValue("appendixRows") || [];
-  
+
   // Column widths in DXA units (1 inch = 1440 DXA)
   const WIDTHS = {
     STT: 1000,
@@ -463,16 +504,17 @@ export const createAppendixTable = (form: FormInstance): Table => {
 
   // Data rows
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dataRows = appendixRows.map((row: any, index: number) =>
-    new TableRow({
-      children: [
-        cell(String(row.stt || index + 1)),
-        cell(row.noiDung || "",),
-        cell(row.dienGiai || ""),
-        cell(formatNumberWithDots(row.giaTriTamTinh || 0)),
-        cell(row.ghiChu || ""),
-      ],
-    })
+  const dataRows = appendixRows.map(
+    (row: any, index: number) =>
+      new TableRow({
+        children: [
+          cell(String(row.stt || index + 1)),
+          cell(row.noiDung || ""),
+          cell(row.dienGiai || ""),
+          cell(formatNumberWithDots(row.giaTriTamTinh || 0)),
+          cell(row.ghiChu || ""),
+        ],
+      })
   );
 
   // Create table
@@ -495,7 +537,6 @@ export const createAppendixTable = (form: FormInstance): Table => {
       insideHorizontal: { style: BorderStyle.SINGLE, size: 6 },
       insideVertical: { style: BorderStyle.SINGLE, size: 6 },
     },
-    
   });
 };
 
@@ -604,12 +645,9 @@ export const createTemplate1 = (
 
     // Footer
     createDocumentFooter(["Nơi nhận:", "- Như trên;", "- Lưu VT."], "………"),
-    createParagraph(createTextBold("PHỤ LỤC - DỰ TOÁN CHI PHÍ MUA SẮM")),
-    createParagraph(createTextItalics(`(Kèm theo Tờ trình ngày     tháng    năm ${new Date().getFullYear()})`)),
-    createAppendixTable(form),
   ];
 
-  return createDocument(content);
+  return createDocument(content, createAppendixTable(form));
 };
 
 /**
