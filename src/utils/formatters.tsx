@@ -238,9 +238,15 @@ export function formatAdditionalstimate(
     'chiPhiThamDinhGia': 'Chi phí thẩm định giá'
   };
 
-  const lines = selectedItems?.map((item, index) =>
-    `- ${itemLabels[item] || item}: ${formatCurrencyVND(String(itemAmounts[index] || 0))}`
-  ).join('\n') || '';
+  const lines =
+    selectedItems
+      ?.map(
+        (item, index) =>
+          `- ${itemLabels[item] || item}: ${formatCurrencyVND(
+            String(itemAmounts[index] || 0)
+          )} đồng`
+      )
+      .join("\n") || "";
 
   return lines;
 }

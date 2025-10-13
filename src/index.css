@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+.ant-collapse-header .ant-collapse-expand-icon {
+  font-size: 20px !important; /* Tăng kích thước icon */
+}
