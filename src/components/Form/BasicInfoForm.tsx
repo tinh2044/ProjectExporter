@@ -96,7 +96,6 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
           className="flex items-center justify-between gap-2 text-center"
         >
           <div className="flex items-center gap-2">
-            {/* <ProjectOutlined className="text-3xl mb-2" /> */}
             <div className="text-3xl font-bold">Thông Tin Dự Án</div>
           </div>
           <Button
@@ -178,14 +177,13 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
                       ? "Tìm kiếm địa chỉ hoặc nhập địa chỉ tùy chỉnh"
                       : useCustomInvestor
                         ? "Nhập địa chỉ tùy chỉnh"
-                        : (() => {
-                            const selectedInvestor = form.getFieldValue('chuDauTu');
-                            if (selectedInvestor && getInvestorAddresses(selectedInvestor).length === 1) {
-                              return "Địa chỉ đã tự động điền từ chủ đầu tư được chọn";
-                            }
-                            return "Nhập địa điểm thực hiện";
-                          })()
-                }
+                        : 
+                          "Địa chỉ đã tự động điền từ chủ đầu tư được chọn"
+                            // }
+                            // return "Nhập địa điểm thực hiện";
+                          }
+              // )()
+                // }
                 options={[
                   // Address list from investor (if available)
                   ...addressList.map(addr => ({ value: addr, label: addr })),

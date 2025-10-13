@@ -1,4 +1,4 @@
-import { Divider, Form, type FormInstance } from "antd";
+import { Form, type FormInstance } from "antd";
 // import { CheckCircleOutlined } from "@ant-design/icons";
 import SelectLegal from "./SelectLegal";
 import { useEffect, useState } from "react";
@@ -7,6 +7,7 @@ import { findIndicesInArray } from "../../utils/formatters";
 import { NotepadTextIcon } from "lucide-react";
 import BaseForm from "./BaseForm";
 import { getBaseRequiredKeys } from "@/services/constants";
+import { createTemplate6 } from "@/services/docx";
 const defaultLegals = [
   "Căn cứ Luật Đấu thầu số 22/2023/QH15 ngày 23 tháng 6 năm 2023;",
   "Căn cứ Luật số 57/2024/QH15 ngày 29 tháng 11 năm 2024 về sửa đổi bổ sung một số điều của Luật Quy hoạch, Luật Đầu tư, Luật Đầu tư theo phương thức đối tác công tư và Luật Đấu thầu;",
@@ -57,20 +58,11 @@ export default function ApprovalDecisionForm({ form }: { form: FormInstance }) {
   return (
     <BaseForm
       form={form}
-      title={
-        <div className="flex flex-col items-start gap-2">
-          {/* <CheckCircleOutlined /> */}
-          <p className="text-3xl font-bold">
-            QUYẾT ĐỊNH Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn
-            bị đầu tư dự án{" "}
-          </p>
-          <Divider size="large" />
-        </div>
-      }
+      title="QUYẾT ĐỊNH Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị đầu tư dự án"
       requiredKeys={requiredKeys}
       legalFieldKey="pheDuyetPhapLiDuyetNhaThau"
       legalList={legalData}
-      templateRelativeUrl="../../assets/template6.docx"
+      createFormCallBack={createTemplate6}
       outputFileName="template-6.docx"
       submitText="Tạo mẫu 6"
       submitIcon={<NotepadTextIcon />}

@@ -1,11 +1,13 @@
-import { Form, Input, Row, Col, type FormInstance, Select, Divider } from "antd";
+import { Form, Input, Row, Col, type FormInstance, Select, Button } from "antd";
 import { useState, useEffect } from "react";
 import { loadLegalInfo } from "@/services/legal";
 import { NotepadTextIcon } from "lucide-react";
-import { findIndicesInArray, formatAdditionalstimate } from "@/utils/formatters";
+import { findIndicesInArray } from "@/utils/formatters";
 import SelectLegal from "./SelectLegal";
 import BaseForm from "./BaseForm";
 import { getBaseRequiredKeys } from "@/services/constants";
+import { createTemplate1 } from "@/services/docx";
+import AppendixModal from "./AppendixModal";
 
 
 const { TextArea } = Input;
@@ -24,6 +26,7 @@ const defaultLegals = [
 export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [appendixOpen, setAppendixOpen] = useState(false);
 
   useEffect(() => {
     fetchLegalData();
@@ -56,6 +59,18 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
     searchText: text.toLowerCase(),
   }));
 
+  const appendixItemLabels: { [key: string]: string } = {
+    lapThamTraBCKTKT: "Lập/ thẩm tra báo cáo kinh tế kỹ thuật",
+    lapBCNCKT: "Lập báo cáo nghiên cứu khả thi",
+    lapKeHoachThueDV: "Lập kế hoạch thuê dịch vụ",
+    chiPhiQuanLyDuAn: "Chi phí quản lý dự án",
+    chiPhiThamDinhGia: "Chi phí thẩm định giá",
+  };
+
+  // Reactively watch form values so UI updates and modal receives correct data
+  const selectedItemsWatch = Form.useWatch("selectedItems", form) || [];
+  const itemAmountsWatch = Form.useWatch("itemAmounts", form) || [];
+
   const requiredKeys: Array<string | string[]> = [
     ...getBaseRequiredKeys(),
     "thongTinPhapLiChuanBi",
@@ -68,31 +83,17 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
   return (
     <BaseForm
       form={form}
-      title={
-        <div className="flex flex-col items-start gap-2">
-          {/* <FileTextOutlined  size={40}/> */}
-          <p className="text-3xl font-bold">
-            Tờ trình "V/v đề nghị phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự
-            án"
-          </p>
-          <Divider size="large" />
-        </div>
-      }
+      title="Tờ trình V/v đề nghị phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án"
       requiredKeys={requiredKeys}
       legalFieldKey="thongTinPhapLiChuanBi"
       legalList={legalData}
-      templateRelativeUrl="../../assets/template1.docx"
+      // templateRelativeUrl="../../assets/template1.docx"
+      createFormCallBack={createTemplate1}
       outputFileName="template-1.docx"
       submitText="Tạo mẫu 1"
       submitIcon={<NotepadTextIcon />}
       useCollapse={true}
       collapseDefaultActiveKey={["1"]}
-      beforeBuild={(raw) => {
-        raw["ghiChuDuToan"] = formatAdditionalstimate(
-          (raw["selectedItems"] as string[]) || [],
-          (raw["itemAmounts"] as number[]) || []
-        );
-      }}
     >
       <Row gutter={16}>
         <Row gutter={16}>
@@ -268,14 +269,34 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
                   }}
                 </Form.Item>
 
-                <Form.Item label="Ghi chú bổ sung" name="ghiChuBoSung">
+                {/* <Form.Item label="Ghi chú bổ sung" name="ghiChuBoSung">
                   <TextArea
                     rows={3}
                     placeholder="Nhập ghi chú bổ sung về dự toán (nếu có)"
                   />
-                </Form.Item>
+                </Form.Item> */}
+                <div className="flex justify-end">
+                  <Button
+                    type="default"
+                    onClick={() => setAppendixOpen(true)}
+                    disabled={!selectedItemsWatch.length}
+                  >
+                    Mở Phụ lục
+                  </Button>
+                </div>
               </div>
             </Form.Item>
+          </Col>
+          <Col xs={24}>
+            <AppendixModal
+              form={form}
+              open={appendixOpen}
+              onClose={() => setAppendixOpen(false)}
+              selectedItems={selectedItemsWatch}
+              itemLabels={appendixItemLabels}
+              itemAmounts={itemAmountsWatch}
+              appendixFieldName="appendixRows"
+            />
           </Col>
         </Row>
       </Row>

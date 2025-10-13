@@ -1,14 +1,7 @@
 import React from "react";
-import { Card, Form, Button, type FormInstance, message, Collapse } from "antd";
-// import {ArrowDownOutlined, RightCircleOutlined} from "@ant-design/icons";
-import {
-  buildDocxData,
-  applyLegalIndicesToText,
-  applyYearRange,
-  applyMoneyFields,
-  type PlainData,
-} from "@/utils/formatters";
-import { generateDocxFromTemplateUrl } from "@/services/docx";
+import { Card, Form, Button, type FormInstance, Collapse, Divider } from "antd";
+import { useAppMessage } from "@/contexts/AppMessage/hook";
+import { Packer, type Document as DocxDocument } from "docx";
 
 type NamePath = string | number | (string | number)[];
 
@@ -18,16 +11,14 @@ type BaseFormProps = {
   requiredKeys: NamePath[];
   legalFieldKey?: string;
   legalList?: string[];
-  templateRelativeUrl: string;
   outputFileName: string;
   submitText: string;
   submitIcon?: React.ReactNode;
-  beforeBuild?: (raw: PlainData) => void;
-  additionalTransforms?: Array<(d: PlainData) => void>;
   children: React.ReactNode;
   cardClassName?: string;
   useCollapse?: boolean;
   collapseDefaultActiveKey?: string[];
+  createFormCallBack: (form: FormInstance, legalList?: string[]) => DocxDocument;
 };
 
 export default function BaseForm(props: BaseFormProps) {
@@ -35,40 +26,36 @@ export default function BaseForm(props: BaseFormProps) {
     form,
     title,
     requiredKeys,
-    legalFieldKey,
+    // legalFieldKey,
     legalList,
-    templateRelativeUrl,
     outputFileName,
     submitText,
     submitIcon,
-    beforeBuild,
-    additionalTransforms,
     children,
     cardClassName,
     useCollapse = false,
-    collapseDefaultActiveKey = ['1'],
+    createFormCallBack,
+    collapseDefaultActiveKey = ["1"],
   } = props;
 
-  const [messageApi, contextHolder] = message.useMessage();
-
+  const messageApi = useAppMessage();
   const handleGenerate = async () => {
     try {
       await form.validateFields(requiredKeys as never);
 
-      const raw = form.getFieldsValue();
-      if (beforeBuild) beforeBuild(raw);
+      // const raw = form.getFieldsValue();
+      const doc = createFormCallBack(form, legalList || []);
+      const blob = await Packer.toBlob(doc);
 
-      const transforms: Array<(d: PlainData) => void> = [];
-      if (legalFieldKey && legalList) {
-        transforms.push(applyLegalIndicesToText(legalFieldKey, legalList));
-      }
-      transforms.push(applyYearRange("thoiGian"));
-      transforms.push(applyMoneyFields([{ numberField: "tongHopDuToan", wordsField: "duToanStr" }]));
-      if (additionalTransforms) transforms.push(...additionalTransforms);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = outputFileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
 
-      const data = buildDocxData(raw, transforms);
-      const templateUrl = new URL(templateRelativeUrl, import.meta.url).href;
-      await generateDocxFromTemplateUrl(templateUrl, data, outputFileName);
     } catch {
       messageApi.error("Vui lòng nhập đầy đủ các trường có dấu *.");
     }
@@ -76,11 +63,15 @@ export default function BaseForm(props: BaseFormProps) {
 
   const collapseItems = [
     {
-      key: '1',
-      label: title,
+      key: "1",
+      label: (
+        <div className="flex flex-col items-start gap-2">
+          <p className="text-3xl font-bold">{title}</p>
+          <Divider size="large" />
+        </div>
+      ),
       children: (
         <>
-          {contextHolder}
           <Form form={form} layout="vertical" autoComplete="off">
             {children}
             <Button type="primary" onClick={handleGenerate}>
@@ -101,8 +92,13 @@ export default function BaseForm(props: BaseFormProps) {
           defaultActiveKey={collapseDefaultActiveKey}
           ghost
           // expandIcon={({ isActive }) => (
-           
-          //     <RightCircleOutlined className={`${isActive ? "rotate-90" : "rotate-0"} translate-0.5 text-1xl`} />
+          //   <div
+          //     className={`${
+          //       isActive ? "rotate-90" : "rotate-0"
+          //     } translate-0.5 text-1xl`}
+          //   >
+          //     <RightCircleOutlined className="text-1xl" />
+          //   </div>
           // )}
         />
       </Card>
@@ -111,7 +107,6 @@ export default function BaseForm(props: BaseFormProps) {
 
   return (
     <Card title={title} className={cardClassName}>
-      {contextHolder}
       <Form form={form} layout="vertical" autoComplete="off">
         {children}
         <Button type="primary" onClick={handleGenerate}>

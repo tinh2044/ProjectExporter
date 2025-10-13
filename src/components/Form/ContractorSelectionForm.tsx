@@ -1,5 +1,4 @@
-import { Form, Input, Row, Col, type FormInstance, Divider } from "antd";
-// import { TeamOutlined } from "@ant-design/icons";
+import { Form, Input, Row, Col, type FormInstance } from "antd";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
 import { findIndicesInArray } from "@/utils/formatters";
@@ -7,6 +6,7 @@ import SelectLegal from "./SelectLegal";
 import { NotepadTextIcon } from "lucide-react";
 import BaseForm from "./BaseForm";
 import { getBaseRequiredKeys } from "@/services/constants";
+import { createTemplate4 } from "@/services/docx";
 
 const { TextArea } = Input;
 const defaultLegals = [
@@ -61,21 +61,12 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
   return (
     <BaseForm
       form={form}
-      title={
-        <div className="flex flex-col items-start gap-2">
-          {/* <TeamOutlined /> */}
-          {/* <TeamOutlined /> */}
-          <p className="text-3xl font-bold">
-            TỜ TRÌNH Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị
-            đầu tư dự án
-          </p>
-          <Divider size="large" />
-        </div>
-      }
+      title="TỜ TRÌNH Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị đầu tư dự án"
       requiredKeys={requiredKeys}
       legalFieldKey="thongTinPhapLiChonNhaThau"
       legalList={legalData}
-      templateRelativeUrl="../../assets/template4.docx"
+      // templateRelativeUrl="../../assets/template4.docx"
+      createFormCallBack={createTemplate4}
       outputFileName="template-4.docx"
       submitText="Tạo mẫu 4"
       submitIcon={<NotepadTextIcon />}

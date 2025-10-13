@@ -1,11 +1,12 @@
-import { Divider, Form, type FormInstance } from "antd";
+import { Form, type FormInstance } from "antd";
 import SelectLegal from "./SelectLegal";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
-import { findIndicesInArray, formatAdditionalstimate } from "@/utils/formatters";
+import { findIndicesInArray } from "@/utils/formatters";
 import { NotepadTextIcon } from "lucide-react";
 import BaseForm from "./BaseForm";
 import { getBaseRequiredKeys } from "@/services/constants";
+import { createTemplate2 } from "@/services/docx";
 
 const defaultLegals = [
   "Căn cứ Luật Đấu thầu số 22/2023/QH15 ngày 23 tháng 6 năm 2023;",
@@ -55,32 +56,18 @@ export default function DecisionForm({ form }: { form: FormInstance }) {
   return (
     <BaseForm
       form={form}
-      title={
-        <div className="flex flex-col items-start gap-2">
-          {/* <SolutionOutlined /> */}
-          <p className="text-3xl font-bold">
-            QUYẾT ĐỊNH "Phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án"
-          </p>
-          <Divider size="large" />
-        </div>
-      }
+      title="QUYẾT ĐỊNH Phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án"
       requiredKeys={requiredKeys}
       legalFieldKey="thongTinPhapLiDuToan"
       legalList={legalData}
-      templateRelativeUrl="../../assets/template2.docx"
+      // templateRelativeUrl="../../assets/template2.docx"
+      createFormCallBack={createTemplate2}
       outputFileName="template-2.docx"
       submitText="Tạo mẫu 2"
       submitIcon={<NotepadTextIcon />}
       useCollapse={true}
       collapseDefaultActiveKey={["1"]}
-      beforeBuild={(raw) => {
-        raw["ghiChuDuToan"] = formatAdditionalstimate(
-          (raw["selectedItems"] as string[]) || [],
-          (raw["itemAmounts"] as number[]) || []
-        );
-        if (typeof raw.nguoiNhan === "string")
-          raw.nguoiNhan = (raw.nguoiNhan as string).toUpperCase();
-      }}
+
       // cardClassName="!w-full"
     >
       <Form form={form} layout="vertical" autoComplete="off">
