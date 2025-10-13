@@ -281,7 +281,7 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
                     onClick={() => setAppendixOpen(true)}
                     disabled={!selectedItemsWatch.length}
                   >
-                    Mở Phụ lục
+                    Tạo Phụ lục
                   </Button>
                 </div>
               </div>
