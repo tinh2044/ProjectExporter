@@ -439,7 +439,6 @@ const createProjectBasicInfo = (form: FormInstance): Paragraph[] => {
 export const createAppendixTable = (form: FormInstance): Table => {
   const appendixRows = form.getFieldValue("appendixRows") || [];
 
-  // Column widths in DXA units (1 inch = 1440 DXA)
   const WIDTHS = {
     STT: 1000,
     NOI_DUNG: 2400,
@@ -503,8 +502,8 @@ export const createAppendixTable = (form: FormInstance): Table => {
   });
 
   // Data rows
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dataRows = appendixRows.map(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (row: any, index: number) =>
       new TableRow({
         children: [
@@ -777,7 +776,8 @@ export const createTemplate2 = (
     ),
   ];
 
-  return createDocument(content);
+   return createDocument(content, createAppendixTable(form));
+
 };
 
 /**
