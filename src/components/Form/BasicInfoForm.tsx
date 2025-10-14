@@ -17,6 +17,7 @@ import {
 } from "@ant-design/icons";
 import { getDefaultFormInformation, getSortedInvestorKeys, getInvestorAddresses, getDistrictAdminCenter } from "@/services/constants";
 import { useState } from "react";
+// import { formatNumberWithDots } from "@/utils/formatters";
 
 const { RangePicker } = DatePicker;
 
@@ -92,9 +93,7 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
     <Card
       className="!w-2/3 !mt-20 !p-8"
       title={
-        <div
-          className="flex items-center justify-between gap-2 text-center"
-        >
+        <div className="flex items-center justify-between gap-2 text-center">
           <div className="flex items-center gap-2">
             <div className="text-3xl font-bold">Thông Tin Dự Án</div>
           </div>
@@ -131,6 +130,8 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
               rules={[
                 { required: true, message: "Vui lòng nhập tổng hợp dự toán!" },
               ]}
+              // formatter={(value: any) => formatNumberWithDots(value)}
+              // parser={(value: any) => value?.replace(/\./g, "") + " đồng"}
             >
               <InputNumber
                 prefix={<DollarOutlined />}
@@ -152,12 +153,14 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
             >
               <AutoComplete
                 placeholder="Chọn hoặc nhập chủ đầu tư"
-                options={getSortedInvestorKeys().map(key => ({ value: key }))}
+                options={getSortedInvestorKeys().map((key) => ({ value: key }))}
                 onChange={handleInvestorChange}
                 onSelect={handleInvestorSelect}
                 allowClear
                 filterOption={(inputValue, option) =>
-                  (option?.value ?? '').toLowerCase().includes(inputValue.toLowerCase())
+                  (option?.value ?? "")
+                    .toLowerCase()
+                    .includes(inputValue.toLowerCase())
                 }
               />
             </Form.Item>
@@ -174,29 +177,32 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
                   addressList.length > 0
                     ? "Chọn địa chỉ từ danh sách"
                     : districtList.length > 0
-                      ? "Tìm kiếm địa chỉ hoặc nhập địa chỉ tùy chỉnh"
-                      : useCustomInvestor
-                        ? "Nhập địa chỉ tùy chỉnh"
-                        : 
-                          "Địa chỉ đã tự động điền từ chủ đầu tư được chọn"
-                            // }
-                            // return "Nhập địa điểm thực hiện";
-                          }
-              // )()
+                    ? "Tìm kiếm địa chỉ hoặc nhập địa chỉ tùy chỉnh"
+                    : useCustomInvestor
+                    ? "Nhập địa chỉ tùy chỉnh"
+                    : "Địa chỉ đã tự động điền từ chủ đầu tư được chọn"
+                  // }
+                  // return "Nhập địa điểm thực hiện";
+                }
+                // )()
                 // }
                 options={[
                   // Address list from investor (if available)
-                  ...addressList.map(addr => ({ value: addr, label: addr })),
+                  ...addressList.map((addr) => ({ value: addr, label: addr })),
                   // District addresses for search (if available)
-                  ...districtList.map(addr => ({ value: addr, label: addr }))
+                  ...districtList.map((addr) => ({ value: addr, label: addr })),
                 ]}
-                value={form.getFieldValue('diaDiem')}
+                value={form.getFieldValue("diaDiem")}
                 onSelect={handleAddressSelect}
                 onChange={(val) => form.setFieldsValue({ diaDiem: val })}
                 allowClear
                 filterOption={(inputValue, option) =>
-                  (option?.value ?? '').toLowerCase().includes(String(inputValue).toLowerCase()) ||
-                  (option?.label ?? '').toLowerCase().includes(String(inputValue).toLowerCase())
+                  (option?.value ?? "")
+                    .toLowerCase()
+                    .includes(String(inputValue).toLowerCase()) ||
+                  (option?.label ?? "")
+                    .toLowerCase()
+                    .includes(String(inputValue).toLowerCase())
                 }
               />
             </Form.Item>

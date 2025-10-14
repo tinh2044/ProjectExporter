@@ -35,50 +35,35 @@ export default function AppendixModal(props: AppendixModalProps) {
   // console.log(selectedItems, itemAmounts);
   const [localRows, setLocalRows] = useState<AppendixRow[]>(() => []);
 
-  // Re-initialize rows when modal opens or when watched inputs change
-  // This ensures we don't get empty arrays when user selects items before opening
-  const bootstrapRows = () => {
-    const existing = (form.getFieldValue(appendixFieldName) || []) as AppendixRow[];
-    if (Array.isArray(existing) && existing.length > 0) {
-      setLocalRows(existing);
-      return;
-    }
-    const rows = (selectedItems || []).map((key, idx) => ({
-      stt: idx + 1,
-      noiDung: itemLabels[key] || key,
-      giaTriTamTinh: Number(itemAmounts?.[idx] || 0),
-      dienGiai: "",
-      ghiChu: "",
-    }));
-    setLocalRows(rows);
-  };
 
-  // Initialize when opened first time
-  if (open && localRows.length === 0) {
-    bootstrapRows();
-  }
-
-  // Keep rows in sync when selectedItems/itemAmounts change while modal is open
+  // Initialize and sync rows when modal opens or when inputs change
   useEffect(() => {
     if (!open) return;
-    // Prefer values already saved in form, otherwise use current localRows to preserve notes
-    const persisted = (form.getFieldValue(appendixFieldName) || []) as AppendixRow[];
-    const source = Array.isArray(persisted) && persisted.length > 0 ? persisted : localRows;
+    
+    setLocalRows(prevRows => {
+      // Check if we have persisted data first
+      const persisted = (form.getFieldValue(appendixFieldName) || []) as AppendixRow[];
+      if (Array.isArray(persisted) && persisted.length > 0) {
+        return persisted;
+      }
+      
+      // Otherwise create new rows from current inputs
+      const nextRows: AppendixRow[] = (selectedItems || []).map((key, idx) => {
+        const noiDung = itemLabels[key] || key;
+        // Try to find existing row with same content to preserve user input
+        const existing = prevRows.find((r) => r.noiDung === noiDung);
+        return {
+          stt: idx + 1,
+          noiDung,
+          giaTriTamTinh: Number(itemAmounts?.[idx] || 0),
+          dienGiai: existing?.dienGiai || "",
+          ghiChu: existing?.ghiChu || "",
+        };
+      });
 
-    const nextRows: AppendixRow[] = (selectedItems || []).map((key, idx) => {
-      const noiDung = itemLabels[key] || key;
-      const matched = source.find((r) => r.noiDung === noiDung);
-      return {
-        stt: idx + 1,
-        noiDung,
-        giaTriTamTinh: Number(itemAmounts?.[idx] || 0),
-        dienGiai: matched?.dienGiai || "",
-        ghiChu: matched?.ghiChu || "",
-      };
+      return nextRows;
     });
-
-    setLocalRows(nextRows);
-  }, [open, selectedItems, itemAmounts, itemLabels, appendixFieldName]);
+  }, [open, selectedItems, itemAmounts, itemLabels, appendixFieldName, form]);
 
   // ensure syncing STT when rows change
   const normalizedRows = useMemo(() =>
@@ -99,20 +84,20 @@ export default function AppendixModal(props: AppendixModalProps) {
     {
       title: "STT",
       dataIndex: "stt",
-      width: 70,
+      width: 10,
     },
     {
       title: "Nội dung",
       dataIndex: "noiDung",
-      width: 100,
+      width: 200,
       render: (_: unknown, record: AppendixRow) => (
         <span className="whitespace-pre-wrap">{record.noiDung}</span>
       ),
     },
     {
-      title: "Giá trị tạm tính (đồng)",
+      title: "Giá trị tạm tính",
       dataIndex: "giaTriTamTinh",
-      width: 220,
+      width: 200,
       render: (_: unknown, record: AppendixRow) => (
         <span>{formatNumberWithDots(record.giaTriTamTinh)} VNĐ</span>
       ),
@@ -125,7 +110,7 @@ export default function AppendixModal(props: AppendixModalProps) {
       render: (_: unknown, record: AppendixRow, index: number) => (
         <Input.TextArea
           value={record.dienGiai}
-          autoSize={{ minRows: 4 }}
+          autoSize={{ minRows: 10, maxRows: 10 }}
           onChange={(e) => {
             const value = e.target.value;
             setLocalRows((prev) =>
@@ -143,7 +128,7 @@ export default function AppendixModal(props: AppendixModalProps) {
       render: (_: unknown, record: AppendixRow, index: number) => (
         <Input.TextArea
           value={record.ghiChu}
-          autoSize={{ minRows: 4 }}
+          autoSize={{ minRows: 10, maxRows: 10 }}
           onChange={(e) => {
             const value = e.target.value;
             setLocalRows((prev) =>
@@ -163,7 +148,17 @@ export default function AppendixModal(props: AppendixModalProps) {
       title="Phụ lục - Ghi chú dự toán"
       onOk={handleOk}
       onCancel={handleCancel}
-      width={2000}
+      width="95vw"
+      // style={{ top: '5vh' }}
+      centered
+      styles={{
+        body: {
+          maxHeight: '80vh',
+          overflowY: 'auto',
+          padding: '16px'
+        }
+      }}
+      // className="max-h-[80vh] overflow-y-auto p-4"
     >
       <Form layout="vertical">
         <Table
@@ -171,6 +166,7 @@ export default function AppendixModal(props: AppendixModalProps) {
           columns={columns as never}
           pagination={false}
           rowKey={(row) => `${row.stt}-${row.noiDung}`}
+          scroll={{ x: 'max-content' }}
         />
       </Form>
     </Modal>

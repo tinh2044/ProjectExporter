@@ -1,7 +1,4 @@
-import React from "react";
 import dayjs, { type Dayjs } from "dayjs";
-
-export type PrimitiveOrArray = string | string[];
 
 /**
  * Format RangePicker value (2 dates) to: "Năm {yyyy} - Năm {yyyy}"
@@ -89,100 +86,6 @@ export function numberToVietnameseMoney(input: number | string): string {
   return `${result} đồng`;
 }
 
-export function formatCurrencyVND(input: string): string {
-  const digits = input.replace(/[^0-9]/g, "");
-  const value = Number(digits || 0);
-  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
-}
-
-export function truncate(text: string, max = 150): string {
-  if (text.length <= max) return text;
-  return `${text.substring(0, max)}...`;
-}
-
-// Pluggable registry types
-export type FieldFormatter = (value: PrimitiveOrArray) => React.ReactNode;
-export type FormatterRegistry = Record<string, FieldFormatter>;
-
-// Default registry
-export const defaultFormatters: FormatterRegistry = {
-  costEstimates: (value) => (
-    <span className="font-semibold text-red-800">{formatCurrencyVND(String(value))}</span>
-  ),
-  projectName: (value) => <span className="font-bold text-red-800">{String(value)}</span>,
-  receiver: (value) => <span className="uppercase tracking-wide">{String(value)}</span>,
-  investor: (value) => <span className="uppercase tracking-wide">{String(value)}</span>,
-  objective: (value) => <div className="whitespace-pre-wrap">{truncate(String(value), 300)}</div>,
-  implementation: (value) => <div className="whitespace-pre-wrap">{truncate(String(value), 300)}</div>,
-  necessity: (value) => <div className="whitespace-pre-wrap">{truncate(String(value), 300)}</div>,
-  costEstimatesNote: (value) => <div className="whitespace-pre-wrap">{truncate(String(value), 300)}</div>,
-  timeDev: (value) => (
-    <span className="inline-flex items-center px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">{String(value)}</span>
-  ),
-};
-
-export function renderWithRegistry(
-  key: string,
-  value: PrimitiveOrArray,
-  registry: FormatterRegistry = defaultFormatters
-): React.ReactNode {
-  if (Array.isArray(value)) {
-    return value.map((item, index) => (
-      <div key={index} className="mb-1 pl-2">
-        <span className="text-blue-600 mr-2">•</span>
-        {item}
-      </div>
-    ));
-  }
-  const formatter = registry[key];
-  if (formatter) return formatter(value);
-  return <span className="whitespace-pre-wrap">{String(value)}</span>;
-}
-
-export type PlainData = Record<string, unknown>;
-
-export function buildDocxData(
-  raw: PlainData,
-  transforms: Array<(d: PlainData) => void> = []
-): PlainData {
-  const data: PlainData = { ...raw };
-  console.log(data);
-  for (const apply of transforms) apply(data);
-  return data;
-}
-
-export function applyLegalIndicesToText(field: string, legalList: string[]) {
-  return (data: PlainData) => {
-    const value = data[field];
-    if (Array.isArray(value)) {
-      const indices = value as unknown as number[];
-      data[field] = indices.map((i) => legalList[i]).join("\n");
-    }
-  };
-}
-
-export function applyYearRange(field: string) {
-  return (data: PlainData) => {
-    const value = data[field] as
-      | [Dayjs | Date | string | null | undefined, Dayjs | Date | string | null | undefined]
-      | undefined;
-    if (value) data[field] = formatYearRangeFromPicker(value);
-  };
-}
-
-export function applyMoneyFields(fields: Array<{ numberField: string; wordsField?: string }>) {
-  return (data: PlainData) => {
-    for (const { numberField, wordsField } of fields) {
-      const val = data[numberField];
-      if (val != null) {
-        const formatted = formatNumberWithDots(val as number | string);
-        data[numberField] = formatted;
-        if (wordsField) data[wordsField] = numberToVietnameseMoney(val as number | string);
-      }
-    }
-  };
-}
-
 /**
  * Find index in item of small array in large array
  * @param largeArray - Large array to search
@@ -226,23 +129,18 @@ export function findIndicesByKey<T, K extends keyof T>(
   return indices;
 }
 
-export function formatAdditionalstimate(
+export function formatAdditionalEstimate(
   selectedItems: string[],
-  itemAmounts: number[]
+  itemAmounts: number[],
+  itemLabels: { [key: string]: string }
 ) {
-  const itemLabels: { [key: string]: string } = {
-    'lapThamTraBCKTKT': 'Lập/ thẩm tra báo cáo kinh tế kỹ thuật',
-    'lapBCNCKT': 'Lập báo cáo nghiên cứu khả thi',
-    'lapKeHoachThueDV': 'Lập kế hoạch thuê dịch vụ',
-    'chiPhiQuanLyDuAn': 'Chi phí quản lý dự án',
-    'chiPhiThamDinhGia': 'Chi phí thẩm định giá'
-  };
+  // const itemLabels: { [key: string]: string } = itemLabels;
 
   const lines =
     selectedItems
       ?.map(
         (item, index) =>
-          `- ${itemLabels[item] || item}: ${formatCurrencyVND(
+          `- ${itemLabels[item] || item}: ${formatNumberWithDots(
             String(itemAmounts[index] || 0)
           )} đồng`
       )

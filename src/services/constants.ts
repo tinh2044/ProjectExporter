@@ -56,7 +56,7 @@ export const getDefaultFormInformation = () => ({
     2.	Giải trình nội dung kế hoạch lựa chọn nhà thầu:
     Xem Phụ lục II đính kèm.
     `,
-  selectedItems: ["lapThamTraBCKTKT", "chiPhiThamDinhGia"],
+  selectedItems: ["lapBCKTKT", "thamTraBCKTKT"],
   itemAmounts: [243377018, 11794425],
 });
 
@@ -64,66 +64,76 @@ export const getDefaultFormInformation = () => ({
  * Investor information with addresses
  */
 export const getInvestorData = () => ({
-  "Sở An toàn thực phẩm": "18 Cách Mạng Tháng Tám, phường Bến Thành, Tp Hồ Chí Minh",
+  "Sở An toàn thực phẩm":
+    "18 Cách Mạng Tháng Tám, phường Bến Thành, Tp Hồ Chí Minh",
   "Sở Công Thương": "163 Hai Bà Trưng, Phường Xuân Hòa, Tp Hồ Chí Minh",
   "Sở Du lịch": "201 Võ Thị Sáu, Phường Xuân Hòa, Tp Hồ Chí Minh",
-  "Sở Dân tộc và Tôn giáo": "177 Lý Chính Thắng, Phường Xuân Hòa, Tp Hồ Chí Minh",
-  "Sở Giáo dục và Đào tạo": "66 - 68 Lê Thánh Tôn, Phường Sài Gòn, Tp Hồ Chí Minh",
-  "Sở Khoa học và Công nghệ": "244 Điện Biên Phủ, phường Xuân Hòa, Tp Hồ Chí Minh",
+  "Sở Dân tộc và Tôn giáo":
+    "177 Lý Chính Thắng, Phường Xuân Hòa, Tp Hồ Chí Minh",
+  "Sở Giáo dục và Đào tạo":
+    "66 - 68 Lê Thánh Tôn, Phường Sài Gòn, Tp Hồ Chí Minh",
+  "Sở Khoa học và Công nghệ":
+    "244 Điện Biên Phủ, phường Xuân Hòa, Tp Hồ Chí Minh",
   "Sở Nội vụ": "86B Lê Thánh Tôn, phường Sài Gòn, Tp Hồ Chí Minh",
   "Sở Tài chính": [
     {
-      "linhVuc": "Trụ sở 1",
-      "diaChi": "32 Lê Thánh Tôn, phường Sài Gòn, Tp Hồ Chí Minh"
+      linhVuc: "Trụ sở 1",
+      diaChi: "32 Lê Thánh Tôn, phường Sài Gòn, Tp Hồ Chí Minh",
     },
     {
-      "linhVuc": "Trụ sở 2",
-      "diaChi": "90G, Trần Quốc Toản, phường Xuân Hòa, Tp Hồ Chí Minh"
-    }
+      linhVuc: "Trụ sở 2",
+      diaChi: "90G, Trần Quốc Toản, phường Xuân Hòa, Tp Hồ Chí Minh",
+    },
   ],
   "Sở Tư pháp": "141-143 Pasteur, phường Xuân Hòa, Tp Hồ Chí Minh",
   "Sở Văn hóa và Thể thao": "164 Đồng Khởi, phường Sài Gòn, Tp Hồ Chí Minh",
   "Sở Xây dựng": [
     {
-      "linhVuc": "Cơ sở 1",
-      "diaChi": "60 Trương Định, phường Xuân Hòa, Tp Hồ Chí Minh"
+      linhVuc: "Cơ sở 1",
+      diaChi: "60 Trương Định, phường Xuân Hòa, Tp Hồ Chí Minh",
     },
     {
-      "linhVuc": "Cơ sở 2",
-      "diaChi": "63 Lý Tự Trọng, phường Sài Gòn, Tp Hồ Chí Minh"
-    }
+      linhVuc: "Cơ sở 2",
+      diaChi: "63 Lý Tự Trọng, phường Sài Gòn, Tp Hồ Chí Minh",
+    },
   ],
   "Sở Y tế": "59 Nguyễn Thị Minh Khai, phường Bến Thành, Tp Hồ Chí Minh",
-  "Ban Quản lý các Khu chế xuất và công nghiệp Thành phố": "35 Nguyễn Bỉnh Khiêm, phường Tân Định, Tp Hồ Chí Minh",
-  "Ban Quản lý Khu công nghệ cao Thành phố": "Lô T2-3, đường D1, phường Tăng Nhơn Phú, Tp Hồ Chí Minh",
+  "Ban Quản lý các Khu chế xuất và công nghiệp Thành phố":
+    "35 Nguyễn Bỉnh Khiêm, phường Tân Định, Tp Hồ Chí Minh",
+  "Ban Quản lý Khu công nghệ cao Thành phố":
+    "Lô T2-3, đường D1, phường Tăng Nhơn Phú, Tp Hồ Chí Minh",
   "Thanh tra Thành phố": "13 Trần Quốc Thảo, phường Xuân Hòa, Tp Hồ Chí Minh",
-  "Trung tâm Phục vụ Hành chính côngThành phố (cơ sở Bình Dương)": "Tòa nhà Trung tâm hành chính tỉnh, đường Lê Lợi,phường Bình Dương",
-  "Trung tâm Phục vụ Hành chính côngThành phố (cơ sở Bà Rịa – Vũng Tàu)": "Số 4 Nguyễn Tất Thành, phường Bà Rịa",
+  "Trung tâm Phục vụ Hành chính côngThành phố (cơ sở Bình Dương)":
+    "Tòa nhà Trung tâm hành chính tỉnh, đường Lê Lợi,phường Bình Dương",
+  "Trung tâm Phục vụ Hành chính côngThành phố (cơ sở Bà Rịa – Vũng Tàu)":
+    "Số 4 Nguyễn Tất Thành, phường Bà Rịa",
   "Sở Nông nghiệp và Môi trường": [
     {
-      "linhVuc": "Khí tượng thủy văn; Tài nguyên nước; Địa chất và Khoáng sản; Biển và Hải đảo; Môi trường; Đo đạc bản đồ; Đất đai",
-      "diaChi": "63 Lý Tự Trọng, phường Sài Gòn, Tp Hồ Chí Minh"
+      linhVuc:
+        "Khí tượng thủy văn; Tài nguyên nước; Địa chất và Khoáng sản; Biển và Hải đảo; Môi trường; Đo đạc bản đồ; Đất đai",
+      diaChi: "63 Lý Tự Trọng, phường Sài Gòn, Tp Hồ Chí Minh",
     },
     {
-      "linhVuc": "Nông nghiệp; Khoa học, công nghệ và môi trường; Doanh nghiệp; Quản lý chất lượng nông lâm sản và thủy sản; Kinh tế hợp tác và phát triển nông thôn; Thủy lợi; Phòng chống thiên tai",
-      "diaChi": "176 Hai Bà Trưng, phường Tân Định, Tp Hồ Chí Minh"
+      linhVuc:
+        "Nông nghiệp; Khoa học, công nghệ và môi trường; Doanh nghiệp; Quản lý chất lượng nông lâm sản và thủy sản; Kinh tế hợp tác và phát triển nông thôn; Thủy lợi; Phòng chống thiên tai",
+      diaChi: "176 Hai Bà Trưng, phường Tân Định, Tp Hồ Chí Minh",
     },
     {
-      "linhVuc": "Thủy sản",
-      "diaChi": "126GH Phan Đăng Lưu, phường Đức Nhuận, Tp Hồ Chí Minh"
+      linhVuc: "Thủy sản",
+      diaChi: "126GH Phan Đăng Lưu, phường Đức Nhuận, Tp Hồ Chí Minh",
     },
     {
-      "linhVuc": "Bảo vệ thực vật; Trồng trọt; Giáo thông vận tải",
-      "diaChi": "10 Nguyễn Huy Tưởng, phường Gia Định, Tp Hồ Chí Minh"
+      linhVuc: "Bảo vệ thực vật; Trồng trọt; Giáo thông vận tải",
+      diaChi: "10 Nguyễn Huy Tưởng, phường Gia Định, Tp Hồ Chí Minh",
     },
     {
-      "linhVuc": "Thú y; Chăn nuôi",
-      "diaChi": "151 Lý Thường Kiệt, phường Minh Phụng, Tp Hồ Chí Minh"
+      linhVuc: "Thú y; Chăn nuôi",
+      diaChi: "151 Lý Thường Kiệt, phường Minh Phụng, Tp Hồ Chí Minh",
     },
     {
-      "linhVuc": "Lâm nghiệp; Kiểm lâm",
-      "diaChi": "Số 1 Đỗ Ngọc Thạnh, phường Chợ Lớn, Tp Hồ Chí Minh"
-    }
+      linhVuc: "Lâm nghiệp; Kiểm lâm",
+      diaChi: "Số 1 Đỗ Ngọc Thạnh, phường Chợ Lớn, Tp Hồ Chí Minh",
+    },
   ],
 });
 
@@ -143,7 +153,9 @@ export const getBaseRequiredKeys = () => [
  * Get sorted investor keys for AutoComplete
  */
 export const getSortedInvestorKeys = () => {
-  return Object.keys(getInvestorData()).sort((a, b) => a.localeCompare(b, 'vi'));
+  return Object.keys(getInvestorData()).sort((a, b) =>
+    a.localeCompare(b, "vi")
+  );
 };
 
 /**
@@ -151,26 +163,33 @@ export const getSortedInvestorKeys = () => {
  */
 export const getInvestorAddresses = (investorName: string) => {
   const investorData = getInvestorData();
-  const invVal = investorData[investorName as keyof typeof investorData] as unknown;
+  const invVal = investorData[
+    investorName as keyof typeof investorData
+  ] as unknown;
 
   if (Array.isArray(invVal)) {
-    return (invVal as Array<{ diaChi?: string }>).map(i => i.diaChi || "").filter(Boolean) as string[];
-  } else if (typeof invVal === 'string') {
+    return (invVal as Array<{ diaChi?: string }>)
+      .map((i) => i.diaChi || "")
+      .filter(Boolean) as string[];
+  } else if (typeof invVal === "string") {
     return [invVal];
   }
   return [];
 };
-
 
 export const getDistrictAdminCenter = () => {
   return {
     "Phường Tân Định": "58B Nguyễn Đình Chiểu, phường Tân Định, Tp Hồ Chí Minh",
     "Phường Sài Gòn": "45 - 47 Lê Duẩn, phường Sài Gòn, Tp Hồ Chí Minh",
     "Phường Bến Thành": "92 Nguyễn Trãi, phường Bến Thành, Tp Hồ Chí Minh",
-    "Phường Cầu Ông Lãnh": "105 Trần Đình Xu, phường Cầu Ông Lãnh, Tp Hồ Chí Minh",
-    "Phường Bàn Cờ": "611/20 Điện Biên Phủ (số cũ 611C), phường Bàn Cờ, Tp Hồ Chí Minh",
-    "Phường Xuân Hòa": "99 Trần Quốc Thảo (số cũ 101), phường Xuân Hòa, Tp Hồ Chí Minh",
-    "Phường Nhiêu Lộc": "82 Bà Huyện Thanh Quan, phường Nhiêu Lộc, Tp Hồ Chí Minh",
+    "Phường Cầu Ông Lãnh":
+      "105 Trần Đình Xu, phường Cầu Ông Lãnh, Tp Hồ Chí Minh",
+    "Phường Bàn Cờ":
+      "611/20 Điện Biên Phủ (số cũ 611C), phường Bàn Cờ, Tp Hồ Chí Minh",
+    "Phường Xuân Hòa":
+      "99 Trần Quốc Thảo (số cũ 101), phường Xuân Hòa, Tp Hồ Chí Minh",
+    "Phường Nhiêu Lộc":
+      "82 Bà Huyện Thanh Quan, phường Nhiêu Lộc, Tp Hồ Chí Minh",
     "Phường Vĩnh Hội": "130 đường 46, phường Vĩnh Hội, Tp Hồ Chí Minh",
     "Phường Khánh Hội": "531 Vĩnh Khánh, phường Khánh Hội, Tp Hồ Chí Minh",
     "Phường Xóm Chiếu": "18 Đoàn Như Hài, phường Xóm Chiếu, Tp Hồ Chí Minh",
@@ -182,37 +201,39 @@ export const getDistrictAdminCenter = () => {
     "Phường Bình Phú": "15 Chợ Lớn, phường Bình Phú, Tp Hồ Chí Minh",
     "Phường Phú Lâm": "152 Đặng Nguyên Cẩn, phường Phú Lâm, Tp Hồ Chí Minh",
     "Phường Tân Hưng": "Số 9 đường 2A phường Tân Hưng, Tp Hồ Chí Minh",
-    "Phường Tân Thuận": "Số 342 Huỳnh Tấn Phát, phường Tân Thuận, Tp Hồ Chí Minh",
-    "Phường Phú Thuận": "Số 1203 Huỳnh Tấn Phát, phường Phú Thuận, Tp Hồ Chí Minh",
+    "Phường Tân Thuận":
+      "Số 342 Huỳnh Tấn Phát, phường Tân Thuận, Tp Hồ Chí Minh",
+    "Phường Phú Thuận":
+      "Số 1203 Huỳnh Tấn Phát, phường Phú Thuận, Tp Hồ Chí Minh",
     "Phường Tân Mỹ": "Số 7 đường Tân Phú, Phường Tân Mỹ, Tp Hồ Chí Minh",
     "Phường Chánh Hưng": [
       {
-        "linhVuc": "Trụ sở chính",
-        "diaChi": "39 Dương Bạch Mai, phường Chánh Hưng, Tp Hồ Chí Minh"
+        linhVuc: "Trụ sở chính",
+        diaChi: "39 Dương Bạch Mai, phường Chánh Hưng, Tp Hồ Chí Minh",
       },
       {
-        "linhVuc": "Điểm tiếp nhận thứ nhất",
-        "diaChi": "210-212 Âu Dương Lân, phường Chánh Hưng, Tp Hồ Chí Minh"
+        linhVuc: "Điểm tiếp nhận thứ nhất",
+        diaChi: "210-212 Âu Dương Lân, phường Chánh Hưng, Tp Hồ Chí Minh",
       },
       {
-        "linhVuc": "Điểm tiếp nhận thứ hai",
-        "diaChi": "625-625A Hưng Phú, phường Chánh Hưng, Tp Hồ Chí Minh"
-      }
+        linhVuc: "Điểm tiếp nhận thứ hai",
+        diaChi: "625-625A Hưng Phú, phường Chánh Hưng, Tp Hồ Chí Minh",
+      },
     ],
     "Phường Bình Đông": "1094 Tạ Quang Bửu, phường Bình Đông, Tp Hồ Chí Minh",
     "Phường Phú Định": [
       {
-        "linhVuc": "Trụ sở chính",
-        "diaChi": "184 Lưu Hữu Phước, phường Phú Định, Tp Hồ Chí Minh"
+        linhVuc: "Trụ sở chính",
+        diaChi: "184 Lưu Hữu Phước, phường Phú Định, Tp Hồ Chí Minh",
       },
       {
-        "linhVuc": "Điểm tiếp nhận thứ nhất",
-        "diaChi": "942 Nguyễn Duy, phường Phú Định, Tp Hồ Chí Minh"
+        linhVuc: "Điểm tiếp nhận thứ nhất",
+        diaChi: "942 Nguyễn Duy, phường Phú Định, Tp Hồ Chí Minh",
       },
       {
-        "linhVuc": "Điểm tiếp nhận thứ hai",
-        "diaChi": "450 Phú Định, phường Phú Định, Tp Hồ Chí Minh"
-      }
+        linhVuc: "Điểm tiếp nhận thứ hai",
+        diaChi: "450 Phú Định, phường Phú Định, Tp Hồ Chí Minh",
+      },
     ],
     "Phường Diên Hồng": "1a Thành Thái, phường Diên Hồng, Tp Hồ Chí Minh",
     "Phường Hòa Hưng": "A8 Châu Thới, phường Hòa Hưng, Tp Hồ Chí Minh",
@@ -221,90 +242,122 @@ export const getDistrictAdminCenter = () => {
     "Phường Bình Thới": "270 Bình Thới, phường Bình Thới, Tp Hồ Chí Minh",
     "Phường Hòa Bình": "347 Lạc Long Quân, phường Hòa Bình, Tp Hồ Chí Minh",
     "Phường Phú Thọ": "233 - 235 Lê Đại Hành, phường Phú Thọ, Tp Hồ Chí Minh",
-    "Phường Đông Hưng Thuận": "Số 68, đường TTN14, phường Đông Hưng Thuận, Tp Hồ Chí Minh",
+    "Phường Đông Hưng Thuận":
+      "Số 68, đường TTN14, phường Đông Hưng Thuận, Tp Hồ Chí Minh",
     "Phường Trung Mỹ Tây": "Số 036, phường Trung Mỹ Tây, Tp Hồ Chí Minh",
-    "Phường Tân Thới Hiệp": "Số 226 Trương Thị Hoa, phường Tân Thới Hiệp, Tp Hồ Chí Minh",
+    "Phường Tân Thới Hiệp":
+      "Số 226 Trương Thị Hoa, phường Tân Thới Hiệp, Tp Hồ Chí Minh",
     "Phường Thới An": "Số 340 Lê Văn Khương, phường Thới An, Tp Hồ Chí Minh",
-    "Phường An Phú Đông": "Số 540 Hà Huy Giáp, phường An Phú Đông, Tp Hồ Chí Minh",
+    "Phường An Phú Đông":
+      "Số 540 Hà Huy Giáp, phường An Phú Đông, Tp Hồ Chí Minh",
     "Phường Bình Tân": "43 đường số 16, phường Bình Tân, Tp Hồ Chí Minh",
-    "Phường Bình Hưng Hòa": "621 Tân Kỳ Tân Quý, phường Bình Hưng Hòa, Tp Hồ Chí Minh",
+    "Phường Bình Hưng Hòa":
+      "621 Tân Kỳ Tân Quý, phường Bình Hưng Hòa, Tp Hồ Chí Minh",
     "Phường Bình Trị Đông": "162 Mã Lò, phường Bình Trị Đông, Tp Hồ Chí Minh",
     "Phường An Lạc": "521 Kinh Dương Vương, phường An Lạc, Tp Hồ Chí Minh",
     "Phường Tân Tạo": "1409 Tỉnh lộ 10, phường Tân Tạo, Tp Hồ Chí Minh",
-    "Phường Thạnh Mỹ Tây": "85/16 Phạm Viết Chánh, phường Thạnh Mỹ Tây, Tp Hồ Chí Minh",
-    "Phường Bình Lợi Trung": "133 Nguyễn Văn Đậu, phường Bình Lợi Trung, Tp Hồ Chí Minh",
-    "Phường Bình Thạnh": "số 6 Phan Đăng Lưu, phường Bình Thạnh, Tp Hồ Chí Minh",
+    "Phường Thạnh Mỹ Tây":
+      "85/16 Phạm Viết Chánh, phường Thạnh Mỹ Tây, Tp Hồ Chí Minh",
+    "Phường Bình Lợi Trung":
+      "133 Nguyễn Văn Đậu, phường Bình Lợi Trung, Tp Hồ Chí Minh",
+    "Phường Bình Thạnh":
+      "số 6 Phan Đăng Lưu, phường Bình Thạnh, Tp Hồ Chí Minh",
     "Phường Gia Định": "98 Lê Lê Văn Duyệt, phường Gia Định, Tp Hồ Chí Minh",
-    "Phường Bình Quới": "Số 1 khu hành chính Thanh Đa, phường Bình Quới, Tp Hồ Chí Minh",
-    "Phường Hạnh Thông": "306 (số cũ 304) Nguyễn Văn Nghi, phường Hạnh Thông, Tp Hồ Chí Minh",
+    "Phường Bình Quới":
+      "Số 1 khu hành chính Thanh Đa, phường Bình Quới, Tp Hồ Chí Minh",
+    "Phường Hạnh Thông":
+      "306 (số cũ 304) Nguyễn Văn Nghi, phường Hạnh Thông, Tp Hồ Chí Minh",
     "Phường An Nhơn": "Số 1C Nguyễn Văn Lượng, phường An Nhơn, Tp Hồ Chí Minh",
-    "Phường Gò Vấp": "332 (Số cũ 19) Quang Trung, phường Gò Vấp, Tp Hồ Chí Minh",
-    "Phường Thông Tây Hội": "175 Nguyễn Văn Khối, phường Thông Tây Hội, Tp Hồ Chí Minh",
+    "Phường Gò Vấp":
+      "332 (Số cũ 19) Quang Trung, phường Gò Vấp, Tp Hồ Chí Minh",
+    "Phường Thông Tây Hội":
+      "175 Nguyễn Văn Khối, phường Thông Tây Hội, Tp Hồ Chí Minh",
     "Phường An Hội Tây": "397 Phan Huy Ích, phường An Hội Tây, Tp Hồ Chí Minh",
-    "Phường An Hội Đông": "330 (số cũ 182) Thống Nhất, phường An Hội Đông, Tp Hồ Chí Minh",
+    "Phường An Hội Đông":
+      "330 (số cũ 182) Thống Nhất, phường An Hội Đông, Tp Hồ Chí Minh",
     "Phường Đức Nhuận": "744 Nguyễn Kiệm, phường Đức Nhuận, Tp Hồ Chí Minh",
     "Phường Phú Nhuận": "159 Nguyễn Văn Trỗi, phường Phú Nhuận, Tp Hồ Chí Minh",
     "Phường Cầu Kiệu": "458 Phan Xích Long, phường Cầu Kiệu, Tp Hồ Chí Minh",
     "Phường Tân Sơn Hòa": "291 Lê Văn Sỹ, phường Tân Sơn Hòa, Tp Hồ Chí Minh",
-    "Phường Tân Sơn Nhất": "25/4-6 Hoàng Việt, phường Tân Sơn Nhất, Tp Hồ Chí Minh",
+    "Phường Tân Sơn Nhất":
+      "25/4-6 Hoàng Việt, phường Tân Sơn Nhất, Tp Hồ Chí Minh",
     "Phường Tân Hòa": "356A Bắc Hải, phường Tân Hòa, Tp Hồ Chí Minh",
-    "Phường Bảy Hiền": "1129/20 (số cũ 2025/20) Lạc Long Quân, phường Bảy Hiền, Tp Hồ Chí Minh",
+    "Phường Bảy Hiền":
+      "1129/20 (số cũ 2025/20) Lạc Long Quân, phường Bảy Hiền, Tp Hồ Chí Minh",
     "Phường Tân Bình": "387A Trường Chinh, phường Tân Bình, Tp Hồ Chí Minh",
-    "Phường Tân Sơn": "822 (số cũ 8/6) Trường Chinh, phường Tân Sơn, Tp Hồ Chí Minh",
-    "Phường Tây Thạnh": "200/12 Nguyễn Hữu Tiến, phường Tây Thạnh, Tp Hồ Chí Minh",
+    "Phường Tân Sơn":
+      "822 (số cũ 8/6) Trường Chinh, phường Tân Sơn, Tp Hồ Chí Minh",
+    "Phường Tây Thạnh":
+      "200/12 Nguyễn Hữu Tiến, phường Tây Thạnh, Tp Hồ Chí Minh",
     "Phường Tân Sơn Nhì": "48 Tân Quý, phường Tân Sơn Nhì, Tp Hồ Chí Minh",
     "Phường Phú Thọ Hòa": "146 Độc Lập, phường Phú Thọ Hòa, Tp Hồ Chí Minh",
     "Phường Phú Thạnh": "275 Nguyễn Sơn, phường Phú Thạnh, Tp Hồ Chí Minh",
     "Phường Tân Phú": "525 Âu Cơ, phường Tân Phú, Tp Hồ Chí Minh",
     "Xã Tân Nhựt": "số 79, đường Tân Túc, xã Tân Nhựt, Tp Hồ Chí Minh",
-    "Xã Bình Chánh": "số 345, đường Trịnh Như Khuê, xã Bình Chánh, Tp Hồ Chí Minh",
-    "Xã Bình Hưng": "A10/26A đường số 10, Khu dân cư Bình Hưng, xã Bình Hưng, Tp Hồ Chí Minh",
+    "Xã Bình Chánh":
+      "số 345, đường Trịnh Như Khuê, xã Bình Chánh, Tp Hồ Chí Minh",
+    "Xã Bình Hưng":
+      "A10/26A đường số 10, Khu dân cư Bình Hưng, xã Bình Hưng, Tp Hồ Chí Minh",
     "Xã Hưng Long": "564 Đoàn Nguyễn Tuấn, xã Hưng Long, Tp Hồ Chí Minh",
     "Xã Bình Lợi": "Số 1905, đường Trần Văn Giàu, xã Bình Lợi, Tp Hồ Chí Minh",
     "Xã Vĩnh Lộc": "F7/16 Hương lộ 80, xã Vĩnh Lộc, Tp Hồ Chí Minh",
-    "Xã Tân Vĩnh Lộc": "2206 đường Trần Văn Giàu, xã Tân Vĩnh Lộc, Tp Hồ Chí Minh",
+    "Xã Tân Vĩnh Lộc":
+      "2206 đường Trần Văn Giàu, xã Tân Vĩnh Lộc, Tp Hồ Chí Minh",
     "Xã Bình Khánh": "Ấp Bình An 1, xã Bình Khánh, Tp Hồ Chí Minh",
     "Xã An Thới Đông": "Ấp An Hòa 1, xã An Thới Đông, Tp Hồ Chí Minh",
     "Xã Cần Giờ": "số 48 đường Lương Văn Nho, xã Cần Giờ, Tp Hồ Chí Minh",
     "Xã Thạnh An": "Ấp Thạnh Bình, xã Thạnh An, Tp Hồ Chí Minh",
-    "Xã An Nhơn Tây": "1407 Tỉnh lộ 7, ấp Chợ Củ 2, xã An Nhơn Tây, Tp Hồ Chí Minh",
-    "Xã Thái Mỹ": "712 Phan Văn Khải, ấp Phước Hưng, xã Thái Mỹ, Tp Hồ Chí Minh",
+    "Xã An Nhơn Tây":
+      "1407 Tỉnh lộ 7, ấp Chợ Củ 2, xã An Nhơn Tây, Tp Hồ Chí Minh",
+    "Xã Thái Mỹ":
+      "712 Phan Văn Khải, ấp Phước Hưng, xã Thái Mỹ, Tp Hồ Chí Minh",
     "Xã Nhuận Đức": "1A Bà Thiên, ấp Ngã Tư, xã Nhuận Đức, Tp Hồ Chí Minh",
     "Xã Tân An Hội": "77 Tỉnh lộ 8, xã Tân An Hội, Tp Hồ Chí Minh",
     "Xã Củ Chi": "342 Phan Văn Khải, ấp Đình, xã Củ Chi, Tp Hồ Chí Minh",
     "Xã Phú Hòa Đông": "269 Tỉnh lộ 8, ấp 2A, xã Phú Hòa Đông, Tp Hồ Chí Minh",
     "Xã Bình Mỹ": "1627 Tỉnh lộ 8, ấp 1A, xã Bình Mỹ, Tp Hồ Chí Minh",
     "Xã Hóc Môn": "Số 01, Lý Thường Kiệt, xã Hóc Môn, Tp Hồ Chí Minh",
-    "Xã Bà Điểm": "14/9 Phan Văn Hớn, ấp Tiền Lân 1, xã Bà Điểm, Tp Hồ Chí Minh",
-    "Xã Đông Thạnh": "250 ấp 54, đường Đặng Thúc Vịnh, xã Đông Thạnh, Tp Hồ Chí Minh",
-    "Xã Xuân Thới Sơn": "Số 1A Lê Thị Kim, ấp 11, xã Xuân Thới Sơn, Tp Hồ Chí Minh",
+    "Xã Bà Điểm":
+      "14/9 Phan Văn Hớn, ấp Tiền Lân 1, xã Bà Điểm, Tp Hồ Chí Minh",
+    "Xã Đông Thạnh":
+      "250 ấp 54, đường Đặng Thúc Vịnh, xã Đông Thạnh, Tp Hồ Chí Minh",
+    "Xã Xuân Thới Sơn":
+      "Số 1A Lê Thị Kim, ấp 11, xã Xuân Thới Sơn, Tp Hồ Chí Minh",
     "Xã Nhà Bè": "330 Nguyễn Bình, xã Nhà Bè, Tp Hồ Chí Minh",
     "Xã Hiệp Phước": "209 Nguyễn Văn Tạo, xã Hiệp Phước, Tp Hồ Chí Minh",
     "Phường An Khánh": "171/1 Lương Định Của, phường An Khánh, Tp Hồ Chí Minh",
     "Phường Bình Trưng": "8 Hồ Thị Nhung, phường Bình Trưng, Tp Hồ Chí Minh",
     "Phường Cát Lái": "441A Nguyễn Thị Định, phường Cát Lái, Tp Hồ Chí Minh",
     "Phường Phước Long": "616 Đỗ Xuân Hợp, phường Phước Long, Tp Hồ Chí Minh",
-    "Phường Long Trường": "893 Nguyễn Duy Trinh, phường Long Trường, Tp Hồ Chí Minh",
+    "Phường Long Trường":
+      "893 Nguyễn Duy Trinh, phường Long Trường, Tp Hồ Chí Minh",
     "Phường Long Bình": "325 Nguyễn Văn Tăng, phường Long Bình, Tp Hồ Chí Minh",
-    "Phường Long Phước": "239 Khu phố Long Thuận, phường Long Phước, Tp Hồ Chí Minh",
-    "Phường Tăng Nhơn Phú": "29 Lê Văn Việt, phường Tăng Nhơn Phú, Tp Hồ Chí Minh",
+    "Phường Long Phước":
+      "239 Khu phố Long Thuận, phường Long Phước, Tp Hồ Chí Minh",
+    "Phường Tăng Nhơn Phú":
+      "29 Lê Văn Việt, phường Tăng Nhơn Phú, Tp Hồ Chí Minh",
     "Phường Linh Xuân": "1262 Kha Vạn Cân, phường Linh Xuân, Tp Hồ Chí Minh",
     "Phường Tam Bình": "707 Tỉnh lộ 43, phường Tam Bình, Tp Hồ Chí Minh",
     "Phường Thủ Đức": "2 Nguyễn Công Trứ, phường Thủ Đức, Tp Hồ Chí Minh",
     "Phường Hiệp Bình": "721 Quốc lộ 13, phường Hiệp Bình, Tp Hồ Chí Minh",
-    "Phường Thủ Dầu Một": "Số 01, đường Quang Trung, phường Thủ Dầu Một, Bình Dương",
-    "Phường Bình Dương": "Số 357, đường Võ Nguyên Giáp, phường Bình Dương, Bình Dương",
+    "Phường Thủ Dầu Một":
+      "Số 01, đường Quang Trung, phường Thủ Dầu Một, Bình Dương",
+    "Phường Bình Dương":
+      "Số 357, đường Võ Nguyên Giáp, phường Bình Dương, Bình Dương",
     "Phường Phú Lợi": "Số 438, đường Phú Lợi, phường Phú Lợi, Bình Dương",
-    "Phường Chánh Hiệp": "Số 279, đường Hồ Văn Cống, phường Chánh Hiệp, Bình Dương",
+    "Phường Chánh Hiệp":
+      "Số 279, đường Hồ Văn Cống, phường Chánh Hiệp, Bình Dương",
     "Phường Phú An": "Số 143, đường Nguyễn Đức Cảnh, phường Phú An, Bình Dương",
     "Phường Lái Thiêu": "Đường Phan Đình Phùng, phường Lái Thiêu, Bình Dương",
-    "Phường Thuận An": "Số 289, đường Hưng Định 31, phường Thuận An, Bình Dương",
+    "Phường Thuận An":
+      "Số 289, đường Hưng Định 31, phường Thuận An, Bình Dương",
     "Phường Bình Hòa": "Đường ĐT743C, phường Bình Hòa, Bình Dương",
     "Phường An Phú": "Đường ĐT743, phường An Phú, Bình Dương",
     "Phường Thuận Giao": "Đường Thủ Khoa Huân, phường Thuận Giao, Bình Dương",
     "Phường Dĩ An": "Đường số 10, phường Dĩ An, Bình Dương",
     "Phường Đông Hòa": "Số 153, đường Quốc Lộ 1K, phường Đông Hòa, Bình Dương",
-    "Phường Tân Đông Hiệp": "Số 880, đường Nguyễn Thị Minh Khai, phường Tân Đông Hiệp, Bình Dương",
+    "Phường Tân Đông Hiệp":
+      "Số 880, đường Nguyễn Thị Minh Khai, phường Tân Đông Hiệp, Bình Dương",
     "Phường Tân Uyên": "Khu phố 1, phường Tân Uyên, Bình Dương",
     "Phường Tân Khánh": "Đường ĐT746, phường Tân Khánh, Bình Dương",
     "Phường Tân Hiệp": "Đường Nguyễn Khuyến, phường Tân Hiệp, Bình Dương",
@@ -314,8 +367,10 @@ export const getDistrictAdminCenter = () => {
     "Phường Tây Nam": "Đường ĐT744, phường Tây Nam, Bình Dương",
     "Phường Long Nguyên": "Đường An Điền 151, phường Long Nguyên, Bình Dương",
     "Phường Thới Hòa": "Đường Quốc lộ 13, phường Thới Hòa, Bình Dương",
-    "Phường Hòa Lợi": "Số 353, đường Nguyễn Văn Thành, phường Hòa Lợi, Bình Dương",
-    "Phường Chánh Phú Hòa": "Đường Nguyễn Văn Thành, phường Chánh Phú Hòa, Bình Dương",
+    "Phường Hòa Lợi":
+      "Số 353, đường Nguyễn Văn Thành, phường Hòa Lợi, Bình Dương",
+    "Phường Chánh Phú Hòa":
+      "Đường Nguyễn Văn Thành, phường Chánh Phú Hòa, Bình Dương",
     "Xã Bàu Bàng": "Đường N17-5A, xã Bàu Bàng, Bình Dương",
     "Xã Trừ Văn Thố": "Đường ĐT750, xã Trừ Văn Thố, Bình Dương",
     "Xã Phú Giáo": "Số 16A, đường Trần Quang Diệu, xã Phú Giáo, Bình Dương",
@@ -330,33 +385,55 @@ export const getDistrictAdminCenter = () => {
     "Xã Thường Tân": "Đường ĐT746, ấp 4, xã Thường Tân, Bình Dương",
     "Xã Ngãi Giao": "70 Trần Hưng Đạo, xã Ngãi Giao, Bà Rịa - Vũng Tàu",
     "Xã Kim Long": "Tổ 19, xã Kim Long, Bà Rịa - Vũng Tàu",
-    "Xã Bình Giã": "đường Mỹ xuân-Hoà bình, tổ 1, ấp Vĩnh Bình, xã Bình Giã, Bà Rịa - Vũng Tàu",
+    "Xã Bình Giã":
+      "đường Mỹ xuân-Hoà bình, tổ 1, ấp Vĩnh Bình, xã Bình Giã, Bà Rịa - Vũng Tàu",
     "Xã Xuân Sơn": "tổ 11, thôn Xuân Tân, xã Xuân Sơn, Bà Rịa - Vũng Tàu",
     "Xã Nghĩa Thành": "tổ 6 thôn Sông Cầu, xã Nghĩa Thành, Bà Rịa - Vũng Tàu",
     "Xã Châu Đức": "Ấp Liên Lộc, xã Châu Đức, Bà Rịa - Vũng Tàu",
-    "Phường Bà Rịa": "221 Cách mạng Tháng Tám, phường Bà Rịa, Bà Rịa - Vũng Tàu",
-    "Phường Tam Long": "Tỉnh lộ 52, Ấp Đông, phường Tam Long, Bà Rịa - Vũng Tàu",
-    "Phường Long Hương": "Đường Trịnh Đình Thảo, phường Long Hương, Bà Rịa - Vũng Tàu",
+    "Phường Bà Rịa":
+      "221 Cách mạng Tháng Tám, phường Bà Rịa, Bà Rịa - Vũng Tàu",
+    "Phường Tam Long":
+      "Tỉnh lộ 52, Ấp Đông, phường Tam Long, Bà Rịa - Vũng Tàu",
+    "Phường Long Hương":
+      "Đường Trịnh Đình Thảo, phường Long Hương, Bà Rịa - Vũng Tàu",
     "Phường Phú Mỹ": "Số 412 Độc lập, phường Phú Mỹ, Bà Rịa - Vũng Tàu",
-    "Phường Tân Phước": "số 2102, Đường Độc lập, phường Tân Phước, Bà Rịa - Vũng Tàu",
+    "Phường Tân Phước":
+      "số 2102, Đường Độc lập, phường Tân Phước, Bà Rịa - Vũng Tàu",
     "Phường Tân Hải": "QL 51, thôn Láng Cát, phường Tân Hải, Bà Rịa - Vũng Tàu",
-    "Phường Tân Thành": "Số 152, đường Bình Giã, phường Tân Thành, Bà Rịa - Vũng Tàu",
+    "Phường Tân Thành":
+      "Số 152, đường Bình Giã, phường Tân Thành, Bà Rịa - Vũng Tàu",
     "Xã Châu Pha": "Thôn Tân Lễ B, xã Châu pha, Bà Rịa - Vũng Tàu",
-    "Xã Đất Đỏ": "Đường Lê Hồng Phong, ấp Hiệp Hòa, xã Đất Đỏ, Bà Rịa - Vũng Tàu",
+    "Xã Đất Đỏ":
+      "Đường Lê Hồng Phong, ấp Hiệp Hòa, xã Đất Đỏ, Bà Rịa - Vũng Tàu",
     "Xã Long Điền": "Số 1939, Quốc lộ 55, xã Long Điền, Bà Rịa - Vũng Tàu",
     "Xã Long Hải": "Số 45, Hương lộ 5, xã Long Hải, Bà Rịa - Vũng Tàu",
     "Xã Phước Hải": "Ấp Hội Mỹ, xã Phước Hải, Bà Rịa - Vũng Tàu",
-    "Phường Vũng Tàu": "Số 89 Lý Thường Kiệt, Phường 1, phường Vũng Tàu, Bà Rịa - Vũng Tàu",
-    "Phường Tam Thắng": "Số 603 đường Nguyễn An Ninh, phường Tam Thắng, Bà Rịa - Vũng Tàu",
-    "Phường Phước Thắng": "Số 7A đường Nguyễn Gia Thiều, phường Phước Thắng, Bà Rịa - Vũng Tàu",
-    "Phường Rạch Dừa": "Số 219/28 Lưu Chí Hiếu, phường Rạch Dừa, Bà Rịa - Vũng Tàu",
+    "Phường Vũng Tàu":
+      "Số 89 Lý Thường Kiệt, Phường 1, phường Vũng Tàu, Bà Rịa - Vũng Tàu",
+    "Phường Tam Thắng":
+      "Số 603 đường Nguyễn An Ninh, phường Tam Thắng, Bà Rịa - Vũng Tàu",
+    "Phường Phước Thắng":
+      "Số 7A đường Nguyễn Gia Thiều, phường Phước Thắng, Bà Rịa - Vũng Tàu",
+    "Phường Rạch Dừa":
+      "Số 219/28 Lưu Chí Hiếu, phường Rạch Dừa, Bà Rịa - Vũng Tàu",
     "Xã Long Sơn": "Thôn 1, xã Long Sơn, Bà Rịa - Vũng Tàu",
-    "Xã Xuyên Mộc": "Quốc lộ 55, ấp Trang Hoàng, xã Xuyên Mộc, Bà Rịa - Vũng Tàu",
+    "Xã Xuyên Mộc":
+      "Quốc lộ 55, ấp Trang Hoàng, xã Xuyên Mộc, Bà Rịa - Vũng Tàu",
     "Xã Hoà Hội": "Tỉnh lộ 328, ấp 4, xã Hoà Hội, Bà Rịa - Vũng Tàu",
     "Xã Hòa Hiệp": "Tỉnh lộ 329, ấp Phú Bình, xã Hòa Hiệp, Bà Rịa - Vũng Tàu",
     "Xã Bàu Lâm": "Ấp 2 Đông, xã Bàu Lâm, Bà Rịa - Vũng Tàu",
     "Xã Bình Châu": "Quốc lộ 55, ấp Láng Găng, xã Bình Châu, Bà Rịa - Vũng Tàu",
     "Xã Hồ Tràm": "Hẻm 147, Quốc lộ 55, xã Hồ Tràm, Bà Rịa - Vũng Tàu",
-    "Đặc khu Côn Đảo": "Số 28, Tôn Đức Thắng, Đặc Khu Côn Đảo, Bà Rịa - Vũng Tàu"
-  }
-}
+    "Đặc khu Côn Đảo":
+      "Số 28, Tôn Đức Thắng, Đặc Khu Côn Đảo, Bà Rịa - Vũng Tàu",
+  };
+};
+
+export const costReportOptions = [
+  { label: "Lập báo cáo kinh tế - kỹ thuật", value: "lapBCKTKT" },
+  { label: "Thẩm tra báo cáo kinh tế - kỹ thuật", value: "thamTraBCKTKT" },
+  { label: "Lập kế hoạch thuê dịch vụ", value: "lapKeHoachThueDV" },
+  { label: "Thẩm tra kế hoạch thuê dịch vụ", value: "thamTraKeHoachThueDV" },
+  { label: "Lập báo cáo nghiên cứu khả thi", value: "lapBCNCKT" },
+  { label: "Thẩm tra báo cáo nghiên cứu khả thi", value: "thamTraBCNCKT" },
+];

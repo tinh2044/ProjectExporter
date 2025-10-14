@@ -5,7 +5,7 @@ import { NotepadTextIcon } from "lucide-react";
 import { findIndicesInArray } from "@/utils/formatters";
 import SelectLegal from "./SelectLegal";
 import BaseForm from "./BaseForm";
-import { getBaseRequiredKeys } from "@/services/constants";
+import { getBaseRequiredKeys, costReportOptions } from "@/services/constants";
 import { createTemplate1 } from "@/services/docx";
 import AppendixModal from "./AppendixModal";
 
@@ -59,13 +59,11 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
     searchText: text.toLowerCase(),
   }));
 
-  const appendixItemLabels: { [key: string]: string } = {
-    lapThamTraBCKTKT: "Lập/ thẩm tra báo cáo kinh tế kỹ thuật",
-    lapBCNCKT: "Lập báo cáo nghiên cứu khả thi",
-    lapKeHoachThueDV: "Lập kế hoạch thuê dịch vụ",
-    chiPhiQuanLyDuAn: "Chi phí quản lý dự án",
-    chiPhiThamDinhGia: "Chi phí thẩm định giá",
-  };
+  // Create labels mapping from costReportOptions
+  const appendixItemLabels: { [key: string]: string } = costReportOptions.reduce((acc, option) => {
+    acc[option.value] = option.label;
+    return acc;
+  }, {} as { [key: string]: string });
 
   // Reactively watch form values so UI updates and modal receives correct data
   const selectedItemsWatch = Form.useWatch("selectedItems", form) || [];
@@ -192,35 +190,14 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
               <div className="flex flex-col gap-4">
                 <div>
                   <label className="block mb-2 font-bold">
-                    Chọn loại báo cáo/chi phí:
+                    Chọn loại báo cáo chi phí:
                   </label>
                   <Form.Item name="selectedItems">
                     <Select
                       mode="multiple"
                       className="w-full"
-                      placeholder="Chọn loại báo cáo hoặc chi phí"
-                      options={[
-                        {
-                          label: "Lập/ thẩm tra báo cáo kinh tế kỹ thuật",
-                          value: "lapThamTraBCKTKT",
-                        },
-                        {
-                          label: "Lập báo cáo nghiên cứu khả thi",
-                          value: "lapBCNCKT",
-                        },
-                        {
-                          label: "Lập kế hoạch thuê dịch vụ",
-                          value: "lapKeHoachThueDV",
-                        },
-                        {
-                          label: "Chi phí quản lý dự án",
-                          value: "chiPhiQuanLyDuAn",
-                        },
-                        {
-                          label: "Chi phí thẩm định giá",
-                          value: "chiPhiThamDinhGia",
-                        },
-                      ]}
+                      placeholder="Chọn loại báo cáo chi phí"
+                      options={costReportOptions}
                     />
                   </Form.Item>
                 </div>
@@ -233,21 +210,14 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
                 >
                   {({ getFieldValue }) => {
                     const selectedItems = getFieldValue("selectedItems") || [];
-                    const itemLabels: { [key: string]: string } = {
-                      lapThamTraBCKTKT:
-                        "Lập/ thẩm tra báo cáo kinh tế kỹ thuật",
-                      lapBCNCKT: "Lập báo cáo nghiên cứu khả thi",
-                      lapKeHoachThueDV: "Lập kế hoạch thuê dịch vụ",
-                      chiPhiQuanLyDuAn: "Chi phí quản lý dự án",
-                      chiPhiThamDinhGia: "Chi phí thẩm định giá",
-                    };
-
+                    const itemLabels = appendixItemLabels;
+                    console.log(itemLabels);
                     return (
                       <div className="flex flex-col gap-4">
                         {selectedItems.map((item: string, index: number) => (
                           <Row key={item} gutter={16} className="mb-4">
                             <Col xs={24} sm={12}>
-                              <label>{itemLabels[item] || item}:</label>
+                              <label>{itemLabels[item]}:</label>
                             </Col>
                             <Col xs={24} sm={12}>
                               <Form.Item
@@ -268,13 +238,6 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
                     );
                   }}
                 </Form.Item>
-
-                {/* <Form.Item label="Ghi chú bổ sung" name="ghiChuBoSung">
-                  <TextArea
-                    rows={3}
-                    placeholder="Nhập ghi chú bổ sung về dự toán (nếu có)"
-                  />
-                </Form.Item> */}
                 <div className="flex justify-end">
                   <Button
                     type="default"

@@ -21,9 +21,9 @@ import {
   SectionType,
 } from "docx";
 import {
-  formatAdditionalstimate,
-  formatNumberWithDots,
+  formatAdditionalEstimate,
   formatYearRangeFromPicker,
+  formatNumberWithDots,
   numberToVietnameseMoney,
 } from "@/utils/formatters";
 
@@ -544,7 +544,8 @@ export const createAppendixTable = (form: FormInstance): Table => {
  */
 export const createTemplate1 = (
   form: FormInstance,
-  legalInfo: string[] = []
+  legalInfo: string[] = [],
+  itemLabels: { [key: string]: string } = {}
 ): Document => {
   const content: FileChild[] = [
     // Title
@@ -615,16 +616,17 @@ export const createTemplate1 = (
         )} đồng`
       ),
       createTextItalics(
-        ` ${numberToVietnameseMoney(form.getFieldValue("tongHopDuToan") || "")}`
+        `(${numberToVietnameseMoney(form.getFieldValue("tongHopDuToan") || "")})`
       ),
       createText(
         ", trong đó dự toán giai đoạn chuẩn bị đầu tư cụ thể như sau:"
       ),
     ]),
     ...createMultilineSections(
-      formatAdditionalstimate(
+      formatAdditionalEstimate(
         form.getFieldValue("selectedItems") || [],
-        form.getFieldValue("itemAmounts") || []
+        form.getFieldValue("itemAmounts") || [],
+        itemLabels
       ),
       createParagraphJustify
     ),
@@ -654,7 +656,8 @@ export const createTemplate1 = (
  */
 export const createTemplate2 = (
   form: FormInstance,
-  legalInfo: string[] = []
+  legalInfo: string[] = [],
+  itemLabels: { [key: string]: string } = {}
 ): Document => {
   const nguoiNhan = form.getFieldValue("nguoiNhan") || "";
   const tenDuAn = form.getFieldValue("tenDuAn") || "";
@@ -726,9 +729,10 @@ export const createTemplate2 = (
       ),
     ]),
     ...createMultilineSections(
-      formatAdditionalstimate(
+      formatAdditionalEstimate(
         form.getFieldValue("selectedItems") || [],
-        form.getFieldValue("itemAmounts") || []
+        form.getFieldValue("itemAmounts") || [],
+        itemLabels
       ),
       createParagraphJustify
     ),
@@ -872,7 +876,7 @@ export const createTemplate4 = (
  */
 export const createTemplate6 = (
   form: FormInstance,
-  legalInfo: string[] = []
+    legalInfo: string[] = []
 ): Document => {
   const nguoiNhan = form.getFieldValue("nguoiNhan") || "";
   const tenDuAn = form.getFieldValue("tenDuAn") || "";
