@@ -77,7 +77,7 @@ export default function CategoryDetails({
     {
       title: "Loại chi phí",
       dataIndex: "costType",
-      width: 100,
+      width: 200,
       render: (_: unknown, record: EstimateCostRow) => {
         const availableOptions = getAvailableOptions(record.id);
         const hasNoOptions = availableOptions.length === 0 && !record.costType;
@@ -111,7 +111,7 @@ export default function CategoryDetails({
     {
       title: "Diễn giải",
       dataIndex: "formula",
-      width: 200,
+      width: 150,
       render: (_: unknown, record: EstimateCostRow) => (
         <div className="text-left">{record.formula}</div>
       ),
@@ -119,9 +119,9 @@ export default function CategoryDetails({
     {
       title: "Số tiền (VNĐ)",
       dataIndex: "money",
-      width: 150,
+      width: 120,
       render: (_: unknown, record: EstimateCostRow) => (
-        <div className="text-right font-semibold text-blue-600 text-lg">
+        <div className="text-left">
           {formatNumberWithDots(record.money)} VNĐ
         </div>
       ),
@@ -129,7 +129,7 @@ export default function CategoryDetails({
     {
       title: "Ghi chú",
       dataIndex: "note",
-      width: 400,
+      width: 300,
       render: (_: unknown, record: EstimateCostRow) => (
         <div className="text-left" dangerouslySetInnerHTML={{ __html: record.note || "" }}>
           
@@ -158,7 +158,10 @@ export default function CategoryDetails({
           type="dashed"
           icon={<PlusOutlined />}
           onClick={() => onAddRow(category.id)}
-          disabled={category.rows.filter(row => row.costType).length >= costReportOptions.length}
+          disabled={
+            category.rows.filter((row) => row.costType).length >=
+            costReportOptions.length
+          }
         >
           Thêm chi phí
         </Button>
@@ -172,31 +175,17 @@ export default function CategoryDetails({
         size="small"
         bordered
         scroll={{ x: "max-content" }}
-        
       />
 
-      {/* <div className="text-right space-y-2">
-        <div className="flex items-center justify-end space-x-2">
-          <div className="text-sm text-gray-600">
-            Tổng chi tiết: {formatNumberWithDots(
-              category.rows.reduce((sum, row) => sum + (row.money || 0), 0)
-            )} VNĐ
-          </div>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              const calculatedTotal = category.rows.reduce((sum, row) => sum + (row.money || 0), 0);
-              onUpdateCategory(category.id, "money", calculatedTotal);
-            }}
-          >
-            Áp dụng
-          </Button>
-        </div>
+      <div className="text-right space-y-2">
         <div className="text-lg font-semibold">
-          Tổng danh mục: {formatNumberWithDots(category.money)} VNĐ
+          Tổng cộng:
+          {formatNumberWithDots(
+            category.rows.reduce((sum, row) => sum + (row.money || 0), 0)
+          )}{" "}
+          VNĐ
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }

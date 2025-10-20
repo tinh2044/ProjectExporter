@@ -3,7 +3,10 @@ import { costReportOptions, decision1688Data } from "@/services/constants";
 import type { EstimateCostCategory } from "@/types";
 import { formatNumberWithDots } from "./formatters";
 
-// Always return a number to avoid union types at call sites
+const round = (num:number, decimals = 0) => {
+    const factor = Math.pow(10, decimals);
+    return Math.round(num * factor) / factor;
+};
 const getInterpolatedRate = (
   rates: { costMilestone: number; rate: number }[] | undefined,
   cost: number
@@ -29,7 +32,7 @@ const getInterpolatedRate = (
       const Na = upperBound.rate;
 
       const Nt = Nb - ((Nb - Na) / (Ga - Gb)) * (Gt - Gb);
-      return Nt;
+      return round(Nt, 4);
     }
   }
 
