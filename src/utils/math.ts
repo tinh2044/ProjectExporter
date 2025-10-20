@@ -151,7 +151,7 @@ export const calculateCost = (
       details.formula = `
       [40% x (${dot2Percent(rate4)}% x Gtb) + 70% x (${dot2Percent(
         rate5
-      )}% x Gtb) + 70% x (${dot2Percent(rate6)}% x Gtb)] + 8% VAT
+      )}% x Gtb) + 70% x (${dot2Percent(rate6)}% x Gtb)] + ${vat}% VAT
       `;
       details.note = `
       - Chi phí thiết bị trước thuế (Gtb): ${moneyFormatted} đồng <br>
