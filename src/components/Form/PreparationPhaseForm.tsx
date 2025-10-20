@@ -1,4 +1,4 @@
-import { Form, Input, Row, Col, type FormInstance, Select, Button } from "antd";
+import { Form, Input, Row, Col, Button, type FormInstance } from "antd";
 import { useState, useEffect } from "react";
 import { loadLegalInfo } from "@/services/legal";
 import { NotepadTextIcon } from "lucide-react";
@@ -8,6 +8,8 @@ import BaseForm from "./BaseForm";
 import { getBaseRequiredKeys, costReportOptions } from "@/services/constants";
 import { createTemplate1 } from "@/services/docx";
 import AppendixModal from "./AppendixModal";
+import EstimateCosts from "@/components/EstimateCosts";
+import EstimateNotes from "./EstimateNotes";
 
 
 const { TextArea } = Input;
@@ -27,6 +29,7 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [appendixOpen, setAppendixOpen] = useState(false);
+  const [estimateCostsOpen, setEstimateCostsOpen] = useState(false);
 
   useEffect(() => {
     fetchLegalData();
@@ -186,70 +189,38 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
           </Col>
 
           <Col xs={24}>
-            <Form.Item label="Ghi chú dự toán">
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="block mb-2 font-bold">
-                    Chọn loại báo cáo chi phí:
-                  </label>
-                  <Form.Item name="selectedItems">
-                    <Select
-                      mode="multiple"
-                      className="w-full"
-                      placeholder="Chọn loại báo cáo chi phí"
-                      options={costReportOptions}
-                    />
-                  </Form.Item>
-                </div>
-
-                <Form.Item
-                  noStyle
-                  shouldUpdate={(prev, curr) =>
-                    prev.selectedItems !== curr.selectedItems
-                  }
-                >
-                  {({ getFieldValue }) => {
-                    const selectedItems = getFieldValue("selectedItems") || [];
-                    const itemLabels = appendixItemLabels;
-                    console.log(itemLabels);
-                    return (
-                      <div className="flex flex-col gap-4">
-                        {selectedItems.map((item: string, index: number) => (
-                          <Row key={item} gutter={16} className="mb-4">
-                            <Col xs={24} sm={12}>
-                              <label>{itemLabels[item]}:</label>
-                            </Col>
-                            <Col xs={24} sm={12}>
-                              <Form.Item
-                                name={["itemAmounts", index]}
-                                noStyle
-                                className="w-full"
-                              >
-                                <Input
-                                  type="number"
-                                  placeholder="Nhập số tiền"
-                                  addonAfter="VNĐ"
-                                />
-                              </Form.Item>
-                            </Col>
-                          </Row>
-                        ))}
-                      </div>
-                    );
-                  }}
-                </Form.Item>
-                <div className="flex justify-end">
-                  <Button
-                    type="default"
-                    onClick={() => setAppendixOpen(true)}
-                    disabled={!selectedItemsWatch.length}
-                  >
-                    Tạo Phụ lục
-                  </Button>
-                </div>
-              </div>
-            </Form.Item>
+            <EstimateNotes
+              form={form}
+              itemLabels={appendixItemLabels}
+              onOpenAppendix={() => setAppendixOpen(true)}
+            />
           </Col>
+          
+          <Col xs={24}>
+            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Dự toán chi phí</h3>
+                <p className="text-gray-600">Quản lý các loại chi phí dự toán</p>
+              </div>
+              <Button
+                type="primary"
+                onClick={() => setEstimateCostsOpen(true)}
+              >
+                Mở dự toán chi phí
+              </Button>
+            </div>
+          </Col>
+
+          <Col xs={24}>
+            <EstimateCosts
+              form={form}
+              fieldName="estimateCosts"
+              open={estimateCostsOpen}
+              onClose={() => setEstimateCostsOpen(false)}
+              title="Dự toán chi phí"
+            />
+          </Col>
+
           <Col xs={24}>
             <AppendixModal
               form={form}

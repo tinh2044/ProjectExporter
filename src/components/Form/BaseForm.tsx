@@ -31,7 +31,6 @@ export default function BaseForm(props: BaseFormProps) {
     form,
     title,
     requiredKeys,
-    // legalFieldKey,
     legalList,
     outputFileName,
     submitText,
@@ -98,15 +97,6 @@ export default function BaseForm(props: BaseFormProps) {
           items={collapseItems}
           defaultActiveKey={collapseDefaultActiveKey}
           ghost
-          // expandIcon={({ isActive }) => (
-          //   <div
-          //     className={`${
-          //       isActive ? "rotate-90" : "rotate-0"
-          //     } translate-0.5 text-1xl`}
-          //   >
-          //     <RightCircleOutlined className="text-1xl" />
-          //   </div>
-          // )}
         />
       </Card>
     );

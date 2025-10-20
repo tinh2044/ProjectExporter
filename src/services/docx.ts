@@ -26,6 +26,7 @@ import {
   formatNumberWithDots,
   numberToVietnameseMoney,
 } from "@/utils/formatters";
+import type { AppendixRow } from "@/components/Form/AppendixModal";
 
 const CONSTANTS = {
   FONT: "Times New Roman",
@@ -78,7 +79,7 @@ const baseParagraphOpts: IParagraphOptions = {
 };
 
 /**
- * Tạo Table với options tùy chỉnh
+ * Create table with custom options
  */
 const createTable = (
   rows: TableRow[],
@@ -92,7 +93,7 @@ const createTable = (
 };
 
 /**
- * Tạo TableRow với options tùy chỉnh
+ * Create TableRow with custom options
  */
 const createTableRow = (
   cells: TableCell[],
@@ -105,7 +106,7 @@ const createTableRow = (
 };
 
 /**
- * Tạo TableCell với options tùy chỉnh
+ * Create TableCell with custom options
  */
 const createTableCell = (
   children: FileChild[],
@@ -118,7 +119,7 @@ const createTableCell = (
   });
 };
 /**
- * Tạo TextRun với options tùy chỉnh
+ * Create TextRun with custom options
  */
 const createText = (text: string, options?: Partial<IRunOptions>): TextRun => {
   return new TextRun({
@@ -129,9 +130,9 @@ const createText = (text: string, options?: Partial<IRunOptions>): TextRun => {
 };
 
 /**
- * Tạo TextRun in đậm
+ * Create TextRun in bold
  */
-const createTextBold = (
+const textBold = (
   text: string,
   options?: Partial<IRunOptions>
 ): TextRun => {
@@ -139,9 +140,9 @@ const createTextBold = (
 };
 
 /**
- * Tạo TextRun in nghiêng
+ * Create TextRun in italics
  */
-const createTextItalics = (
+const textItalics = (
   text: string,
   options?: Partial<IRunOptions>
 ): TextRun => {
@@ -149,7 +150,7 @@ const createTextItalics = (
 };
 
 /**
- * Tạo Paragraph với nhiều input types
+ * Create Paragraph with multiple input types
  */
 const createParagraph = (
   content: string | TextRun | TextRun[],
@@ -174,9 +175,9 @@ const createParagraph = (
 };
 
 /**
- * Tạo Paragraph căn đều 2 bên
+ * Create Paragraph with both sides aligned
  */
-const createParagraphJustify = (
+const paragraphJustify = (
   content: string | TextRun | TextRun[],
   paragraphOpts?: Partial<IParagraphOptions>,
   runOpts?: Partial<IRunOptions>
@@ -189,9 +190,9 @@ const createParagraphJustify = (
 };
 
 /**
- * Tạo Paragraph căn trái
+ * Create Paragraph with left alignment
  */
-const createParagraphLeft = (
+const paragraphLeft = (
   content: string | TextRun | TextRun[],
   paragraphOpts?: Partial<IParagraphOptions>,
   runOpts?: Partial<IRunOptions>
@@ -204,9 +205,9 @@ const createParagraphLeft = (
 };
 
 /**
- * Tạo Paragraph không thụt lề
+ * Create Paragraph with no indent
  */
-const createParagraphNoIndent = (
+const paragraphNoIndent = (
   content: string | TextRun | TextRun[],
   paragraphOpts?: Partial<IParagraphOptions>,
   runOpts?: Partial<IRunOptions>
@@ -222,21 +223,21 @@ const createParagraphNoIndent = (
 };
 
 /**
- * Tạo header chuẩn cho tất cả document
+ * Create header standard for all documents
  */
-const createDocumentHeader = (): Table => {
+const documentHeader = (): Table => {
   return createTable([
     createTableRow([
       createTableCell(
         [
-          createParagraphNoIndent(
+          paragraphNoIndent(
             "SỞ GIÁO DỤC VÀ ĐÀO TẠO THÀNH PHỐ HỒ CHÍ MINH",
             { spacing: { after: 0, before: 0 } }
           ),
-          createParagraphNoIndent(createTextBold("PHÒNG..........."), {
+          paragraphNoIndent(textBold("PHÒNG..........."), {
             spacing: { after: 0, before: 0 },
           }),
-          createParagraphNoIndent("Số:     /TTr-.......", {
+          paragraphNoIndent("Số:     /TTr-.......", {
             spacing: { after: 0, before: 0 },
           }),
         ],
@@ -244,16 +245,16 @@ const createDocumentHeader = (): Table => {
       ),
       createTableCell(
         [
-          createParagraphNoIndent(
-            createTextBold("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM"),
+          paragraphNoIndent(
+            textBold("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM"),
             { spacing: { after: 0, before: 0 } }
           ),
-          createParagraphNoIndent(
-            createTextBold("Độc lập - Tự do - Hạnh phúc"),
+          paragraphNoIndent(
+            textBold("Độc lập - Tự do - Hạnh phúc"),
             { spacing: { after: 0, before: 0 } }
           ),
-          createParagraphNoIndent(
-            createTextItalics(
+          paragraphNoIndent(
+            textItalics(
               `TP. Hồ Chí Minh, ngày     tháng     năm ${new Date().getFullYear()}`
             ),
             { spacing: { after: 0, before: 0 } }
@@ -266,9 +267,9 @@ const createDocumentHeader = (): Table => {
 };
 
 /**
- * Tạo footer chuẩn với chữ ký
+ * Create footer standard with signature
  */
-const createDocumentFooter = (
+const documentFooter = (
   leftContent: string[],
   rightTitle: string = "………"
 ): Table => {
@@ -276,10 +277,10 @@ const createDocumentFooter = (
     createTableRow([
       createTableCell(
         [
-          createParagraphLeft(
+          paragraphLeft(
             leftContent.map((text, idx) =>
               idx === 0
-                ? createTextBold(text, { italics: true, break: 1 })
+                ? textBold(text, { italics: true, break: 1 })
                 : createText(text, { break: 1 })
             )
           ),
@@ -292,7 +293,7 @@ const createDocumentFooter = (
             Array(6)
               .fill(null)
               .map((_, idx) =>
-                createTextBold(idx === 0 ? rightTitle : "", { break: 1 })
+                textBold(idx === 0 ? rightTitle : "", { break: 1 })
               )
           ),
         ],
@@ -303,7 +304,7 @@ const createDocumentFooter = (
 };
 
 /**
- * Tạo Document với header và content
+ * Create Document with header and content
  */
 export const createDocument = (
   children: FileChild[],
@@ -326,14 +327,14 @@ export const createDocument = (
           },
           type: SectionType.NEXT_PAGE,
         },
-        children: [createDocumentHeader(), ...children],
+        children: [documentHeader(), ...children],
       },
       {
         properties: {
           page: {
             size: {
               orientation: PageOrientation.LANDSCAPE,
-              // Hoặc dùng string: orientation: "landscape"
+              // Or use string: orientation: "landscape"
               // width: 16838, // A4 landscape width
               // height: 11906, // A4 landscape height
             },
@@ -348,11 +349,11 @@ export const createDocument = (
         children: appendix
           ? [
               createParagraph(
-                createTextBold("PHỤ LỤC - DỰ TOÁN CHI PHÍ MUA SẮM"),
+                textBold("PHỤ LỤC - DỰ TOÁN CHI PHÍ MUA SẮM"),
                 { pageBreakBefore: true }
               ),
               createParagraph(
-                createTextItalics(
+                textItalics(
                   `(Kèm theo Tờ trình ngày     tháng    năm ${new Date().getFullYear()})`
                 )
               ),
@@ -365,7 +366,7 @@ export const createDocument = (
 };
 
 /**
- * Tạo danh sách căn cứ pháp lý
+ * Create legal basis list
  */
 const createLegalBasis = (
   legalInfoIndices: number[],
@@ -373,15 +374,15 @@ const createLegalBasis = (
 ): Paragraph[] => {
   return legalInfoIndices
     .map((index) => legalInfo[index])
-    .map((item) => createParagraphJustify(createTextItalics(item)));
+    .map((item) => paragraphJustify(textItalics(item)));
 };
 
 /**
- * Tạo các section từ multiline text
+ * Create sections from multiline text
  */
 const createMultilineSections = (
   text: string,
-  createFn: typeof createParagraphJustify
+  createFn: typeof paragraphJustify
 ): Paragraph[] => {
   return text
     .split("\n")
@@ -390,64 +391,68 @@ const createMultilineSections = (
 };
 
 /**
- * Tạo phần thông tin dự án cơ bản
+ * Create basic project information
  */
 const createProjectBasicInfo = (form: FormInstance): Paragraph[] => {
   return [
-    createParagraphJustify([
+    paragraphJustify([
       createText("- Tên dự án: "),
       createText(form.getFieldValue("tenDuAn") || ""),
     ]),
-    createParagraphJustify([
+    paragraphJustify([
       createText("- Tổng dự toán mua sắm: "),
-      createTextBold(
+      textBold(
         `${formatNumberWithDots(
           form.getFieldValue("tongHopDuToan") || ""
         )} đồng`
       ),
-      createTextItalics(
+      textItalics(
         ` (${numberToVietnameseMoney(
           form.getFieldValue("tongHopDuToan") || ""
         )})`
       ),
     ]),
-    createParagraphJustify([
+    paragraphJustify([
       createText("- Chủ đầu tư: "),
       createText(form.getFieldValue("chuDauTu") || ""),
     ]),
-    createParagraphLeft([
+    paragraphLeft([
       createText("- Nguồn vốn: "),
       createText(form.getFieldValue("nguonKinhPhi") || ""),
     ]),
-    createParagraphLeft([
+    paragraphLeft([
       createText("- Thời gian thực hiện: "),
       createText(
         formatYearRangeFromPicker(form.getFieldValue("thoiGian")) || ""
       ),
     ]),
-    createParagraphJustify([
+    paragraphJustify([
       createText("- Địa điểm thực hiện: "),
       createText(form.getFieldValue("diaDiem") || ""),
     ]),
-    createParagraphJustify([
+    paragraphJustify([
       createText("- Quy mô thực hiện: "),
       createText(form.getFieldValue("quyMo") || ""),
     ]),
   ];
 };
 
+/**
+ * Create appendix table
+ */
 export const createAppendixTable = (form: FormInstance): Table => {
   const appendixRows = form.getFieldValue("appendixRows") || [];
+  // console.log(appendixRows)
 
   const WIDTHS = {
-    STT: 1000,
+    STT: 1000,  
     NOI_DUNG: 2400,
     DIEN_GIAI: 2000,
     GIA_TRI: 2100,
     GHI_CHU: 8700,
   };
 
-  // Helper: Create cell
+  // Helper: Create cell with custom options
   const cell = (content: string) => {
     return new TableCell({
       children: [
@@ -503,14 +508,13 @@ export const createAppendixTable = (form: FormInstance): Table => {
 
   // Data rows
   const dataRows = appendixRows.map(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (row: any, index: number) =>
+    (row: AppendixRow) =>
       new TableRow({
         children: [
-          cell(String(row.stt || index + 1)),
-          cell(row.noiDung || ""),
+          cell(String(row.stt)),
+          cell(row.noiDung),
           cell(row.dienGiai || ""),
-          cell(formatNumberWithDots(row.giaTriTamTinh || 0)),
+          cell(formatNumberWithDots(row.giaTriTamTinh)),
           cell(row.ghiChu || ""),
         ],
       })
@@ -539,8 +543,9 @@ export const createAppendixTable = (form: FormInstance): Table => {
   });
 };
 
+
 /**
- * Template 1: Tờ trình phê duyệt dự toán
+ * Template 1
  */
 export const createTemplate1 = (
   form: FormInstance,
@@ -549,11 +554,11 @@ export const createTemplate1 = (
 ): Document => {
   const content: FileChild[] = [
     // Title
-    createParagraph(createTextBold("TỜ TRÌNH"), {
+    createParagraph(textBold("TỜ TRÌNH"), {
       spacing: { after: 100, before: 500 },
     }),
     createParagraph(
-      createTextBold(
+      textBold(
         `V/v đề nghị phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án "${
           form.getFieldValue("tenDuAn") || ""
         }"`
@@ -563,59 +568,59 @@ export const createTemplate1 = (
     createParagraph(""),
 
     // 1. Căn cứ lập dự toán
-    createParagraphLeft(createTextBold("1. Căn cứ lập dự toán")),
+    paragraphLeft(textBold("1. Căn cứ lập dự toán")),
     ...createLegalBasis(form.getFieldValue("thongTinPhapLiChuanBi"), legalInfo),
-    createParagraphJustify(
+    paragraphJustify(
       "Căn cứ vào nhu cầu thực tế của đơn vị.",
       {},
       { italics: true }
     ),
 
     // 2-4. Các phần khác
-    createParagraphLeft(createTextBold("2. Mục tiêu đầu tư")),
+    paragraphLeft(textBold("2. Mục tiêu đầu tư")),
     ...createMultilineSections(
       form.getFieldValue("mucTieu") || "",
-      createParagraphJustify
+      paragraphJustify
     ),
 
-    createParagraphLeft(createTextBold("3. Quy mô thực hiện")),
+    paragraphLeft(textBold("3. Quy mô thực hiện")),
     ...createMultilineSections(
       form.getFieldValue("quyMo") || "",
-      createParagraphLeft
+      paragraphLeft
     ),
 
-    createParagraphLeft(createTextBold("4. Sự cần thiết đầu tư")),
+    paragraphLeft(textBold("4. Sự cần thiết đầu tư")),
     ...createMultilineSections(
       form.getFieldValue("suCanThiet") || "",
-      createParagraphJustify
+      paragraphJustify
     ),
 
     // Thông tin tài chính
-    createParagraphLeft([
-      createTextBold("1. Nguồn kinh phí: "),
+    paragraphLeft([
+      textBold("1. Nguồn kinh phí: "),
       createText(form.getFieldValue("nguonKinhPhi") || ""),
     ]),
-    createParagraphLeft([
-      createTextBold("2. Thời gian thực hiện: "),
+    paragraphLeft([
+      textBold("2. Thời gian thực hiện: "),
       createText(
         formatYearRangeFromPicker(form.getFieldValue("thoiGian")) || ""
       ),
     ]),
-    createParagraphJustify([
-      createTextBold("3. Địa điểm thực hiện: "),
+    paragraphJustify([
+      textBold("3. Địa điểm thực hiện: "),
       createText(form.getFieldValue("diaDiem") || ""),
     ]),
 
     // Dự toán
-    createParagraphLeft(createTextBold("4. Bảng tổng hợp dự toán")),
-    createParagraphJustify([
+    paragraphLeft(textBold("4. Bảng tổng hợp dự toán")),
+    paragraphJustify([
       createText("Tổng dự toán dự án: "),
-      createTextBold(
+      textBold(
         `${formatNumberWithDots(
           form.getFieldValue("tongHopDuToan") || ""
         )} đồng`
       ),
-      createTextItalics(
+      textItalics(
         `(${numberToVietnameseMoney(form.getFieldValue("tongHopDuToan") || "")})`
       ),
       createText(
@@ -628,15 +633,15 @@ export const createTemplate1 = (
         form.getFieldValue("itemAmounts") || [],
         itemLabels
       ),
-      createParagraphJustify
+      paragraphJustify
     ),
     createParagraph(
-      createTextItalics("(Chi tiết dự toán theo Phụ lục đính kèm)")
+      textItalics("(Chi tiết dự toán theo Phụ lục đính kèm)")
     ),
 
     // Kiến nghị
-    createParagraphLeft(createTextBold("5. Kiến nghị")),
-    createParagraphJustify(
+    paragraphLeft(textBold("5. Kiến nghị")),
+    paragraphJustify(
       `Trên cơ sở những nội dung phân tích nêu trên, kính đề nghị ${
         form.getFieldValue("nguoiNhan") || ""
       } xem xét, phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án "${
@@ -645,14 +650,14 @@ export const createTemplate1 = (
     ),
 
     // Footer
-    createDocumentFooter(["Nơi nhận:", "- Như trên;", "- Lưu VT."], "………"),
+    documentFooter(["Nơi nhận:", "- Như trên;", "- Lưu VT."], "………"),
   ];
 
   return createDocument(content, createAppendixTable(form));
 };
 
 /**
- * Template 2: Quyết định phê duyệt dự toán
+ * Template 2
  */
 export const createTemplate2 = (
   form: FormInstance,
@@ -665,11 +670,11 @@ export const createTemplate2 = (
 
   const content: FileChild[] = [
     // Header
-    createParagraph(createTextBold("QUYẾT ĐỊNH"), {
+    createParagraph(textBold("QUYẾT ĐỊNH"), {
       spacing: { after: 100, before: 500 },
     }),
     createParagraph(
-      createTextBold(
+      textBold(
         `Phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}"`
       )
     ),
@@ -678,48 +683,48 @@ export const createTemplate2 = (
 
     // Căn cứ pháp lý
     ...createLegalBasis(form.getFieldValue("thongTinPhapLiDuToan"), legalInfo),
-    createParagraphJustify([
-      createTextItalics("Xét "),
-      createTextItalics(
+    paragraphJustify([
+      textItalics("Xét "),
+      textItalics(
         `Tờ trình số ……/TTr- …… ngày … tháng … năm ${currentYear}  `,
         { color: "FF0000" }
       ),
-      createTextItalics(
+      textItalics(
         `của ……….. về phê dự toán giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}"`
       ),
     ]),
     createParagraph(""),
 
     // Quyết định
-    createParagraph(createTextBold("QUYẾT ĐỊNH"), {
+    createParagraph(textBold("QUYẾT ĐỊNH"), {
       spacing: { after: 800, before: 500 },
     }),
 
     // Điều 1
-    createParagraphJustify([
-      createTextBold("Điều 1. "),
+    paragraphJustify([
+      textBold("Điều 1. "),
       createText(
         `Phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}" với các nội dung chính sau:`
       ),
     ]),
 
     // Nội dung quyết định
-    createParagraphJustify([
-      createTextBold("1) Tên dự án: "),
+    paragraphJustify([
+      textBold("1) Tên dự án: "),
       createText(tenDuAn),
     ]),
-    createParagraphJustify([
-      createTextBold("2) Chủ đầu tư: "),
+    paragraphJustify([
+      textBold("2) Chủ đầu tư: "),
       createText(form.getFieldValue("chuDauTu") || ""),
     ]),
-    createParagraphJustify([
-      createTextBold("3) Tổng dự toán mua sắm: "),
-      createTextBold(
+    paragraphJustify([
+      textBold("3) Tổng dự toán mua sắm: "),
+      textBold(
         `${formatNumberWithDots(
           form.getFieldValue("tongHopDuToan") || ""
         )} đồng`
       ),
-      createTextItalics(
+      textItalics(
         ` (${numberToVietnameseMoney(
           form.getFieldValue("tongHopDuToan") || ""
         )})`
@@ -734,47 +739,47 @@ export const createTemplate2 = (
         form.getFieldValue("itemAmounts") || [],
         itemLabels
       ),
-      createParagraphJustify
+      paragraphJustify
     ),
     createParagraph(
-      createTextItalics("(Chi tiết dự toán theo Phụ lục đính kèm)")
+      textItalics("(Chi tiết dự toán theo Phụ lục đính kèm)")
     ),
 
-    createParagraphLeft([
-      createTextBold("4) Nguồn vốn: "),
+    paragraphLeft([
+      textBold("4) Nguồn vốn: "),
       createText(form.getFieldValue("nguonKinhPhi") || ""),
     ]),
-    createParagraphLeft([
-      createTextBold("5) Thời gian thực hiện: "),
+    paragraphLeft([
+      textBold("5) Thời gian thực hiện: "),
       createText(
         formatYearRangeFromPicker(form.getFieldValue("thoiGian")) || ""
       ),
     ]),
-    createParagraphJustify([
-      createTextBold("6) Địa điểm thực hiện: "),
+    paragraphJustify([
+      textBold("6) Địa điểm thực hiện: "),
       createText(form.getFieldValue("diaDiem") || ""),
     ]),
-    createParagraphJustify([
-      createTextBold("7) Quy mô thực hiện: "),
+    paragraphJustify([
+      textBold("7) Quy mô thực hiện: "),
       createText(form.getFieldValue("quyMo") || ""),
     ]),
 
     // Điều 2 & 3
-    createParagraphJustify([
-      createTextBold("Điều 2. "),
+    paragraphJustify([
+      textBold("Điều 2. "),
       createText(
         "Giao phòng ………… triển khai thực hiện theo đúng quy định hiện hành của nhà nước."
       ),
     ]),
-    createParagraphJustify([
-      createTextBold("Điều 3. "),
+    paragraphJustify([
+      textBold("Điều 3. "),
       createText(
         "Quyết định có hiệu lực kể từ ngày ký. Phòng ……… và các đơn vị có liên quan chịu trách nhiệm thực hiện Quyết định này./."
       ),
     ]),
 
     // Footer
-    createDocumentFooter(
+    documentFooter(
       ["Nơi nhận:", "- Như trên;", "- Lưu: VT."],
       "GIÁM ĐỐC"
     ),
@@ -785,7 +790,7 @@ export const createTemplate2 = (
 };
 
 /**
- * Template 4: Tờ trình phê duyệt kế hoạch lựa chọn nhà thầu
+ * Template 4
  */
 export const createTemplate4 = (
   form: FormInstance,
@@ -794,14 +799,15 @@ export const createTemplate4 = (
   const nguoiNhan = form.getFieldValue("nguoiNhan") || "";
   const tenDuAn = form.getFieldValue("tenDuAn") || "";
   const currentYear = new Date().getFullYear();
+  // createWorkValueTable(form)
 
   const content: FileChild[] = [
     // Header
-    createParagraph(createTextBold("TỜ TRÌNH"), {
+    createParagraph(textBold("TỜ TRÌNH"), {
       spacing: { after: 100, before: 500 },
     }),
     createParagraph(
-      createTextBold(
+      textBold(
         `Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}"`
       )
     ),
@@ -809,21 +815,21 @@ export const createTemplate4 = (
     createParagraph(""),
 
     // Giới thiệu
-    createParagraphJustify(
+    paragraphJustify(
       `Phòng ………… kính trình Giám đốc xem xét, phê duyệt kế hoạch lựa chọn nhà thầu dự án "${tenDuAn}" trên cơ sở những nội dung dưới đây:`
     ),
 
     // I. Mô tả tóm tắt dự toán
-    createParagraphLeft(createTextBold("I. Mô tả tóm tắt dự toán")),
+    paragraphLeft(textBold("I. Mô tả tóm tắt dự toán")),
     ...createProjectBasicInfo(form),
 
     // II. Căn cứ pháp lý
-    createParagraphLeft(createTextBold("II. Căn cứ pháp lý")),
+    paragraphLeft(textBold("II. Căn cứ pháp lý")),
     ...createLegalBasis(
       form.getFieldValue("thongTinPhapLiChonNhaThau"),
       legalInfo
     ),
-    createParagraphJustify([
+    paragraphJustify([
       createText("Căn cứ "),
       createText(
         `Quyết định số ………/QĐ- ..... ngày … tháng … năm ${currentYear}`,
@@ -835,22 +841,22 @@ export const createTemplate4 = (
     ]),
 
     // III. Phần công việc đã thực hiện
-    createParagraphLeft([
-      createTextBold("III. Phần công việc đã thực hiện: "),
+    paragraphLeft([
+      textBold("III. Phần công việc đã thực hiện: "),
       createText(form.getFieldValue("congViecDaThucHien") || ""),
     ]),
 
     // IV. Phần công việc không áp dụng
-    createParagraphLeft([
-      createTextBold(
+    paragraphLeft([
+      textBold(
         "IV. Phần công việc không áp dụng được một trong các hình thức lựa chọn nhà thầu: "
       ),
       createText(form.getFieldValue("congViecKhongApDung") || ""),
     ]),
 
     // V. Phần công việc thuộc kế hoạch
-    createParagraphLeft([
-      createTextBold("V. Phần công việc thuộc kế hoạch lựa chọn nhà thầu: "),
+    paragraphLeft([
+      textBold("V. Phần công việc thuộc kế hoạch lựa chọn nhà thầu: "),
       ...form
         .getFieldValue("congViecKeHoach")
         .split("\n")
@@ -858,21 +864,21 @@ export const createTemplate4 = (
     ]),
 
     // VII. Kiến nghị
-    createParagraphLeft(createTextBold("VII. Kiến nghị")),
-    createParagraphJustify(
+    paragraphLeft(textBold("VII. Kiến nghị")),
+    paragraphJustify(
       `Trên cơ sở những nội dung phân tích nêu trên, kính trình ${nguoiNhan} xem xét, phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}"./.`
     ),
-    createParagraphLeft("Kính trình Giám đốc xem xét, quyết định./."),
+    paragraphLeft("Kính trình Giám đốc xem xét, quyết định./."),
 
     // Footer
-    createDocumentFooter(["Nơi nhận:", "- Như trên;", "- Lưu VT."], "………"),
+    documentFooter(["Nơi nhận:", "- Như trên;", "- Lưu VT."], "………"),
   ];
 
   return createDocument(content);
 };
 
 /**
- * Template 6: Quyết định phê duyệt kế hoạch lựa chọn nhà thầu
+ * Template 6
  */
 export const createTemplate6 = (
   form: FormInstance,
@@ -884,15 +890,15 @@ export const createTemplate6 = (
 
   const content: FileChild[] = [
     // Header
-    createParagraph(createTextBold("QUYẾT ĐỊNH"), {
+    createParagraph(textBold("QUYẾT ĐỊNH"), {
       spacing: { after: 100, before: 500 },
     }),
     createParagraph(
-      createTextBold(
+      textBold(
         `Về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}"`
       )
     ),
-    createParagraph(createTextBold(`Kính gửi: ${nguoiNhan.toUpperCase()}`)),
+    createParagraph(textBold(`Kính gửi: ${nguoiNhan.toUpperCase()}`)),
     createParagraph(""),
 
     // Căn cứ pháp lý
@@ -900,50 +906,50 @@ export const createTemplate6 = (
       form.getFieldValue("pheDuyetPhapLiDuyetNhaThau"),
       legalInfo
     ),
-    createParagraphJustify([
-      createTextItalics("Căn cứ "),
-      createTextItalics(
+    paragraphJustify([
+      textItalics("Căn cứ "),
+      textItalics(
         `Quyết định số ………/QĐ- ..... ngày … tháng … năm ${currentYear}`,
         { color: "FF0000" }
       ),
-      createTextItalics(
+      textItalics(
         ` của ${nguoiNhan} về phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}";`
       ),
     ]),
-    createParagraphJustify([
-      createTextItalics("Theo đề nghị của phòng ......... tại Tờ trình "),
-      createTextItalics(`ngày     tháng    năm ${currentYear}`, {
+    paragraphJustify([
+      textItalics("Theo đề nghị của phòng ......... tại Tờ trình "),
+      textItalics(`ngày     tháng    năm ${currentYear}`, {
         color: "FF0000",
         highlight: "yellow",
       }),
-      createTextItalics(
+      textItalics(
         ` về phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}";`
       ),
     ]),
 
     // Quyết định
-    createParagraph(createTextBold("QUYẾT ĐỊNH"), {
+    createParagraph(textBold("QUYẾT ĐỊNH"), {
       spacing: { after: 300, before: 500 },
     }),
 
     // Điều 1
-    createParagraphJustify([
-      createTextBold("Điều 1. "),
+    paragraphJustify([
+      textBold("Điều 1. "),
       createText(
         `Phê duyệt kế hoạch lựa chọn nhà thầu giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}" với nội dung theo Phụ lục đính kèm.`
       ),
     ]),
 
     // Điều 2
-    createParagraphJustify([
-      createTextBold("Điều 2. "),
+    paragraphJustify([
+      textBold("Điều 2. "),
       createText(
         "Quyết định này có hiệu lực thi hành kể từ ngày ký. Phòng …….. và Trưởng các đơn vị có liên quan chịu trách nhiệm thực hiện Quyết định này./."
       ),
     ]),
 
     // Footer
-    createDocumentFooter(
+    documentFooter(
       ["Nơi nhận:", "- Như Điều 3;", "- Lưu: VT."],
       "GIÁM ĐỐC"
     ),

@@ -430,10 +430,408 @@ export const getDistrictAdminCenter = () => {
 };
 
 export const costReportOptions = [
-  { label: "Lập báo cáo kinh tế - kỹ thuật", value: "lapBCKTKT" },
-  { label: "Thẩm tra báo cáo kinh tế - kỹ thuật", value: "thamTraBCKTKT" },
-  { label: "Lập kế hoạch thuê dịch vụ", value: "lapKeHoachThueDV" },
-  { label: "Thẩm tra kế hoạch thuê dịch vụ", value: "thamTraKeHoachThueDV" },
-  { label: "Lập báo cáo nghiên cứu khả thi", value: "lapBCNCKT" },
-  { label: "Thẩm tra báo cáo nghiên cứu khả thi", value: "thamTraBCNCKT" },
+  {
+    value: "quanLyDuAn",
+    label: "Chi phí quản lý dự án",
+    calculationType: "standard",
+    tableKey: "1",
+  },
+  {
+    value: "lapBaoCaoNghienCuuKhaThi",
+    label: "Lập báo cáo nghiên cứu khả thi",
+    calculationType: "standard",
+    tableKey: "2",
+  },
+  {
+    value: "thamTraBaoCaoNghienCuuKhaThi",
+    label: "Thẩm tra báo cáo nghiên cứu khả thi",
+    calculationType: "standard",
+    tableKey: "4",
+  },
+  {
+    value: "lapBaoCaoKTKT",
+    label: "Lập báo cáo kinh tế - kỹ thuật",
+    calculationType: "standard",
+    tableKey: "2",
+  },
+  {
+    value: "thamTraBaoCaoKTKT",
+    label: "Thẩm tra báo cáo kinh tế - kỹ thuật",
+    calculationType: "composite",
+    tableKey: ["4", "5", "6"],
+  },
+  {
+    value: "lapKeHoachThue",
+    label: "Lập kế hoạch thuê dịch vụ",
+    calculationType: "adjusted",
+    tableKey: "3",
+  },
+  {
+    value: "thamTraKeHoachThue",
+    label: "Thẩm tra kế hoạch thuê dịch vụ",
+    calculationType: "standard",
+    tableKey: "4",
+  },
+  {
+    value: "thamDinhGia",
+    label: "Chi phí thẩm định giá",
+    calculationType: "manual",
+  },
+];
+
+export interface Decision1688Data {
+  id: string;
+  title: string;
+  category: string;
+  unit: string;
+  costBase: string;
+  rates?: { costMilestone: number; rate: number }[];
+  investmentProjectRates?: { costMilestone: number; rate: number }[];
+  economicTechnicalReportRates?: { costMilestone: number; rate: number }[];
+}
+
+export const decision1688Data : Record<string, Decision1688Data> = {
+  /**
+   * Bảng số 1: Định mức chi phí quản lý dự án
+   */
+  table1a: {
+    id: "1a",
+    title: "Định mức chi phí quản lý dự án",
+    category: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí xây lắp và thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 2.644 },
+      { costMilestone: 15, rate: 2.184 },
+      { costMilestone: 20, rate: 1.913 },
+      { costMilestone: 30, rate: 1.747 },
+      { costMilestone: 50, rate: 1.324 },
+      { costMilestone: 100, rate: 1.045 },
+      { costMilestone: 150, rate: 1.007 },
+      { costMilestone: 200, rate: 0.975 },
+      { costMilestone: 500, rate: 0.841 },
+      { costMilestone: 1000, rate: 0.696 },
+    ],
+  },
+  table1b: {
+    id: "1b",
+    title: "Định mức chi phí quản lý dự án",
+    category: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí thiết bị (tỷ đồng)",
+    // Dành cho Dự án đầu tư
+    investmentProjectRates: [
+      { costMilestone: 7, rate: 2.809 },
+      { costMilestone: 15, rate: 2.133 },
+      { costMilestone: 20, rate: 1.964 },
+      { costMilestone: 30, rate: 1.782 },
+      { costMilestone: 50, rate: 1.710 }, // SỬA LỖI: 1.71 -> 1.710
+      { costMilestone: 100, rate: 1.346 },
+      { costMilestone: 150, rate: 1.287 },
+      { costMilestone: 200, rate: 1.248 },
+    ],
+    // Dành cho Báo cáo kinh tế - kỹ thuật
+    economicTechnicalReportRates: [
+      { costMilestone: 7, rate: 1.855 },
+      { costMilestone: 15, rate: 1.532 },
+    ],
+  },
+
+  /**
+   * Bảng số 2: Định mức chi phí lập dự án đầu tư
+   */
+  table2a: {
+    id: "2a",
+    title: "Định mức chi phí lập dự án đầu tư",
+    category: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí xây lắp và thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 0.992 },
+      { costMilestone: 15, rate: 0.739 },
+      { costMilestone: 20, rate: 0.652 },
+      { costMilestone: 30, rate: 0.533 },
+      { costMilestone: 50, rate: 0.420 }, // SỬA LỖI: 0.42 -> 0.420
+      { costMilestone: 100, rate: 0.310 }, // SỬA LỖI: 0.31 -> 0.310
+      { costMilestone: 150, rate: 0.253 },
+      { costMilestone: 200, rate: 0.205 },
+      { costMilestone: 500, rate: 0.164 },
+      { costMilestone: 1000, rate: 0.144 },
+    ],
+  },
+  table2b: {
+    id: "2b",
+    title: "Định mức chi phí lập dự án đầu tư",
+    category: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí thiết bị (tỷ đồng)",
+    // Dành cho Dự án đầu tư
+    investmentProjectRates: [
+      { costMilestone: 7, rate: 0.992 },
+      { costMilestone: 15, rate: 0.906 },
+      { costMilestone: 20, rate: 0.812 },
+      { costMilestone: 30, rate: 0.763 },
+      { costMilestone: 50, rate: 0.648 },
+      { costMilestone: 100, rate: 0.485 },
+      { costMilestone: 150, rate: 0.437 },
+      { costMilestone: 200, rate: 0.381 },
+    ],
+    // Dành cho Báo cáo kinh tế - kỹ thuật
+    economicTechnicalReportRates: [
+      { costMilestone: 7, rate: 3.640 }, // SỬA LỖI: 3.64 -> 3.640
+      { costMilestone: 15, rate: 3.240 }, // SỬA LỖI: 3.24 -> 3.240
+    ],
+  },
+
+  /**
+   * Bảng số 3: Định mức chi phí lập thiết kế thi công và dự toán
+   */
+  table3a: {
+    id: "3a",
+    title: "Định mức chi phí lập thiết kế thi công và dự toán",
+    category: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí xây lắp và thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 1.499 },
+      { costMilestone: 15, rate: 1.198 },
+      { costMilestone: 20, rate: 0.991 },
+      { costMilestone: 30, rate: 0.820 }, // SỬA LỖI: 0.82 -> 0.820
+      { costMilestone: 50, rate: 0.646 },
+      { costMilestone: 100, rate: 0.522 },
+      { costMilestone: 150, rate: 0.461 },
+      { costMilestone: 200, rate: 0.411 },
+      { costMilestone: 500, rate: 0.321 },
+      { costMilestone: 1000, rate: 0.240 }, // SỬA LỖI: 0.24 -> 0.240
+    ],
+  },
+  table3b: {
+    id: "3b",
+    title: "Định mức chi phí lập thiết kế thi công và dự toán",
+    category: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 3.376 },
+      { costMilestone: 15, rate: 3.155 },
+      { costMilestone: 20, rate: 3.023 },
+      { costMilestone: 30, rate: 2.847 },
+      { costMilestone: 50, rate: 2.506 },
+      { costMilestone: 100, rate: 2.211 },
+      { costMilestone: 150, rate: 2.091 },
+      { costMilestone: 200, rate: 1.975 },
+    ],
+  },
+
+  /**
+   * Bảng số 4: Định mức chi phí thẩm tra tính hiệu quả và tính khả thi của dự án đầu tư
+   */
+  table4a: {
+    id: "4a",
+    title:
+      "Định mức chi phí thẩm tra tính hiệu quả và tính khả thi của dự án đầu tư",
+    category: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí xây lắp và thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 0.105 },
+      { costMilestone: 15, rate: 0.074 },
+      { costMilestone: 20, rate: 0.066 },
+      { costMilestone: 30, rate: 0.059 },
+      { costMilestone: 50, rate: 0.047 },
+      { costMilestone: 100, rate: 0.035 },
+      { costMilestone: 150, rate: 0.030 }, // SỬA LỖI: 0.03 -> 0.030
+      { costMilestone: 200, rate: 0.026 },
+      { costMilestone: 500, rate: 0.0152 },
+      { costMilestone: 1000, rate: 0.0142 },
+    ],
+  },
+  table4b: {
+    id: "4b",
+    title:
+      "Định mức chi phí thẩm tra tính hiệu quả và tính khả thi của dự án đầu tư",
+    category: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 0.126 },
+      { costMilestone: 15, rate: 0.088 },
+      { costMilestone: 20, rate: 0.085 },
+      { costMilestone: 30, rate: 0.077 },
+      { costMilestone: 50, rate: 0.065 },
+      { costMilestone: 100, rate: 0.051 },
+      { costMilestone: 150, rate: 0.042 },
+      { costMilestone: 200, rate: 0.036 },
+    ],
+  },
+
+  /**
+   * Bảng số 5: Định mức chi phí thẩm tra thiết kế thi công
+   */
+  table5a: {
+    id: "5a",
+    title: "Định mức chi phí thẩm tra thiết kế thi công",
+    category: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí xây lắp và thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 0.087 },
+      { costMilestone: 15, rate: 0.061 },
+      { costMilestone: 20, rate: 0.054 },
+      { costMilestone: 30, rate: 0.043 },
+      { costMilestone: 50, rate: 0.030 }, // SỬA LỖI: 0.03 -> 0.030
+      { costMilestone: 100, rate: 0.022 },
+      { costMilestone: 150, rate: 0.019 },
+      { costMilestone: 200, rate: 0.016 },
+      { costMilestone: 500, rate: 0.011 },
+      { costMilestone: 1000, rate: 0.008 },
+    ],
+  },
+  table5b: {
+    id: "5b",
+    title: "Định mức chi phí thẩm tra thiết kế thi công",
+    category: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 0.095 },
+      { costMilestone: 15, rate: 0.066 },
+      { costMilestone: 20, rate: 0.059 },
+      { costMilestone: 30, rate: 0.047 },
+      { costMilestone: 50, rate: 0.032 },
+      { costMilestone: 100, rate: 0.024 },
+      { costMilestone: 150, rate: 0.020 }, // SỬA LỖI: 0.02 -> 0.020
+      { costMilestone: 200, rate: 0.017 },
+    ],
+  },
+
+  /**
+   * Bảng số 6: Định mức chi phí thẩm tra dự toán
+   */
+  table6a: {
+    id: "6a",
+    title: "Định mức chi phí thẩm tra dự toán",
+    category: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí xây lắp và thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 0.078 },
+      { costMilestone: 15, rate: 0.050 }, // SỬA LỖI: 0.05 -> 0.050
+      { costMilestone: 20, rate: 0.044 },
+      { costMilestone: 30, rate: 0.034 },
+      { costMilestone: 50, rate: 0.026 },
+      { costMilestone: 100, rate: 0.018 },
+      { costMilestone: 150, rate: 0.015 },
+      { costMilestone: 200, rate: 0.013 },
+      { costMilestone: 500, rate: 0.010 }, // SỬA LỖI: 0.01 -> 0.010
+      { costMilestone: 1000, rate: 0.007 },
+    ],
+  },
+  table6b: {
+    id: "6b",
+    title: "Định mức chi phí thẩm tra dự toán",
+    category: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 0.085 },
+      { costMilestone: 15, rate: 0.054 },
+      { costMilestone: 20, rate: 0.048 },
+      { costMilestone: 30, rate: 0.037 },
+      { costMilestone: 50, rate: 0.028 },
+      { costMilestone: 100, rate: 0.019 },
+      { costMilestone: 150, rate: 0.016 },
+      { costMilestone: 200, rate: 0.014 },
+    ],
+  },
+
+  /**
+   * Bảng số 7: Định mức chi phí lập hồ sơ mời thầu, đánh giá hồ sơ dự thầu xây lắp
+   */
+  table7a: {
+    id: "7a",
+    title:
+      "Định mức chi phí lập hồ sơ mời thầu, đánh giá hồ sơ dự thầu xây lắp",
+    category: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí xây lắp (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 0.362 },
+      { costMilestone: 15, rate: 0.339 },
+      { costMilestone: 20, rate: 0.305 },
+      { costMilestone: 30, rate: 0.255 },
+      { costMilestone: 50, rate: 0.164 },
+      { costMilestone: 100, rate: 0.099 },
+      { costMilestone: 150, rate: 0.079 },
+      { costMilestone: 200, rate: 0.063 },
+      { costMilestone: 500, rate: 0.047 },
+      { costMilestone: 1000, rate: 0.028 },
+    ],
+  },
+  // Ghi chú: Quyết định 1688 không có Bảng 7b.
+
+  /**
+   * Bảng số 8: Định mức chi phí lập hồ sơ mời thầu, đánh giá hồ sơ dự thầu mua sắm thiết bị
+   */
+  table8a: {
+    id: "8a",
+    title:
+      "Định mức chi phí lập hồ sơ mời thầu, đánh giá hồ sơ dự thầu mua sắm thiết bị",
+    category: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 0.283 },
+      { costMilestone: 15, rate: 0.228 },
+      { costMilestone: 20, rate: 0.206 },
+      { costMilestone: 30, rate: 0.172 },
+      { costMilestone: 50, rate: 0.120 }, // SỬA LỖI: 0.12 -> 0.120
+      { costMilestone: 100, rate: 0.078 },
+      { costMilestone: 150, rate: 0.072 },
+      { costMilestone: 200, rate: 0.064 },
+      { costMilestone: 500, rate: 0.053 },
+      { costMilestone: 1000, rate: 0.041 },
+    ],
+  },
+  table8b: {
+    id: "8b",
+    title:
+      "Định mức chi phí lập hồ sơ mời thầu, đánh giá hồ sơ dự thầu mua sắm thiết bị",
+    category: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
+    unit: "tỷ lệ %",
+    costBase: "Chi phí thiết bị (tỷ đồng)",
+    rates: [
+      { costMilestone: 7, rate: 0.405 },
+      { costMilestone: 15, rate: 0.336 },
+      { costMilestone: 20, rate: 0.311 },
+      { costMilestone: 30, rate: 0.265 },
+      { costMilestone: 50, rate: 0.182 },
+      { costMilestone: 100, rate: 0.119 },
+      { costMilestone: 150, rate: 0.109 },
+      { costMilestone: 200, rate: 0.102 },
+    ],
+  },
+};
+
+export const projectCategories = [
+  {
+    id: "a",
+    name: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
+  },
+  {
+    id: "b",
+    name: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
+  },
+];
+
+
+export const projectForms = [
+  {
+    value: 'duAnDauTu',
+    label: 'Dự án đầu tư (theo quy trình đầy đủ)'
+  },
+  {
+    value: 'baoCaoKTKT',
+    label: 'Báo cáo kinh tế - kỹ thuật (dự án nhỏ)'
+  }
 ];

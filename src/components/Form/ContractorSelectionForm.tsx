@@ -1,4 +1,4 @@
-import { Form, Input, Row, Col, type FormInstance } from "antd";
+import { Form, Input, Row, Col, Button, type FormInstance } from "antd";
 import { useEffect, useState } from "react";
 import { loadLegalInfo } from "@/services/legal";
 import { findIndicesInArray } from "@/utils/formatters";
@@ -7,6 +7,7 @@ import { NotepadTextIcon } from "lucide-react";
 import BaseForm from "./BaseForm";
 import { getBaseRequiredKeys } from "@/services/constants";
 import { createTemplate4 } from "@/services/docx";
+import WorkValueTable from "./WorkValueTable";
 
 const { TextArea } = Input;
 const defaultLegals = [
@@ -19,6 +20,7 @@ const defaultLegals = [
 export default function ContractorSelectionForm({ form }: { form: FormInstance }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [workValueModalOpen, setWorkValueModalOpen] = useState(false);
 
   useEffect(() => {
     fetchLegalData();
@@ -136,28 +138,25 @@ export default function ContractorSelectionForm({ form }: { form: FormInstance }
             </Form.Item>
           </Col>
 
-          {/* <Col xs={24}>
-            <Form.Item
-              label="Tổng giá trị các phần công việc (VNĐ)"
-              name="tongGiaTriCongViec"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tổng giá trị công việc!",
-                },
-              ]}
-            >
-              <InputNumber
-                style={{ width: "100%" }}
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                }
-                placeholder="Nhập tổng giá trị"
-                min={0}
-              />
-            </Form.Item>
-          </Col> */}
+          <Col xs={24}>
+            <div className="flex justify-end mb-4">
+              <Button
+                type="default"
+                onClick={() => setWorkValueModalOpen(true)}
+                icon={<NotepadTextIcon />}
+              >
+                Tạo giá trị các phần công việc
+              </Button>
+            </div>
+          </Col>
         </Row>
+
+        <WorkValueTable
+          form={form}
+          open={workValueModalOpen}
+          onClose={() => setWorkValueModalOpen(false)}
+          fieldName="workValues"
+        />
       </Form>
     </BaseForm>
   );
