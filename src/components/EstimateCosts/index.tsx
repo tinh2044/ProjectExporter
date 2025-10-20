@@ -89,7 +89,7 @@ export default function EstimateCosts({
       open={open}
       onOk={handleOk}
       onCancel={handleCancel}
-      width="90vw"
+      width="95vw"
       centered
       styles={{
         body: {
