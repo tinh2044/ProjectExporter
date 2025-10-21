@@ -56,7 +56,7 @@ export const getDefaultFormInformation = () => ({
     2.	Giải trình nội dung kế hoạch lựa chọn nhà thầu:
     Xem Phụ lục II đính kèm.
     `,
-  selectedItems: ["lapBCKTKT", "thamTraBCKTKT"],
+  selectedItems: ["lapBaoCaoKTKT", "thamTraBaoCaoKTKT"],
   itemAmounts: [243377018, 11794425],
 });
 

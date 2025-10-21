@@ -6,6 +6,7 @@ export interface EstimateCostRow {
   money: number;
   note?: string;
   formula?: string;
+  kFactor?: number;
 };
 
 export interface EstimateCostCategory {

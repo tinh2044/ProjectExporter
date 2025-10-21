@@ -59,7 +59,8 @@ export const calculateCost = (
   field: string | number,
   category: EstimateCostCategory,
   projectType: string,
-  projectForm: string
+  projectForm: string,
+  kFactor: number = 1
 ) => {
   const { vat, money } = category;
 
@@ -102,7 +103,7 @@ export const calculateCost = (
 
       const rateResult = getRate(tableKey, money, projectForm);
       details.rate = rateResult;
-      details.formula = `${dot2Percent(details.rate)}% x Gtb + ${vat}% VAT`;
+      details.formula = `${dot2Percent(details.rate)}% x Gtb + ${vat}% VAT ${kFactor == 1 ? "" : `x ${kFactor}`}`;
 
       if (
         costType.value === "quanLyDuAn" &&
@@ -115,8 +116,10 @@ export const calculateCost = (
             - Chi phí thiết bị trước thuế (Gtb): ${moneyFormatted} đồng <br>
             - Hệ số ${dot2Percent(details.rate)}%: Bảng số ${
           costType.tableKey
-        }${projectType} - Quyết định số 1688/QĐ-BTTTT.
-                      `;
+          }${projectType} - Quyết định số 1688/QĐ-BTTTT. <br>
+        ${kFactor == 1 ? "" : `- Hệ số k: ${kFactor}`}
+        `;
+  
       }
 
       details.costBeforeTax = money * (details.rate / 100);
@@ -151,7 +154,7 @@ export const calculateCost = (
       details.formula = `
       [40% x (${dot2Percent(rate4)}% x Gtb) + 70% x (${dot2Percent(
         rate5
-      )}% x Gtb) + 70% x (${dot2Percent(rate6)}% x Gtb)] + ${vat}% VAT
+      )}% x Gtb) + 70% x (${dot2Percent(rate6)}% x Gtb)] + ${vat}% VAT ${kFactor == 1 ? "" : `x ${kFactor}`}
       `;
       details.note = `
       - Chi phí thiết bị trước thuế (Gtb): ${moneyFormatted} đồng <br>
@@ -164,7 +167,8 @@ export const calculateCost = (
       )}%: Định mức chi phí thẩm tra thiết kế thi công (Bảng số 5${projectType} - Quyết định số 1688/QĐ-BTTTT). <br>
       - Hệ số ${dot2Percent(
         rate6
-      )}%: Định mức chi phí thẩm tra dự toán (Bảng số 6${projectType} - Quyết định số 1688/QĐ-BTTTT).
+      )}%: Định mức chi phí thẩm tra dự toán (Bảng số 6${projectType} - Quyết định số 1688/QĐ-BTTTT). <br>
+      ${kFactor == 1 ? "" : `- Hệ số k: ${kFactor}`}
       `;
 
       break;
@@ -174,13 +178,7 @@ export const calculateCost = (
   details.vatAmount = details.costBeforeTax * (vat / 100);
   details.totalCost = details.costBeforeTax + details.vatAmount;
 
+  details.totalCost = details.totalCost * kFactor;
+
   return details;
-  // return {
-  //   costType: costType.label,
-  //   costBeforeTax: formatNumberWithDots(Math.round(costBeforeTax)),
-  //   vatAmount: formatNumberWithDots(Math.round(vatAmount)),
-  //   totalCost:totalCost,
-  //   baseCost: formatNumberWithDots(Math.round(money)),
-  //   rate,
-  // };
 };

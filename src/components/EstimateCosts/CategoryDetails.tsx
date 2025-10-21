@@ -1,4 +1,4 @@
-import { Table, Select, Button } from "antd";
+import { Table, Select, Button, InputNumber } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { costReportOptions } from "@/services/constants";
 import { formatNumberWithDots } from "@/utils/formatters";
@@ -49,7 +49,8 @@ export default function CategoryDetails({
           row.costType,
           category,
           projectType,
-          projectForm
+          projectForm,
+          row.kFactor || 1
         );
 
         if (
@@ -107,6 +108,22 @@ export default function CategoryDetails({
           </div>
         );
       },
+    },
+    {
+      title: "Hệ số k",
+      dataIndex: "kFactor",
+      width: 120,
+      render: (_: unknown, record: EstimateCostRow) => (
+        <div className="text-left">
+          <InputNumber
+            value={record.kFactor}
+            onChange={(value) => onUpdateRow(category.id, record.id, "kFactor", value || 1)}
+            placeholder="Nhập hệ số k"
+            defaultValue={1}
+            style={{ width: "100%" }}
+          />
+        </div>
+      ),
     },
     {
       title: "Diễn giải",
