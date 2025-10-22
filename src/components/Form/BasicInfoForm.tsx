@@ -15,8 +15,14 @@ import {
   DollarOutlined,
   // EnvironmentOutlined,
 } from "@ant-design/icons";
-import { getDefaultFormInformation, getSortedInvestorKeys, getInvestorAddresses, getDistrictAdminCenter } from "@/services/constants";
+import {
+  getDefaultFormInformation,
+  getSortedInvestorKeys,
+  getInvestorAddresses,
+  getDistrictAdminCenter,
+} from "@/services/constants";
 import { useState } from "react";
+import EstimateCosts from "../EstimateCosts";
 // import { formatNumberWithDots } from "@/utils/formatters";
 
 const { RangePicker } = DatePicker;
@@ -25,6 +31,7 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
   const [useCustomInvestor, setUseCustomInvestor] = useState(false);
   const [addressList, setAddressList] = useState<string[]>([]);
   const [districtList, setDistrictList] = useState<string[]>([]);
+  const [estimateCostsOpen, setEstimateCostsOpen] = useState(false);
 
   const handleDefaultValues = () => {
     form.setFieldsValue(getDefaultFormInformation());
@@ -33,7 +40,7 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
 
   const handleInvestorChange = (value: string) => {
     if (!value) {
-      form.setFieldsValue({ chuDauTu: undefined, diaDiem: '' });
+      form.setFieldsValue({ chuDauTu: undefined, diaDiem: "" });
       setUseCustomInvestor(true);
       setAddressList([]);
       setDistrictList([]);
@@ -61,11 +68,11 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
       // Custom input - load district addresses for address search
       const districtData = getDistrictAdminCenter();
       const addresses = Object.values(districtData)
-        .filter((addr): addr is string => typeof addr === 'string')
-        .sort((a, b) => a.localeCompare(b, 'vi'));
+        .filter((addr): addr is string => typeof addr === "string")
+        .sort((a, b) => a.localeCompare(b, "vi"));
       setDistrictList(addresses);
       setAddressList([]);
-      form.setFieldsValue({ chuDauTu: value, diaDiem: '' });
+      form.setFieldsValue({ chuDauTu: value, diaDiem: "" });
       setUseCustomInvestor(true);
     }
   };
@@ -97,14 +104,24 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
           <div className="flex items-center gap-2">
             <div className="text-3xl font-bold">Thông Tin Dự Án</div>
           </div>
-          <Button
-            type="primary"
-            htmlType="submit"
-            size="large"
-            onClick={handleDefaultValues}
-          >
-            Điền giá trị mặc định
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              onClick={handleDefaultValues}
+            >
+              Điền giá trị mặc định
+            </Button>
+            <Button
+              color="green"
+              variant="solid"
+              onClick={() => setEstimateCostsOpen(true)}
+              size="large"
+            >
+              Dự toán
+            </Button>
+          </div>
         </div>
       }
     >
@@ -232,6 +249,13 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
           </Col>
         </Row>
       </Form>
+      <EstimateCosts
+        form={form}
+        fieldName="estimateCosts"
+        open={estimateCostsOpen}
+        onClose={() => setEstimateCostsOpen(false)}
+        title="Dự toán chi phí"
+      />
     </Card>
   );
 }

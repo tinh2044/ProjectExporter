@@ -1,7 +1,8 @@
 import { Table, Input, Select, Button, Collapse } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import CategoryDetails from "./CategoryDetails";
-import type { EstimateCostCategory, EstimateCostData } from "@/types";
+import type { EstimateCostCategory, EstimateCostData, EstimateCostRow } from "@/types";
+import { useCallback } from "react";
 
 type CategoryManagementProps = {
   localData: EstimateCostData;
@@ -43,8 +44,8 @@ export default function CategoryManagement({ localData, setLocalData }: Category
     }));
   };
 
-  // Functions for CategoryDetails
-  const addRowToCategory = (categoryId: string) => {
+  // Functions for CategoryDetails - memoized to prevent infinite loops
+  const addRowToCategory = useCallback((categoryId: string) => {
     const newRow = {
       id: Date.now().toString(),
       costType: "",
@@ -60,9 +61,9 @@ export default function CategoryManagement({ localData, setLocalData }: Category
           : cat
       )
     }));
-  };
+  }, [setLocalData]);
 
-  const removeRowFromCategory = (categoryId: string, rowId: string) => {
+  const removeRowFromCategory = useCallback((categoryId: string, rowId: string) => {
     setLocalData(prev => ({
       ...prev,
       categories: prev.categories.map(cat => 
@@ -71,9 +72,9 @@ export default function CategoryManagement({ localData, setLocalData }: Category
           : cat
       )
     }));
-  };
+  }, [setLocalData]);
 
-  const updateRowInCategory = (categoryId: string, rowId: string, field: string, value: string | number) => {
+  const updateRowInCategory = useCallback((categoryId: string, rowId: string, rowUpdate: Partial<EstimateCostRow>) => {
     setLocalData(prev => ({
       ...prev,
       categories: prev.categories.map(cat => 
@@ -82,14 +83,14 @@ export default function CategoryManagement({ localData, setLocalData }: Category
               ...cat, 
               rows: cat.rows.map(row => 
                 row.id === rowId 
-                  ? { ...row, [field]: value }
+                  ? { ...row, ...rowUpdate }
                   : row
               )
             }
           : cat
       )
     }));
-  };
+  }, [setLocalData]);
 
   const categoryColumns = [
     {
@@ -197,8 +198,7 @@ export default function CategoryManagement({ localData, setLocalData }: Category
             children: (
               <CategoryDetails
                 category={category}
-                projectForm={localData.projectForm}
-                projectType={localData.projectType}
+                basicInfo={localData.basicInfo}
                 onAddRow={addRowToCategory}
                 onRemoveRow={removeRowFromCategory}
                 onUpdateRow={updateRowInCategory}

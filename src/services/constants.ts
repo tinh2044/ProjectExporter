@@ -429,56 +429,6 @@ export const getDistrictAdminCenter = () => {
   };
 };
 
-export const costReportOptions = [
-  {
-    value: "quanLyDuAn",
-    label: "Chi phí quản lý dự án",
-    calculationType: "standard",
-    tableKey: "1",
-  },
-  {
-    value: "lapBaoCaoNghienCuuKhaThi",
-    label: "Lập báo cáo nghiên cứu khả thi",
-    calculationType: "standard",
-    tableKey: "2",
-  },
-  {
-    value: "thamTraBaoCaoNghienCuuKhaThi",
-    label: "Thẩm tra báo cáo nghiên cứu khả thi",
-    calculationType: "standard",
-    tableKey: "4",
-  },
-  {
-    value: "lapBaoCaoKTKT",
-    label: "Lập báo cáo kinh tế - kỹ thuật",
-    calculationType: "standard",
-    tableKey: "2",
-  },
-  {
-    value: "thamTraBaoCaoKTKT",
-    label: "Thẩm tra báo cáo kinh tế - kỹ thuật",
-    calculationType: "composite",
-    tableKey: ["4", "5", "6"],
-  },
-  {
-    value: "lapKeHoachThue",
-    label: "Lập kế hoạch thuê dịch vụ",
-    calculationType: "adjusted",
-    tableKey: "3",
-  },
-  {
-    value: "thamTraKeHoachThue",
-    label: "Thẩm tra kế hoạch thuê dịch vụ",
-    calculationType: "standard",
-    tableKey: "4",
-  },
-  {
-    value: "thamDinhGia",
-    label: "Chi phí thẩm định giá",
-    calculationType: "manual",
-  },
-];
-
 export interface Decision1688Data {
   id: string;
   title: string;
@@ -813,14 +763,70 @@ export const decision1688Data : Record<string, Decision1688Data> = {
   },
 };
 
-export const projectCategories = [
+export const projectCategoryOptions = [
   {
-    id: "a",
-    name: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
+    value: "a",
+    label: "Hạng mục hạ tầng kỹ thuật công nghệ thông tin",
   },
   {
-    id: "b",
-    name: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
+    value: "b",
+    label: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
+  },
+   {
+    value: 'c',
+    label: 'Kết hợp cả hai'
+  }
+];
+
+
+
+export const costReportOptions = [
+  {
+    value: "quanLyDuAn",
+    label: "Chi phí quản lý dự án",
+    calculationType: "standard",
+    tableKey: "1",
+  },
+  {
+    value: "lapBaoCaoNghienCuuKhaThi",
+    label: "Lập báo cáo nghiên cứu khả thi",
+    calculationType: "standard",
+    tableKey: "2",
+  },
+  {
+    value: "thamTraBaoCaoNghienCuuKhaThi",
+    label: "Thẩm tra báo cáo nghiên cứu khả thi",
+    calculationType: "standard",
+    tableKey: "4",
+  },
+  {
+    value: "lapBaoCaoKTKT",
+    label: "Lập báo cáo kinh tế - kỹ thuật",
+    calculationType: "standard",
+    tableKey: "2",
+  },
+  {
+    value: "thamTraBaoCaoKTKT",
+    label: "Thẩm tra báo cáo kinh tế - kỹ thuật",
+    calculationType: "composite",
+    tableKey: ["4", "5", "6"],
+  },
+  {
+    value: "lapKeHoachThue",
+    label: "Lập kế hoạch thuê dịch vụ",
+    calculationType: "adjusted",
+    tableKey: "3",
+  },
+  {
+    value: "thamTraKeHoachThue",
+    label: "Thẩm tra kế hoạch thuê dịch vụ",
+    calculationType: "standard",
+    tableKey: "4",
+  },
+  {
+    value: "thamDinhGia",
+    label: "Chi phí thẩm định giá",
+    calculationType: "manual",
   },
 ];
 
@@ -833,5 +839,98 @@ export const projectForms = [
   {
     value: 'baoCaoKTKT',
     label: 'Báo cáo kinh tế - kỹ thuật (dự án nhỏ)'
+  }
+];
+
+export const geographicLocationOptions = [
+  {
+    value: 'urban',
+    label: 'Khu vực đô thị hoặc thông thường (không điều chỉnh)'
+  },
+  {
+    value: 'island',
+    label: 'Hải đảo hoặc biên giới (điều chỉnh tăng)'
+  },
+  {
+    value: 'other',
+    label: 'Khu vực khác (không điều chỉnh hoặc tùy theo đặc thù)'
+  }
+];
+
+export const projectScopeOptions = [
+  {
+    value: 'local',
+    label: 'Trong một tỉnh/thành phố hoặc địa bàn hẹp (không điều chỉnh)'
+  },
+  {
+    value: 'multiProvince',
+    label: 'Triển khai ở nhiều tỉnh/khu vực (điều chỉnh tăng)'
+  },
+  {
+    value: 'special',
+    label: 'Phạm vi đặc thù hoặc rộng lớn (có thể chuyển sang lập dự toán)'
+  }
+];
+
+export const equipmentRatioOptions = [
+  {
+    value: 'low',
+    label: 'Dưới 50% tổng chi phí xây lắp + thiết bị là thiết bị không cần lắp đặt, phần mềm thương mại, hoặc thay thế dự phòng (không điều chỉnh)'
+  },
+  {
+    value: 'high',
+    label: 'Từ 50% trở lên (điều chỉnh giảm)'
+  }
+];
+
+export const projectTypeOptions = [
+  {
+    value: 'new',
+    label: 'Dự án xây dựng mới (không điều chỉnh)'
+  },
+  {
+    value: 'renovation',
+    label: 'Sửa chữa, nâng cấp, hoặc chỉnh sửa kết nối với hệ thống hiện có (điều chỉnh tăng)'
+  },
+  {
+    value: 'template',
+    label: 'Sử dụng thiết kế mẫu hoặc điển hình (điều chỉnh giảm)'
+  }
+];
+
+export const projectSpecificityOptions = [
+  {
+    value: 'normal',
+    label: 'Không đặc thù (áp dụng k bình thường)'
+  },
+  {
+    value: 'special',
+    label: 'Có đặc thù (ví dụ: yêu cầu quản lý phức tạp, di chuyển nhiều, hoặc không phù hợp định mức) → lập dự toán theo Phụ lục'
+  }
+];
+
+export const projectPhaseOptions = [
+  {
+    value: 'normal',
+    label: 'Giai đoạn thông thường (không điều chỉnh)'
+  },
+  {
+    value: 'ktkt',
+    label: 'Báo cáo kinh tế - kỹ thuật hoặc đề cương dự toán chi tiết (điều chỉnh nếu >15 tỷ)'
+  },
+  {
+    value: 'other',
+    label: 'Giai đoạn khác (không điều chỉnh)'
+  }
+];
+
+export const languageOptions = [
+  {
+    value: 'vietnamese',
+    label: 'Tiếng Việt (không điều chỉnh)'
+  },
+  {
+    value: 'foreign',
+    label: 'Tiếng nước ngoài (bổ sung chi phí, không dùng k trực tiếp)'
   }
 ];

@@ -1,56 +1,76 @@
-import { Table, Select, Button, InputNumber } from "antd";
+import { Table, Select, Button } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { costReportOptions } from "@/services/constants";
 import { formatNumberWithDots } from "@/utils/formatters";
-import type { EstimateCostCategory, EstimateCostRow } from "@/types";
-import { calculateCost } from "@/utils/math";
-import { useEffect } from "react";
+import type {
+  BasicProjectInfo,
+  EstimateCostCategory,
+  EstimateCostRow,
+} from "@/types";
+import { calculateCost, calculateKFactor } from "@/utils/math";
+import { useEffect, useCallback, useMemo } from "react";
 
 type CategoryDetailsProps = {
   category: EstimateCostCategory;
-  projectType: string;
-  projectForm: string;
+  basicInfo: BasicProjectInfo;
   onAddRow: (categoryId: string) => void;
   onRemoveRow: (categoryId: string, rowId: string) => void;
   onUpdateRow: (
     categoryId: string,
     rowId: string,
-    field: string,
-    value: string | number
+    rowUpdate: Partial<EstimateCostRow>
   ) => void;
 };
 
-export default function CategoryDetails({ 
-  category, 
-  projectType,
-  projectForm,
-  onAddRow, 
-  onRemoveRow, 
-  onUpdateRow 
+export default function CategoryDetails({
+  category,
+  basicInfo,
+  onAddRow,
+  onRemoveRow,
+  onUpdateRow,
 }: CategoryDetailsProps) {
-
   const getAvailableOptions = (currentRowId: string) => {
     const selectedValues = category.rows
-      .filter(row => row.id !== currentRowId && row.costType)
-      .map(row => row.costType);
-    
-    return costReportOptions.filter(option => 
-      !selectedValues.includes(option.value)
+      .filter((row) => row.id !== currentRowId && row.costType)
+      .map((row) => row.costType);
+
+    return costReportOptions.filter(
+      (option) => !selectedValues.includes(option.value)
     );
   };
 
-  const onUpdateTypeCost = (recordId: string, value: string) => {
-    onUpdateRow(category.id, recordId, "costType", value)
-  }
+  // Memoize basicInfo to prevent unnecessary recalculations
+  const memoizedBasicInfo = useMemo(() => basicInfo, [basicInfo]);
+
+  // Recalculate kFactor when basic project info changes
   useEffect(() => {
     category.rows.forEach((row) => {
-      if (row.costType) {
+      if (!row.costType) return;
+      const nextK = calculateKFactor(row.costType, memoizedBasicInfo);
+      const prevK = row.kFactor || [];
+      const isSameLength = prevK.length === nextK.length;
+      const isSame =
+        isSameLength &&
+        prevK.every(
+          (f, idx) => f.value === nextK[idx].value && f.note === nextK[idx].note
+        );
+      if (!isSame) {
+        onUpdateRow(category.id, row.id, {
+          kFactor: nextK,
+        });
+      }
+    });
+  }, [memoizedBasicInfo, category.id]);
+
+  const onUpdateTypeCost = useCallback(
+    (recordId: string, value: string) => {
+      onUpdateRow(category.id, recordId, { costType: value });
+
+      if (value) {
         const calculatedResult = calculateCost(
-          row.costType,
+          value,
           category,
-          projectType,
-          projectForm,
-          row.kFactor || 1
+          memoizedBasicInfo
         );
 
         if (
@@ -61,18 +81,45 @@ export default function CategoryDetails({
           const totalCost = calculatedResult.totalCost || 0;
           const moneyValue = Math.round(Number(totalCost)) || 0;
 
-          onUpdateRow(category.id, row.id, "money", moneyValue);
-          if ('formula' in calculatedResult) {
-            onUpdateRow(category.id, row.id, "formula", calculatedResult.formula || "");
-          }
-          if ('note' in calculatedResult) {
-            onUpdateRow(category.id, row.id, "note", calculatedResult.note || "");
-          }
+          onUpdateRow(category.id, recordId, {
+            money: moneyValue,
+            formula: calculatedResult.formula || "",
+            note: calculatedResult.note || "",
+            kFactor: calculatedResult.kFactor || [],
+          });
+        }
+      }
+    },
+    [category.id, memoizedBasicInfo]
+  );
+  useEffect(() => {
+    category.rows.forEach((row) => {
+      if (row.costType) {
+        const calculatedResult = calculateCost(
+          row.costType,
+          category,
+          memoizedBasicInfo,
+        );
+
+        if (
+          calculatedResult &&
+          typeof calculatedResult === "object" &&
+          "totalCost" in calculatedResult
+        ) {
+          const totalCost = calculatedResult.totalCost || 0;
+          const moneyValue = Math.round(Number(totalCost)) || 0;
+          
+          onUpdateRow(category.id, row.id, {
+            costType: row.costType,
+            money: moneyValue,
+            formula: calculatedResult.formula || "",
+            note: calculatedResult.note || "",
+            kFactor: calculatedResult.kFactor || [],
+          });
         }
       }
     });
-  }, [category.money, category.vat, projectType, projectForm, onUpdateRow]);
-
+  }, [category.money, category.vat, memoizedBasicInfo, category.id]);
 
   const rowColumns = [
     {
@@ -112,18 +159,29 @@ export default function CategoryDetails({
     {
       title: "Hệ số k",
       dataIndex: "kFactor",
-      width: 120,
-      render: (_: unknown, record: EstimateCostRow) => (
-        <div className="text-left">
-          <InputNumber
-            value={record.kFactor}
-            onChange={(value) => onUpdateRow(category.id, record.id, "kFactor", value || 1)}
-            placeholder="Nhập hệ số k"
-            defaultValue={1}
-            style={{ width: "100%" }}
-          />
-        </div>
-      ),
+      width: 200,
+      render: (_: unknown, record: EstimateCostRow) => {
+        const kFactors = record.kFactor || [];
+        // const totalK = kFactors.reduce((acc, factor) => acc * (factor.value || 1), 1);
+
+        return (
+          <div className="text-left">
+            <div className="mb-2">
+              {/* <strong>Tổng k: {totalK.toFixed(3)}</strong> */}
+              {kFactors.map((factor) => factor.value?.toFixed(3)).join(" * ")}
+            </div>
+            {/* <div className="space-y-1">
+              {kFactors.map((factor, index) => (
+                <Tooltip key={index} title={factor.note}>
+                  <div className="text-xs text-gray-600 truncate">
+                    {factor.note}: {factor.value}
+                  </div>
+                </Tooltip>
+              ))}
+            </div> */}
+          </div>
+        );
+      },
     },
     {
       title: "Diễn giải",
@@ -148,9 +206,10 @@ export default function CategoryDetails({
       dataIndex: "note",
       width: 300,
       render: (_: unknown, record: EstimateCostRow) => (
-        <div className="text-left" dangerouslySetInnerHTML={{ __html: record.note || "" }}>
-          
-        </div>
+        <div
+          className="text-left"
+          dangerouslySetInnerHTML={{ __html: record.note || "" }}
+        ></div>
       ),
     },
     {

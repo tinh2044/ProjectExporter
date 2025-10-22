@@ -6,7 +6,10 @@ export interface EstimateCostRow {
   money: number;
   note?: string;
   formula?: string;
-  kFactor?: number;
+  kFactor?: {
+    note?: string;
+    value?: number;
+  }[];
 };
 
 export interface EstimateCostCategory {
@@ -18,8 +21,7 @@ export interface EstimateCostCategory {
 };  
 
 export interface EstimateCostData {
-  projectType: string;
-  projectForm: string;
+  basicInfo: BasicProjectInfo;
   categories: EstimateCostCategory[];
 };
 
@@ -29,4 +31,20 @@ export interface EstimateCostsProps {
     open: boolean;
     onClose: () => void;
     title?: string;
+}
+
+export interface BasicProjectInfo {
+    // Original fields
+    projectType: string;
+    projectForm: string;
+    
+    // New detailed selection criteria
+    projectCategory?: string; // infrastructure, software, combined
+    geographicLocation?: string; // urban, island, other
+    projectScope?: string; // local, multiProvince, special
+    equipmentRatio?: string; // low, high
+    projectTypeDetail?: string; // new, renovation, template
+    projectSpecificity?: string; // normal, special
+    projectPhase?: string; // normal, ktkt, other
+    language?: string; // vietnamese, foreign
 }

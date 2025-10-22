@@ -1,6 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { costReportOptions, decision1688Data } from "@/services/constants";
-import type { EstimateCostCategory } from "@/types";
+import { 
+  costReportOptions, 
+  decision1688Data,
+  projectSpecificityOptions,
+  geographicLocationOptions,
+  projectScopeOptions,
+  equipmentRatioOptions,
+  projectTypeOptions,
+  projectPhaseOptions
+} from "@/services/constants";
+import type { BasicProjectInfo, EstimateCostCategory } from "@/types";
 import { formatNumberWithDots } from "./formatters";
 
 const round = (num:number, decimals = 0) => {
@@ -39,6 +49,361 @@ const getInterpolatedRate = (
   return rates[rates.length - 1].rate;
 };
 
+
+// Helper function to create option maps from constants
+const createOptionMap = (options: Array<{value: string; label: string}>): Record<string, string> => {
+  return options.reduce((acc, option) => {
+    acc[option.value] = option.label;
+    return acc;
+  }, {} as Record<string, string>);
+};
+
+// Dynamic option maps created from constants
+const optionMaps: Record<string, Record<string, string>> = {
+  projectSpecificity: createOptionMap(projectSpecificityOptions),
+  geographicLocation: createOptionMap(geographicLocationOptions),
+  projectScope: createOptionMap(projectScopeOptions),
+  equipmentRatio: createOptionMap(equipmentRatioOptions),
+  projectTypeDetail: createOptionMap(projectTypeOptions),
+  projectPhase: createOptionMap(projectPhaseOptions)
+};
+
+// Helper function to get option labels
+const getOptionLabel = (field: string, value: string): string => {
+  return optionMaps[field]?.[value] || value;
+};
+
+export const kCalculators = {
+  quanLyDuAn: (inputs: BasicProjectInfo): Array<{note?: string; value?: number}> => {
+    const kFactors: Array<{note?: string; value?: number}> = [];
+    
+    // Base factor
+    // kFactors.push({ note: "Hệ số cơ bản", value: 1.0 });
+    
+    if (inputs.projectSpecificity === 'special') {
+      return [{ note: getOptionLabel('projectSpecificity', 'special'), value: 0 }];
+    }
+    
+    if (inputs.geographicLocation === 'island') {
+      kFactors.push({ 
+        note: getOptionLabel('geographicLocation', 'island'), 
+        value: 1.35 
+      });
+    }
+    
+    if (inputs.projectScope === 'multiProvince') {
+      kFactors.push({ 
+        note: getOptionLabel('projectScope', 'multiProvince'), 
+        value: 1.25 
+      });
+    }
+    
+    if (inputs.equipmentRatio === 'high') {
+      kFactors.push({ 
+        note: getOptionLabel('equipmentRatio', 'high'), 
+        value: 0.8 
+      });
+    }
+    
+    if (inputs.projectPhase === 'ktkt') {
+      kFactors.push({ 
+        note: getOptionLabel('projectPhase', 'ktkt'), 
+        value: 0.84 
+      });
+    }
+    
+    return kFactors;
+  },
+  
+  lapBaoCaoNghienCuuKhaThi: (inputs: BasicProjectInfo): Array<{note?: string; value?: number}> => {
+    const kFactors: Array<{note?: string; value?: number}> = [];
+    
+    // kFactors.push({ note: "Hệ số cơ bản", value: 1.0 });
+    
+    if (inputs.projectSpecificity === 'special') {
+      return [{ note: getOptionLabel('projectSpecificity', 'special'), value: 0 }];
+    }
+    
+    if (inputs.geographicLocation === 'island') {
+      kFactors.push({ 
+        note: getOptionLabel('geographicLocation', 'island'), 
+        value: 1.2 
+      });
+    }
+    
+    if (inputs.projectScope === 'multiProvince') {
+      kFactors.push({ 
+        note: getOptionLabel('projectScope', 'multiProvince'), 
+        value: 1.3 
+      });
+    }
+    
+    if (inputs.equipmentRatio === 'high') {
+      kFactors.push({ 
+        note: getOptionLabel('equipmentRatio', 'high'), 
+        value: 0.7 
+      });
+    }
+    
+    if (inputs.projectTypeDetail === 'renovation') {
+      kFactors.push({ 
+        note: getOptionLabel('projectTypeDetail', 'renovation'), 
+        value: 1.2 
+      });
+    }
+    
+    if (inputs.projectTypeDetail === 'template') {
+      kFactors.push({ 
+        note: getOptionLabel('projectTypeDetail', 'template'), 
+        value: 0.36 
+      });
+    }
+    
+    if (inputs.projectPhase === 'ktkt') {
+      kFactors.push({ 
+        note: getOptionLabel('projectPhase', 'ktkt'), 
+        value: 0.84 
+      });
+    }
+    
+    return kFactors;
+  },
+  
+  thamTraBaoCaoNghienCuuKhaThi: (inputs: BasicProjectInfo): Array<{note?: string; value?: number}> => {
+    const kFactors: Array<{note?: string; value?: number}> = [];
+    
+    // kFactors.push({ note: "Hệ số cơ bản", value: 1.0 });
+    
+    if (inputs.projectSpecificity === 'special') {
+      return [{ note: getOptionLabel('projectSpecificity', 'special'), value: 0 }];
+    }
+    
+    if (inputs.geographicLocation === 'island') {
+      kFactors.push({ 
+        note: getOptionLabel('geographicLocation', 'island'), 
+        value: 1.2 
+      });
+    }
+    
+    if (inputs.projectScope === 'multiProvince') {
+      kFactors.push({ 
+        note: getOptionLabel('projectScope', 'multiProvince'), 
+        value: 1.1 
+      });
+    }
+    
+    if (inputs.equipmentRatio === 'high') {
+      kFactors.push({ 
+        note: getOptionLabel('equipmentRatio', 'high'), 
+        value: 0.7 
+      });
+    }
+    
+    return kFactors;
+  },
+  
+  lapBaoCaoKTKT: (inputs: BasicProjectInfo): Array<{note?: string; value?: number}> => {
+    const kFactors: Array<{note?: string; value?: number}> = [];
+    
+    // kFactors.push({ note: "Hệ số cơ bản", value: 1.0 });
+    
+    if (inputs.projectSpecificity === 'special') {
+      return [{ note: getOptionLabel('projectSpecificity', 'special'), value: 0 }];
+    }
+    
+    if (inputs.geographicLocation === 'island') {
+      kFactors.push({ 
+        note: getOptionLabel('geographicLocation', 'island'), 
+        value: 1.2 
+      });
+    }
+    
+    if (inputs.projectScope === 'multiProvince') {
+      kFactors.push({ 
+        note: getOptionLabel('projectScope', 'multiProvince'), 
+        value: 1.3 
+      });
+    }
+    
+    if (inputs.equipmentRatio === 'high') {
+      kFactors.push({ 
+        note: getOptionLabel('equipmentRatio', 'high'), 
+        value: 0.7 
+      });
+    }
+    
+    if (inputs.projectTypeDetail === 'renovation') {
+      kFactors.push({ 
+        note: getOptionLabel('projectTypeDetail', 'renovation'), 
+        value: 1.2 
+      });
+    }
+    
+    if (inputs.projectTypeDetail === 'template') {
+      kFactors.push({ 
+        note: getOptionLabel('projectTypeDetail', 'template'), 
+        value: 0.36 
+      });
+    }
+    
+    if (inputs.projectPhase === 'ktkt') {
+      kFactors.push({ 
+        note: getOptionLabel('projectPhase', 'ktkt'), 
+        value: 0.84 
+      });
+    }
+    
+    return kFactors;
+  },
+  
+  thamTraBaoCaoKTKT: (inputs: BasicProjectInfo): Array<{note?: string; value?: number}> => {
+    const kFactors: Array<{note?: string; value?: number}> = [];
+    
+    // kFactors.push({ note: "Hệ số cơ bản", value: 1.0 });
+    
+    if (inputs.projectSpecificity === 'special') {
+      return [{ note: getOptionLabel('projectSpecificity', 'special'), value: 0 }];
+    }
+    
+    if (inputs.geographicLocation === 'island') {
+      kFactors.push({ 
+        note: getOptionLabel('geographicLocation', 'island'), 
+        value: 1.2 
+      });
+    }
+    
+    if (inputs.projectScope === 'multiProvince') {
+      kFactors.push({ 
+        note: getOptionLabel('projectScope', 'multiProvince'), 
+        value: 1.1 
+      });
+    }
+    
+    if (inputs.equipmentRatio === 'high') {
+      kFactors.push({ 
+        note: getOptionLabel('equipmentRatio', 'high'), 
+        value: 0.7 
+      });
+    }
+    
+    return kFactors;
+  },
+  
+  lapKeHoachThue: (inputs: BasicProjectInfo): Array<{note?: string; value?: number}> => {
+    const kFactors: Array<{note?: string; value?: number}> = [];
+    
+    // kFactors.push({ note: "Hệ số cơ bản", value: 1.0 });
+    
+    if (inputs.projectSpecificity === 'special') {
+      return [{ note: getOptionLabel('projectSpecificity', 'special'), value: 0 }];
+    }
+    
+    if (inputs.geographicLocation === 'island') {
+      kFactors.push({ 
+        note: getOptionLabel('geographicLocation', 'island'), 
+        value: 1.2 
+      });
+    }
+    
+    if (inputs.projectScope === 'multiProvince') {
+      kFactors.push({ 
+        note: getOptionLabel('projectScope', 'multiProvince'), 
+        value: 1.3 
+      });
+    }
+    
+    if (inputs.equipmentRatio === 'high') {
+      kFactors.push({ 
+        note: getOptionLabel('equipmentRatio', 'high'), 
+        value: 0.7 
+      });
+    }
+    
+    if (inputs.projectTypeDetail === 'renovation') {
+      kFactors.push({ 
+        note: getOptionLabel('projectTypeDetail', 'renovation'), 
+        value: 1.2 
+      });
+    }
+    
+    if (inputs.projectTypeDetail === 'template') {
+      kFactors.push({ 
+        note: getOptionLabel('projectTypeDetail', 'template'), 
+        value: 0.36 
+      });
+    }
+    
+    if (inputs.projectPhase === 'ktkt') {
+      kFactors.push({ 
+        note: getOptionLabel('projectPhase', 'ktkt'), 
+        value: 0.84 
+      });
+    }
+    
+    return kFactors;
+  },
+  
+  thamTraKeHoachThue: (inputs: BasicProjectInfo): Array<{note?: string; value?: number}> => {
+    const kFactors: Array<{note?: string; value?: number}> = [];
+    
+    //  kFactors.push({ note: "Hệ số cơ bản", value: 1.0 });
+    
+    if (inputs.projectSpecificity === 'special') {
+      return [{ note: getOptionLabel('projectSpecificity', 'special'), value: 0 }];
+    }
+    
+    if (inputs.geographicLocation === 'island') {
+      kFactors.push({ 
+        note: getOptionLabel('geographicLocation', 'island'), 
+        value: 1.2 
+      });
+    }
+    
+    if (inputs.projectScope === 'multiProvince') {
+      kFactors.push({ 
+        note: getOptionLabel('projectScope', 'multiProvince'), 
+        value: 1.1 
+      });
+    }
+    
+    if (inputs.equipmentRatio === 'high') {
+      kFactors.push({ 
+        note: getOptionLabel('equipmentRatio', 'high'), 
+        value: 0.7 
+      });
+    }
+    
+    return kFactors;
+  },
+  
+  thamDinhGia: (_inputs: BasicProjectInfo): Array<{note?: string; value?: number}> => {
+    return [{ note: "Chi phí thẩm định giá cần lập dự toán chi tiết", value: 0 }];
+  }
+};
+
+// Function to automatically calculate kFactor for a cost type
+export const calculateKFactor = (costType: string, basicInfo: BasicProjectInfo): Array<{note?: string; value?: number}> => {
+  // console.log(costType,basicInfo)
+  const calculator = kCalculators[costType as keyof typeof kCalculators];
+  if (!calculator) {
+    return [{ note: "Loại chi phí không được hỗ trợ", value: 1.0 }];
+  }
+  
+  return calculator(basicInfo);
+};  
+
+
+const getKNote = (kInfo: Array<{ note?: string; value?: number }>, kFactor:number) => {
+  const kNumbers = `${kInfo.map((k) => dot2Percent(k.value || 1)).join(" * ")} = ${dot2Percent(kFactor)}`;
+  const note = kInfo.map((k) => `    - ${dot2Percent(k.value || 1)} : ${k.note}`).join(" <br> ");
+
+  return `
+    - Hệ số K: ${kNumbers} <br>
+    Trong đó: <br>
+    ${note}
+  `
+}
+
 const getRate = (tableKey: string, money: number, projectForm: string) => {
   const tableData = decision1688Data[tableKey as keyof typeof decision1688Data];
   if (!tableData) return 0;
@@ -58,11 +423,13 @@ const dot2Percent = (num: number, fractionDigits: number = 3) => {
 export const calculateCost = (
   field: string | number,
   category: EstimateCostCategory,
-  projectType: string,
-  projectForm: string,
-  kFactor: number = 1
+  basicInfo: BasicProjectInfo = {
+    projectType: "",
+    projectForm: "",
+  }
 ) => {
   const { vat, money } = category;
+  const {projectType, projectForm} = basicInfo
 
   const costType = costReportOptions.find((c) => c.value === field);
   if (!costType) {
@@ -82,6 +449,7 @@ export const calculateCost = (
     note: "",
     rates: undefined as any,
     costParts: undefined as any,
+    kFactor: undefined as any,
   };
 
   if (costType.calculationType === "manual") {
@@ -91,19 +459,22 @@ export const calculateCost = (
         "Chi phí này cần được lập dự toán chi tiết, không có công thức tính theo định mức.",
       totalCost: 0,
       formula: "",
-
+      kFactor: []
 
     };
   }
-
+  const kInfo = calculateKFactor(costType.value as keyof typeof kCalculators, basicInfo);
+  const kFactor = kInfo.reduce((acc, curr) => acc * (curr.value || 1), 1);
+  // console.log(kInfo)
   const moneyFormatted = formatNumberWithDots(money);
+  details.kFactor = kInfo;
   switch (costType.calculationType) {
     case "standard": {
       const tableKey = `table${costType.tableKey}${projectType}`;
 
       const rateResult = getRate(tableKey, money, projectForm);
       details.rate = rateResult;
-      details.formula = `${dot2Percent(details.rate)}% x Gtb + ${vat}% VAT ${kFactor == 1 ? "" : `x ${kFactor}`}`;
+      details.formula = `${dot2Percent(details.rate)}% x Gtb + ${vat}% VAT ${kFactor == 1 ? "" : `x ${dot2Percent(kFactor)}`}`;
 
       if (
         costType.value === "quanLyDuAn" &&
@@ -117,7 +488,7 @@ export const calculateCost = (
             - Hệ số ${dot2Percent(details.rate)}%: Bảng số ${
           costType.tableKey
           }${projectType} - Quyết định số 1688/QĐ-BTTTT. <br>
-        ${kFactor == 1 ? "" : `- Hệ số k: ${kFactor}`}
+        ${kFactor == 1 ? "" : `${getKNote(kInfo, kFactor)}`}
         `;
   
       }
@@ -154,7 +525,7 @@ export const calculateCost = (
       details.formula = `
       [40% x (${dot2Percent(rate4)}% x Gtb) + 70% x (${dot2Percent(
         rate5
-      )}% x Gtb) + 70% x (${dot2Percent(rate6)}% x Gtb)] + ${vat}% VAT ${kFactor == 1 ? "" : `x ${kFactor}`}
+      )}% x Gtb) + 70% x (${dot2Percent(rate6)}% x Gtb)] + ${vat}% VAT ${kFactor == 1 ? "" : `x ${dot2Percent(kFactor)}`}
       `;
       details.note = `
       - Chi phí thiết bị trước thuế (Gtb): ${moneyFormatted} đồng <br>
@@ -168,7 +539,7 @@ export const calculateCost = (
       - Hệ số ${dot2Percent(
         rate6
       )}%: Định mức chi phí thẩm tra dự toán (Bảng số 6${projectType} - Quyết định số 1688/QĐ-BTTTT). <br>
-      ${kFactor == 1 ? "" : `- Hệ số k: ${kFactor}`}
+      ${kFactor == 1 ? "" : `${getKNote(kInfo, kFactor)}`}
       `;
 
       break;

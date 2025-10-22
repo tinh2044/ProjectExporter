@@ -1,4 +1,4 @@
 
-import type { EstimateCostRow, EstimateCostCategory, EstimateCostData, EstimateCostsProps } from "./estimateCosts";
+import type { EstimateCostRow, EstimateCostCategory, EstimateCostData, EstimateCostsProps, BasicProjectInfo } from "./estimateCosts";
 
-export type { EstimateCostRow, EstimateCostCategory, EstimateCostData, EstimateCostsProps };
+export type { EstimateCostRow, EstimateCostCategory, EstimateCostData, EstimateCostsProps, BasicProjectInfo };

@@ -1,4 +1,4 @@
-import { Form, Input, Row, Col, Button, type FormInstance } from "antd";
+import { Form, Input, Row, Col, type FormInstance } from "antd";
 import { useState, useEffect } from "react";
 import { loadLegalInfo } from "@/services/legal";
 import { NotepadTextIcon } from "lucide-react";
@@ -8,7 +8,7 @@ import BaseForm from "./BaseForm";
 import { getBaseRequiredKeys, costReportOptions } from "@/services/constants";
 import { createTemplate1 } from "@/services/docx";
 import AppendixModal from "./AppendixModal";
-import EstimateCosts from "@/components/EstimateCosts";
+// import EstimateCosts from "@/components/EstimateCosts";
 import EstimateNotes from "./EstimateNotes";
 
 
@@ -29,7 +29,6 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [appendixOpen, setAppendixOpen] = useState(false);
-  const [estimateCostsOpen, setEstimateCostsOpen] = useState(false);
 
   useEffect(() => {
     fetchLegalData();
@@ -195,32 +194,7 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
               onOpenAppendix={() => setAppendixOpen(true)}
             />
           </Col>
-          
-          <Col xs={24}>
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Dự toán chi phí</h3>
-                <p className="text-gray-600">Quản lý các loại chi phí dự toán</p>
-              </div>
-              <Button
-                type="primary"
-                onClick={() => setEstimateCostsOpen(true)}
-              >
-                Mở dự toán chi phí
-              </Button>
-            </div>
-          </Col>
-
-          <Col xs={24}>
-            <EstimateCosts
-              form={form}
-              fieldName="estimateCosts"
-              open={estimateCostsOpen}
-              onClose={() => setEstimateCostsOpen(false)}
-              title="Dự toán chi phí"
-            />
-          </Col>
-
+        
           <Col xs={24}>
             <AppendixModal
               form={form}

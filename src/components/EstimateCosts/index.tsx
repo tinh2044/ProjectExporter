@@ -1,6 +1,6 @@
 import { Modal, Button } from "antd";
 import { useState, useEffect } from "react";
-import ProjectTypeSelection from "./ProjectTypeSelection";
+import ProjectTypeSelection from "./BasicInfoCollapse";
 import CategoryManagement from "./CategoryManagement";
 import type { EstimateCostsProps, EstimateCostData } from "@/types";
 
@@ -12,8 +12,18 @@ export default function EstimateCosts({
   title = "Dự toán chi phí" 
 }: EstimateCostsProps) {
   const [localData, setLocalData] = useState<EstimateCostData>({
-    projectType: "",
-    projectForm: "",
+    basicInfo: {
+      projectType: "",
+      projectForm: "",
+      projectCategory: "",
+      geographicLocation: "",
+      projectScope: "",
+      equipmentRatio: "",
+      projectTypeDetail: "",
+      projectSpecificity: "",
+      projectPhase: "",
+      language: "",
+    },
     categories: [
       {
         id: Date.now().toString(),
@@ -31,6 +41,19 @@ export default function EstimateCosts({
       },
     ],
   });
+
+  // const [basicInfo, setBasicInfo] = useState<BasicProjectInfo>({
+  //   projectType: "",
+  //   projectForm: "",
+  //   projectCategory: "",
+  //   geographicLocation: "",
+  //   projectScope: "",
+  //   equipmentRatio: "",
+  //   projectTypeDetail: "",
+  //   projectSpecificity: "",
+  //   projectPhase: "",
+  //   language: "",
+  // });
 
   // Initialize from form data when modal opens
   useEffect(() => {
@@ -55,8 +78,18 @@ export default function EstimateCosts({
 
   const fillDefaultValues = () => {
     const defaultData: EstimateCostData = {
-      projectType: "b",
-      projectForm: "baoCaoKTKT",
+      basicInfo: {
+        projectType: "b",
+        projectForm: "baoCaoKTKT",
+        projectCategory: "software",
+        geographicLocation: "urban",
+        projectScope: "local",
+        equipmentRatio: "low",
+        projectTypeDetail: "new",
+        projectSpecificity: "normal",
+        projectPhase: "ktkt",
+        language: "vietnamese",
+      },
       categories: [
         {
           id: Date.now().toString(),
@@ -80,6 +113,7 @@ export default function EstimateCosts({
         }
       ]
     };
+  
     setLocalData(defaultData);
   };
 
@@ -101,25 +135,23 @@ export default function EstimateCosts({
     >
       <div className="space-y-6">
         <div className="flex justify-end mb-4">
-          <Button 
-            type="primary" 
+          <Button
+            variant="solid"
+            color="green"
             onClick={fillDefaultValues}
-            style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }}
+            size="large"
           >
             Điền giá trị mặc định
           </Button>
         </div>
-        
-        <ProjectTypeSelection 
+
+        <ProjectTypeSelection
           localData={localData}
           setLocalData={setLocalData}
         />
-        
-        <CategoryManagement 
-          localData={localData}
-          setLocalData={setLocalData}
-        />
-        
+
+        <CategoryManagement localData={localData} setLocalData={setLocalData} />
+
         {/* <TotalSummary localData={localData} /> */}
       </div>
     </Modal>
