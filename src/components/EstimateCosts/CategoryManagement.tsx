@@ -1,110 +1,96 @@
-import { Table, Input, Select, Button, Collapse } from "antd";
+import { Table, Input, Select, Button } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import CategoryDetails from "./CategoryDetails";
-import type { EstimateCostCategory, EstimateCostData, EstimateCostRow } from "@/types";
-import { useCallback } from "react";
+// import CategoryDetails from "./CategoryDetails";
+import type {
+  EstimateCostCategory,
+  EstimateCostData,
+  // EstimateCostRow,
+} from "@/types";
+// import { useCallback } from "react";
+import { projectCategoryOptions } from "@/services/constants";
 
 type CategoryManagementProps = {
   localData: EstimateCostData;
   setLocalData: React.Dispatch<React.SetStateAction<EstimateCostData>>;
 };
 
-export default function CategoryManagement({ localData, setLocalData }: CategoryManagementProps) {
+export default function CategoryManagement({
+  localData,
+  setLocalData,
+}: CategoryManagementProps) {
   const addCategory = () => {
-    const newCategory : EstimateCostCategory = {
+    const newCategory: EstimateCostCategory = {
       id: Date.now().toString(),
       name: "",
-    money: 0,
+      money: 0,
       vat: 8,
-      rows: [{
-        id: (Date.now() + 1).toString(),
-        costType: "",
-        money: 0, 
-        note: "",
-      }]
+      costType: "",
     };
-    setLocalData(prev => ({ ...prev, categories: [...prev.categories, newCategory] }));
+    setLocalData((prev) => ({
+      ...prev,
+      categories: [...prev.categories, newCategory],
+    }));
   };
 
   const removeCategory = (categoryId: string) => {
-    setLocalData(prev => ({ 
-      ...prev, 
-      categories: prev.categories.filter(cat => cat.id !== categoryId) 
+    setLocalData((prev) => ({
+      ...prev,
+      categories: prev.categories.filter((cat) => cat.id !== categoryId),
+      rows: prev.categories.length == 1 ? [] : prev.rows
     }));
   };
 
-  const updateCategory = (categoryId: string, field: keyof EstimateCostCategory, value: string | number) => {
-    setLocalData(prev => ({
+  const updateCategory = (
+    categoryId: string,
+    field: keyof EstimateCostCategory,
+    value: string | number
+  ) => {
+    setLocalData((prev) => ({
       ...prev,
-      categories: prev.categories.map(cat => 
-        cat.id === categoryId 
-          ? { ...cat, [field]: value }
-          : cat
-      )
+      categories: prev.categories.map((cat) =>
+        cat.id === categoryId ? { ...cat, [field]: value } : cat
+      ),
     }));
   };
 
-  // Functions for CategoryDetails - memoized to prevent infinite loops
-  const addRowToCategory = useCallback((categoryId: string) => {
-    const newRow = {
-      id: Date.now().toString(),
-      costType: "",
-      money: 0,
-      note: "",
-    };
-    
-    setLocalData(prev => ({
-      ...prev,
-      categories: prev.categories.map(cat => 
-        cat.id === categoryId 
-          ? { ...cat, rows: [...cat.rows, newRow] }
-          : cat
-      )
-    }));
-  }, [setLocalData]);
-
-  const removeRowFromCategory = useCallback((categoryId: string, rowId: string) => {
-    setLocalData(prev => ({
-      ...prev,
-      categories: prev.categories.map(cat => 
-        cat.id === categoryId 
-          ? { ...cat, rows: cat.rows.filter(row => row.id !== rowId) }
-          : cat
-      )
-    }));
-  }, [setLocalData]);
-
-  const updateRowInCategory = useCallback((categoryId: string, rowId: string, rowUpdate: Partial<EstimateCostRow>) => {
-    setLocalData(prev => ({
-      ...prev,
-      categories: prev.categories.map(cat => 
-        cat.id === categoryId 
-          ? { 
-              ...cat, 
-              rows: cat.rows.map(row => 
-                row.id === rowId 
-                  ? { ...row, ...rowUpdate }
-                  : row
-              )
-            }
-          : cat
-      )
-    }));
-  }, [setLocalData]);
 
   const categoryColumns = [
     {
-      title: "Tên danh mục",
-      dataIndex: "tenDanhMuc",
+      title: "Tên chi phí",
+      dataIndex: "tenChiPhi",
       width: 250,
       render: (_: unknown, record: EstimateCostCategory) => (
         <Input
           value={record.name}
           onChange={(e) => updateCategory(record.id, "name", e.target.value)}
-          placeholder="Nhập tên danh mục (VD: Chi phí phần mềm)"
+          placeholder="Nhập tên chi phí (VD: Chi phí phần mềm)"
           style={{ width: "100%" }}
         />
       ),
+    },
+    {
+      title: "Loại chi phí",
+      dataIndex: "costType",
+      width: 200,
+      render: (_: unknown, record: EstimateCostCategory) => {
+        return (
+          <div>
+            <Select
+              value={record.costType}
+              onChange={(value) => updateCategory(record.id, "costType", value)}
+              placeholder={"Chọn loại chi phí"}
+              options={projectCategoryOptions}
+              style={{ width: "100%" }}
+              showSearch
+              filterOption={(input, option) =>
+                (option?.label ?? "")
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+            />
+          </div>
+        );
+      },
     },
     {
       title: "Tổng tiền (VNĐ)",
@@ -114,7 +100,9 @@ export default function CategoryManagement({ localData, setLocalData }: Category
         <Input
           type="number"
           value={record.money}
-          onChange={(e) => updateCategory(record.id, "money", Number(e.target.value) || 0)}
+          onChange={(e) =>
+            updateCategory(record.id, "money", Number(e.target.value) || 0)
+          }
           placeholder="Nhập tổng tiền"
           addonAfter="VNĐ"
           style={{ width: "100%" }}
@@ -130,8 +118,9 @@ export default function CategoryManagement({ localData, setLocalData }: Category
           value={record.vat}
           onChange={(value) => updateCategory(record.id, "vat", value)}
           options={[
+            { value: 0, label: "0%" },
             { value: 8, label: "8%" },
-            { value: 10, label: "10%" }
+            { value: 10, label: "10%" },
           ]}
           style={{ width: "100%" }}
         />
@@ -155,12 +144,15 @@ export default function CategoryManagement({ localData, setLocalData }: Category
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Quản lý danh mục</h3>
+        <h3 className="text-lg font-semibold">Quản lý chi phí</h3>
         <Button
-          type="dashed"
+          className="mt-4"
+          type="default"
+          color="primary"
           onClick={addCategory}
+          disabled={localData.categories.length == 2}
         >
-          Thêm danh mục
+          Thêm chi phí
         </Button>
       </div>
 
@@ -176,8 +168,8 @@ export default function CategoryManagement({ localData, setLocalData }: Category
 
       {/* Category Details Section */}
       <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-4">Chi tiết từng danh mục</h3>
-        <Collapse
+        <h3 className="text-lg font-semibold mb-4">Bảng chi tiết dự toán</h3>
+        {/* <Collapse
           items={localData.categories.map(category => ({
             key: category.id,
             label: (
@@ -185,27 +177,12 @@ export default function CategoryManagement({ localData, setLocalData }: Category
                 <span className="font-semibold">
                   {category.name || "Danh mục chưa đặt tên"}
                 </span>
-                {/* <div className="text-right">
-                  <div className="text-sm text-gray-600">
-                    Chưa VAT: {formatNumberWithDots(category.money)} VNĐ
-                  </div>
-                  <div className="text-green-600 font-semibold">
-                    Có VAT: {formatNumberWithDots(category.money + (category.money * category.vat / 100))} VNĐ
-                  </div>
-                </div> */}
               </div>
             ),
-            children: (
-              <CategoryDetails
-                category={category}
-                basicInfo={localData.basicInfo}
-                onAddRow={addRowToCategory}
-                onRemoveRow={removeRowFromCategory}
-                onUpdateRow={updateRowInCategory}
-              />
-            ),
+            children: ( */}
+        {/* ),
           }))}
-        />
+        /> */}
       </div>
     </div>
   );

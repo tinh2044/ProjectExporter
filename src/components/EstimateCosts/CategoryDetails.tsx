@@ -2,130 +2,102 @@ import { Table, Select, Button } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { costReportOptions } from "@/services/constants";
 import { formatNumberWithDots } from "@/utils/formatters";
-import type {
-  BasicProjectInfo,
-  EstimateCostCategory,
-  EstimateCostRow,
-} from "@/types";
-import { calculateCost, calculateKFactor } from "@/utils/math";
+import type { BasicProjectInfo, EstimateCostRow, EstimateCostData } from "@/types";
+import { calculateCost } from "@/utils/math";
 import { useEffect, useCallback, useMemo } from "react";
 
 type CategoryDetailsProps = {
-  category: EstimateCostCategory;
+  localData: EstimateCostData;
+  rows: EstimateCostRow[];
   basicInfo: BasicProjectInfo;
-  onAddRow: (categoryId: string) => void;
-  onRemoveRow: (categoryId: string, rowId: string) => void;
-  onUpdateRow: (
-    categoryId: string,
-    rowId: string,
-    rowUpdate: Partial<EstimateCostRow>
-  ) => void;
+  onAddRow: () => void;
+  onRemoveRow: (rowId: string) => void;
+  onUpdateRow: (rowId: string, rowUpdate: Partial<EstimateCostRow>) => void;
 };
 
 export default function CategoryDetails({
-  category,
+  localData,
+  rows,
   basicInfo,
   onAddRow,
   onRemoveRow,
   onUpdateRow,
 }: CategoryDetailsProps) {
+  // Memoize categories to ensure stable reference
+  const categories = useMemo(() => localData.categories, [localData.categories]);
+  
+  // Create memoized version of basicInfo to prevent unnecessary recalculations
+  const memoizedBasicInfo = useMemo(
+    () => ({
+      projectType: basicInfo.projectType,
+      projectForm: basicInfo.projectForm,
+      projectDocType: basicInfo.projectDocType,
+      projectCategory: basicInfo.projectCategory,
+      geographicLocation: basicInfo.geographicLocation,
+      projectScope: basicInfo.projectScope,
+      equipmentRatio: basicInfo.equipmentRatio,
+      projectTypeDetail: basicInfo.projectTypeDetail,
+      projectSpecificity: basicInfo.projectSpecificity,
+      projectPhase: basicInfo.projectPhase,
+      language: basicInfo.language,
+    }),
+    [
+      basicInfo.projectType,
+      basicInfo.projectForm,
+      basicInfo.projectDocType,
+      basicInfo.projectCategory,
+      basicInfo.geographicLocation,
+      basicInfo.projectScope,
+      basicInfo.equipmentRatio,
+      basicInfo.projectTypeDetail,
+      basicInfo.projectSpecificity,
+      basicInfo.projectPhase,
+      basicInfo.language,
+    ]
+  );
+
   const getAvailableOptions = (currentRowId: string) => {
-    const selectedValues = category.rows
+    const selectedValues = (rows || [])
       .filter((row) => row.id !== currentRowId && row.costType)
       .map((row) => row.costType);
 
-    return costReportOptions.filter(
-      (option) => !selectedValues.includes(option.value)
-    );
+    return costReportOptions.filter((option) => !selectedValues.includes(option.value));
   };
 
-  // Memoize basicInfo to prevent unnecessary recalculations
-  const memoizedBasicInfo = useMemo(() => basicInfo, [basicInfo]);
-
-  // Recalculate kFactor when basic project info changes
+  // Recalculate each row by summing across all categories
   useEffect(() => {
-    category.rows.forEach((row) => {
-      if (!row.costType) return;
-      const nextK = calculateKFactor(row.costType, memoizedBasicInfo);
-      const prevK = row.kFactor || [];
-      const isSameLength = prevK.length === nextK.length;
-      const isSame =
-        isSameLength &&
-        prevK.every(
-          (f, idx) => f.value === nextK[idx].value && f.note === nextK[idx].note
-        );
-      if (!isSame) {
-        onUpdateRow(category.id, row.id, {
-          kFactor: nextK,
+    (rows || []).forEach((row) => {
+
+      const r = calculateCost(row.costType, categories, memoizedBasicInfo);
+      onUpdateRow(row.id, {
+          money: Math.round(r.totalCost) || 0,
+          formula: r.formula,
+          note: r.note,
+          kFactor: r.kFactor || [],
         });
-      }
     });
-  }, [memoizedBasicInfo, category.id]);
+  }, [categories, memoizedBasicInfo]);
 
   const onUpdateTypeCost = useCallback(
     (recordId: string, value: string) => {
-      onUpdateRow(category.id, recordId, { costType: value });
 
-      if (value) {
-        const calculatedResult = calculateCost(
-          value,
-          category,
-          memoizedBasicInfo
-        );
-
-        if (
-          calculatedResult &&
-          typeof calculatedResult === "object" &&
-          "totalCost" in calculatedResult
-        ) {
-          const totalCost = calculatedResult.totalCost || 0;
-          const moneyValue = Math.round(Number(totalCost)) || 0;
-
-          onUpdateRow(category.id, recordId, {
-            money: moneyValue,
-            formula: calculatedResult.formula || "",
-            note: calculatedResult.note || "",
-            kFactor: calculatedResult.kFactor || [],
-          });
-        }
-      }
+      const r = calculateCost(value, categories, memoizedBasicInfo);
+      onUpdateRow(recordId, {
+          costType: value,
+          money: Math.round(r.totalCost) || 0,
+          formula: r.formula,
+          note: r.note,
+          kFactor: r.kFactor || [],
+        });
     },
-    [category.id, memoizedBasicInfo]
+    [categories, memoizedBasicInfo, onUpdateRow]
   );
-  useEffect(() => {
-    category.rows.forEach((row) => {
-      if (row.costType) {
-        const calculatedResult = calculateCost(
-          row.costType,
-          category,
-          memoizedBasicInfo,
-        );
 
-        if (
-          calculatedResult &&
-          typeof calculatedResult === "object" &&
-          "totalCost" in calculatedResult
-        ) {
-          const totalCost = calculatedResult.totalCost || 0;
-          const moneyValue = Math.round(Number(totalCost)) || 0;
-          
-          onUpdateRow(category.id, row.id, {
-            costType: row.costType,
-            money: moneyValue,
-            formula: calculatedResult.formula || "",
-            note: calculatedResult.note || "",
-            kFactor: calculatedResult.kFactor || [],
-          });
-        }
-      }
-    });
-  }, [category.money, category.vat, memoizedBasicInfo, category.id]);
-
-  const rowColumns = [
+  const columns = [
     {
       title: "Loại chi phí",
       dataIndex: "costType",
-      width: 200,
+      width: 220,
       render: (_: unknown, record: EstimateCostRow) => {
         const availableOptions = getAvailableOptions(record.id);
         const hasNoOptions = availableOptions.length === 0 && !record.costType;
@@ -134,23 +106,17 @@ export default function CategoryDetails({
             <Select
               value={record.costType}
               onChange={(value) => onUpdateTypeCost(record.id, value)}
-              placeholder={
-                hasNoOptions ? "Không còn lựa chọn" : "Chọn loại chi phí"
-              }
+              placeholder={hasNoOptions ? "Không còn lựa chọn" : "Chọn loại chi phí"}
               options={availableOptions}
               style={{ width: "100%" }}
               showSearch
               filterOption={(input, option) =>
-                (option?.label ?? "")
-                  .toLowerCase()
-                  .includes(input.toLowerCase())
+                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
               }
               disabled={hasNoOptions}
             />
             {hasNoOptions && (
-              <div className="text-xs text-red-500 mt-1">
-                Tất cả loại chi phí đã được sử dụng
-              </div>
+              <div className="text-xs text-red-500 mt-1">Tất cả loại chi phí đã được sử dụng</div>
             )}
           </div>
         );
@@ -162,23 +128,9 @@ export default function CategoryDetails({
       width: 200,
       render: (_: unknown, record: EstimateCostRow) => {
         const kFactors = record.kFactor || [];
-        // const totalK = kFactors.reduce((acc, factor) => acc * (factor.value || 1), 1);
-
         return (
           <div className="text-left">
-            <div className="mb-2">
-              {/* <strong>Tổng k: {totalK.toFixed(3)}</strong> */}
-              {kFactors.map((factor) => factor.value?.toFixed(3)).join(" * ")}
-            </div>
-            {/* <div className="space-y-1">
-              {kFactors.map((factor, index) => (
-                <Tooltip key={index} title={factor.note}>
-                  <div className="text-xs text-gray-600 truncate">
-                    {factor.note}: {factor.value}
-                  </div>
-                </Tooltip>
-              ))}
-            </div> */}
+            <div className="mb-2">{kFactors.map((f) => f.value?.toFixed(3)).join(" * ")}</div>
           </div>
         );
       },
@@ -186,7 +138,7 @@ export default function CategoryDetails({
     {
       title: "Diễn giải",
       dataIndex: "formula",
-      width: 150,
+      width: 200,
       render: (_: unknown, record: EstimateCostRow) => (
         <div className="text-left">{record.formula}</div>
       ),
@@ -194,11 +146,9 @@ export default function CategoryDetails({
     {
       title: "Số tiền (VNĐ)",
       dataIndex: "money",
-      width: 120,
+      width: 140,
       render: (_: unknown, record: EstimateCostRow) => (
-        <div className="text-left">
-          {formatNumberWithDots(record.money)} VNĐ
-        </div>
+        <div className="text-left">{formatNumberWithDots(record.money)} VNĐ</div>
       ),
     },
     {
@@ -206,46 +156,37 @@ export default function CategoryDetails({
       dataIndex: "note",
       width: 300,
       render: (_: unknown, record: EstimateCostRow) => (
-        <div
-          className="text-left"
-          dangerouslySetInnerHTML={{ __html: record.note || "" }}
-        ></div>
+        <div className="text-left" dangerouslySetInnerHTML={{ __html: record.note || "" }} />
       ),
     },
     {
       title: "Thao tác",
-      width: 50,
+      width: 60,
       render: (_: unknown, record: EstimateCostRow) => (
-        <Button
-          type="text"
-          danger
-          icon={<DeleteOutlined />}
-          onClick={() => onRemoveRow(category.id, record.id)}
-          // disabled={category.rows.length === 1}
-        />
+        <Button type="text" danger icon={<DeleteOutlined />} onClick={() => onRemoveRow(record.id)} />
       ),
     },
   ];
 
+  const usedCount = (rows || []).filter((r) => r.costType).length;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
+        <div className="font-semibold">Bảng chi tiết dự toán</div>
         <Button
           type="dashed"
           icon={<PlusOutlined />}
-          onClick={() => onAddRow(category.id)}
-          disabled={
-            category.rows.filter((row) => row.costType).length >=
-            costReportOptions.length
-          }
+          onClick={() => onAddRow()}
+          disabled={usedCount >= costReportOptions.length}
         >
           Thêm chi phí
         </Button>
       </div>
 
       <Table
-        dataSource={category.rows}
-        columns={rowColumns}
+        dataSource={rows}
+        columns={columns}
         pagination={false}
         rowKey="id"
         size="small"
@@ -255,11 +196,7 @@ export default function CategoryDetails({
 
       <div className="text-right space-y-2">
         <div className="text-lg font-semibold">
-          Tổng cộng:
-          {formatNumberWithDots(
-            category.rows.reduce((sum, row) => sum + (row.money || 0), 0)
-          )}{" "}
-          VNĐ
+          Tổng cộng: {formatNumberWithDots((rows || []).reduce((s, r) => s + (r.money || 0), 0))} VNĐ
         </div>
       </div>
     </div>

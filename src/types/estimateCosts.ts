@@ -2,6 +2,7 @@ import type { FormInstance } from "antd";
 
 export interface EstimateCostRow {
   id: string;
+  // categoryId?: string;
   costType: string;
   money: number;
   note?: string;
@@ -17,12 +18,14 @@ export interface EstimateCostCategory {
   name: string;
   money: number;
   vat: number; //  (8 or 10)
-  rows: EstimateCostRow[];
+  // rows: EstimateCostRow[];
+  costType: string
 };  
 
 export interface EstimateCostData {
   basicInfo: BasicProjectInfo;
   categories: EstimateCostCategory[];
+  rows: EstimateCostRow[]
 };
 
 export interface EstimateCostsProps {
@@ -37,6 +40,7 @@ export interface BasicProjectInfo {
     // Original fields
     projectType: string;
     projectForm: string;
+    projectDocType?: string; // baoCaoKTKT | keHoachThue | nghienCuuKhaThi
     
     // New detailed selection criteria
     projectCategory?: string; // infrastructure, software, combined

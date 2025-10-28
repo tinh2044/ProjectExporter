@@ -25,7 +25,7 @@ const defaultLegals = [
   "Căn cứ Công văn số 490/UBND-VX ngày 24 tháng 7 năm 2025 của Ủy ban nhân dân Thành phố về điều chỉnh chủ trương thực hiện các hoạt động ứng dụng công nghệ thông tin sử dụng kinh phí chi thường xuyên năm 2025;",
 ];
 
-export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
+export default function ProposalEstimateForm({ form }: { form: FormInstance }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [appendixOpen, setAppendixOpen] = useState(false);

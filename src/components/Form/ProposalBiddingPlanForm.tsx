@@ -17,7 +17,7 @@ const defaultLegals = [
   "Căn cứ Nghị định số 214/2025/NĐ-CP ngày 04 tháng 8 năm 2025 của Chính phủ về quy định chi tiết một số điều và biện pháp thi hành luật đấu thầu về lựa chọn nhà thầu;",
 ];
 
-export default function ContractorSelectionForm({ form }: { form: FormInstance }) {
+export default function ProposalBiddingPlanForm({ form }: { form: FormInstance }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [workValueModalOpen, setWorkValueModalOpen] = useState(false);

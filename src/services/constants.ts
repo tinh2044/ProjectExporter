@@ -772,12 +772,11 @@ export const projectCategoryOptions = [
     value: "b",
     label: "Hạng mục phần mềm nội bộ, cơ sở dữ liệu",
   },
-   {
-    value: 'c',
-    label: 'Kết hợp cả hai'
-  }
+  //  {
+  //   value: 'c',
+  //   label: 'Kết hợp cả hai'
+  // }
 ];
-
 
 
 export const costReportOptions = [
@@ -820,8 +819,8 @@ export const costReportOptions = [
   {
     value: "thamTraKeHoachThue",
     label: "Thẩm tra kế hoạch thuê dịch vụ",
-    calculationType: "standard",
-    tableKey: "4",
+    calculationType: "composite",
+    tableKey: ["4", "5", "6"],
   },
   {
     value: "thamDinhGia",
@@ -840,6 +839,13 @@ export const projectForms = [
     value: 'baoCaoKTKT',
     label: 'Báo cáo kinh tế - kỹ thuật (dự án nhỏ)'
   }
+];
+
+// Loại tài liệu/dự án để người dùng xác định nhanh kịch bản
+export const projectDocTypes = [
+  { value: 'baoCaoKTKT', label: 'Báo cáo KT-KT' },
+  { value: 'keHoachThue', label: 'Kế hoạch thuê dịch vụ' },
+  { value: 'nghienCuuKhaThi', label: 'Báo cáo nghiên cứu khả thi' },
 ];
 
 export const geographicLocationOptions = [
@@ -909,20 +915,20 @@ export const projectSpecificityOptions = [
   }
 ];
 
-export const projectPhaseOptions = [
-  {
-    value: 'normal',
-    label: 'Giai đoạn thông thường (không điều chỉnh)'
-  },
-  {
-    value: 'ktkt',
-    label: 'Báo cáo kinh tế - kỹ thuật hoặc đề cương dự toán chi tiết (điều chỉnh nếu >15 tỷ)'
-  },
-  {
-    value: 'other',
-    label: 'Giai đoạn khác (không điều chỉnh)'
-  }
-];
+// export const projectPhaseOptions = [
+//   {
+//     value: 'normal',
+//     label: 'Giai đoạn thông thường (không điều chỉnh)'
+//   },
+//   {
+//     value: 'ktkt',
+//     label: 'Báo cáo kinh tế - kỹ thuật hoặc đề cương dự toán chi tiết (điều chỉnh nếu >15 tỷ)'
+//   },
+//   {
+//     value: 'other',
+//     label: 'Giai đoạn khác (không điều chỉnh)'
+//   }
+// ];
 
 export const languageOptions = [
   {
