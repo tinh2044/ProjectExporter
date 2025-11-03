@@ -107,34 +107,21 @@ function RowItem({
 
   const isManual = record.calculationType === "manual";
 
-  const toggleQuoteMode = () => {
-    const newCalculationType = isManual ? "standard" : "manual";
-    if (newCalculationType === "manual") {
-      onUpdateRow(record.id, {
-        calculationType: newCalculationType,
-        moneyAfterTax: 0,
-        moneyBeforeTax: 0,
-        formula: "",
-        note: "",
-        kFactor: [],
-      });
-    }
-  };
-
   return (
     <div
       className={`flex gap-4 items-start border border-gray-200 rounded p-2`}
     >
       {/* Loại chi phí */}
-      <div className={`${colWidth[0]} flex flex-col gap-2 justify-start`}>
+      <div className={`${colWidth[0]} flex flex-col gap-2 justify-start `}>
         <Select
+          className="!max-w-full"
           value={record.costType}
           onChange={onSelectType}
           placeholder={
             hasNoOptions ? "Không còn lựa chọn" : "Chọn loại chi phí"
           }
           options={availableOptions}
-          style={{ width: "%" }}
+          // style={{ width: "%" }}
           showSearch
           filterOption={(input, option) =>
             String(option?.label ?? "")
@@ -170,7 +157,29 @@ function RowItem({
         <div className="flex justify-start items-center gap-2">
           <Checkbox
             checked={isManual}
-            onChange={toggleQuoteMode}
+            onChange={(e) => {
+              const checked = e.target.checked;
+              const newCalculationType = checked ? "manual" : "standard";
+              if (newCalculationType === "manual") {
+                onUpdateRow(record.id, {
+                  calculationType: newCalculationType,
+                  moneyAfterTax: 0,
+                  moneyBeforeTax: 0,
+                  formula: "",
+                  note: "",
+                  kFactor: [],
+                });
+              } else {
+                onUpdateRow(record.id, {
+                  calculationType: "standard",
+                  moneyAfterTax: record.moneyAfterTax,
+                  moneyBeforeTax: record.moneyBeforeTax,
+                  formula: record.formula,
+                  note: record.note,
+                  kFactor: record.kFactor || [],
+                });
+              }
+            }}
             // title={isManual ? "Theo báo giá" : "Tính định mức"}
           />
           <span className="text-sm">Theo báo giá</span>

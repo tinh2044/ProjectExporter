@@ -55,7 +55,7 @@ export default function CategoryDetails({
   }, [rows, basicInfo]);
 
   const usedCount = (rows || []).filter((r) => r.costType).length;
-  const colWidth = ['w-[20%]', 'w-2/12', 'w-[20%]', 'w-5/12', 'w-[5%]'];
+  const colWidth = ['w-[25%]', 'w-2/12', 'w-[20%]', 'w-5/12', 'w-[5%]'];
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
