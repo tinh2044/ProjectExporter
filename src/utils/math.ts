@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { costReportOptions, decision1688Data } from "@/services/constants";
-import type { BasicProjectInfo, EstimateCostCategory } from "@/types";
+import type { BasicProjectInfo, EstimateCostCategory, EstimateCostRow } from "@/types";
 import { formatNumberWithDots } from "./formatters";
 
 const round = (num: number, decimals = 0): number => {
@@ -333,6 +333,7 @@ export const calculateKFactor = (
 };
 
 interface CalculationResult {
+  costName: string;
   costType: string;
   costBeforeTax: number;
   vatAmount: number;
@@ -377,8 +378,8 @@ const calculateStandardCost = (
   const { projectType, projectForm } = basicInfo;
   const symbolMoney = projectType == "a" ? "Gpc" : "Gpm";
   const baseLabel = projectType == "a"
-    ? "Chi phí xây lắp và thiết bị"
-    : "Chi phí thiết bị";
+    ? "Chi phí phần cứng"
+    : "Chi phí phần mềm";
   const tableKey = `table${costType.tableKey}${projectType}`;
   const rate = getRate(tableKey, money, projectForm);
 
@@ -482,8 +483,8 @@ const calculateCompositeCost = (
   kInfo: Array<{ note?: string; value?: number }>
 ): Partial<CalculationResult> => {
   const { vat, money } = category;
-  const { projectType, projectForm } = basicInfo;
-
+  const { projectType, projectDocType } = basicInfo;
+  const projectForm = projectDocType || "";
   const rate4 = getRate(`table4${projectType}`, money, projectForm);
   const rate5 = getRate(`table5${projectType}`, money, projectForm);
   const rate6 = getRate(`table6${projectType}`, money, projectForm);
@@ -496,8 +497,8 @@ const calculateCompositeCost = (
   const moneyFormatted = formatNumberWithDots(money);
   const symbolMoney = projectType == "a" ? "Gpc" : "Gpm";
   const baseLabel = projectType == "a" 
-    ? "Chi phí xây lắp và thiết bị"
-    : "Chi phí thiết bị";
+    ? "Chi phí phần cứng"
+    : "Chi phí phần mềm";
   const typeLabel = _costType?.value === "thamTraBaoCaoKTKT"
     ? "thẩm tra báo cáo kinh tế - kỹ thuật"
     : "thẩm tra kế hoạch thuê dịch vụ";
@@ -538,6 +539,7 @@ const calculateCostPerCategory = (
   basicInfo: BasicProjectInfo = {
     projectType: "",
     projectForm: "",
+    costReportOptions: [],
   }
 ) : CalculationResult =>  {
   const { money } = category;
@@ -546,6 +548,7 @@ const calculateCostPerCategory = (
   
   if (!costType) {
     return {
+      costName: "",
       costType: "Không xác định",
       note: "Loại tính toán không được hỗ trợ.",
       totalCost: 0,
@@ -560,8 +563,9 @@ const calculateCostPerCategory = (
 
   if (costType.calculationType === "manual") {
     return {
-      costType: costType.label,
-      note: "Chi phí này cần được lập dự toán chi tiết, không có công thức tính theo định mức.",
+      costName: costType.label,
+      costType: costType.value,
+      note: "Chi phí này lấy theo báo giá",
       totalCost: 0,
       formula: "",
       kFactor: [],
@@ -605,7 +609,8 @@ const calculateCostPerCategory = (
       break;
     default:
       return {
-        costType: costType.label,
+        costName: costType.label,
+        costType: costType.value,
         note: "Loại tính toán không được hỗ trợ.",
         totalCost: 0,
         formula: "",
@@ -637,6 +642,7 @@ const calculateCostPerCategory = (
   const totalCost = (costBeforeTax + vatAmount) * kFactor;
 
   return {
+    costName: costType.label,
     ...result,
     costBeforeTax,
     vatAmount,
@@ -646,15 +652,16 @@ const calculateCostPerCategory = (
 
 export const calculateCost = (
   field: string | number,
+  row: EstimateCostRow,
   categories: EstimateCostCategory[],
   basicInfo: BasicProjectInfo = {
     projectType: "",
     projectForm: "",
+    costReportOptions: [],
   }
 ): CalculationResult => {
-  console.log(categories)
   const calResult = categories.map((cat) =>
-    calculateCostPerCategory(field, cat, {
+    calculateCostPerCategory(field, {...cat, vat: row.vat }, {
       ...basicInfo,
       projectType: cat.costType,
     })
@@ -673,6 +680,7 @@ export const calculateCost = (
        vatAmount: 0,
        baseCost: 0,
        rate: 0,
+       costName: calResult[0].costName,
      } 
 
      newResult.formula = calResult.map((result) => `[${result.formula}]`).join(" + ");

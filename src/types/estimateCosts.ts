@@ -2,20 +2,23 @@ import type { FormInstance } from "antd";
 
 export interface EstimateCostRow {
   id: string;
-  // categoryId?: string;
+  costName: string;
   costType: string;
-  money: number;
+  moneyBeforeTax: number;
+  moneyAfterTax: number;
   note?: string;
   formula?: string;
   kFactor?: {
     note?: string;
     value?: number;
   }[];
+  vat: number;
+  calculationType: string;
 };
 
 export interface EstimateCostCategory {
   id: string;
-  name: string;
+  // name: string;
   money: number;
   vat: number; //  (8 or 10)
   // rows: EstimateCostRow[];
@@ -50,5 +53,7 @@ export interface BasicProjectInfo {
     projectTypeDetail?: string; // new, renovation, template
     projectSpecificity?: string; // normal, special
     projectPhase?: string; // normal, ktkt, other
-    language?: string; // vietnamese, foreign
+  language?: string; // vietnamese, foreign
+  
+  costReportOptions: string[];
 }

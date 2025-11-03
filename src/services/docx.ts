@@ -26,7 +26,8 @@ import {
   formatNumberWithDots,
   numberToVietnameseMoney,
 } from "@/utils/formatters";
-import type { AppendixRow } from "@/components/Form/AppendixModal";
+// import type { AppendixRow } from "@/components/Form/AppendixModal";
+import type { EstimateCostData, EstimateCostRow } from "@/types";
 
 const CONSTANTS = {
   FONT: "Times New Roman",
@@ -132,20 +133,14 @@ const createText = (text: string, options?: Partial<IRunOptions>): TextRun => {
 /**
  * Create TextRun in bold
  */
-const textBold = (
-  text: string,
-  options?: Partial<IRunOptions>
-): TextRun => {
+const textBold = (text: string, options?: Partial<IRunOptions>): TextRun => {
   return createText(text, { ...options, bold: true });
 };
 
 /**
  * Create TextRun in italics
  */
-const textItalics = (
-  text: string,
-  options?: Partial<IRunOptions>
-): TextRun => {
+const textItalics = (text: string, options?: Partial<IRunOptions>): TextRun => {
   return createText(text, { ...options, italics: true });
 };
 
@@ -230,10 +225,9 @@ const documentHeader = (): Table => {
     createTableRow([
       createTableCell(
         [
-          paragraphNoIndent(
-            "SỞ GIÁO DỤC VÀ ĐÀO TẠO THÀNH PHỐ HỒ CHÍ MINH",
-            { spacing: { after: 0, before: 0 } }
-          ),
+          paragraphNoIndent("SỞ GIÁO DỤC VÀ ĐÀO TẠO THÀNH PHỐ HỒ CHÍ MINH", {
+            spacing: { after: 0, before: 0 },
+          }),
           paragraphNoIndent(textBold("PHÒNG..........."), {
             spacing: { after: 0, before: 0 },
           }),
@@ -245,14 +239,12 @@ const documentHeader = (): Table => {
       ),
       createTableCell(
         [
-          paragraphNoIndent(
-            textBold("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM"),
-            { spacing: { after: 0, before: 0 } }
-          ),
-          paragraphNoIndent(
-            textBold("Độc lập - Tự do - Hạnh phúc"),
-            { spacing: { after: 0, before: 0 } }
-          ),
+          paragraphNoIndent(textBold("CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM"), {
+            spacing: { after: 0, before: 0 },
+          }),
+          paragraphNoIndent(textBold("Độc lập - Tự do - Hạnh phúc"), {
+            spacing: { after: 0, before: 0 },
+          }),
           paragraphNoIndent(
             textItalics(
               `TP. Hồ Chí Minh, ngày     tháng     năm ${new Date().getFullYear()}`
@@ -338,7 +330,7 @@ export const createDocument = (
               // width: 16838, // A4 landscape width
               // height: 11906, // A4 landscape height
             },
-             margin: {
+            margin: {
               top: CONSTANTS.MARGIN.TOP,
               right: CONSTANTS.MARGIN.RIGHT,
               bottom: CONSTANTS.MARGIN.BOTTOM,
@@ -348,10 +340,9 @@ export const createDocument = (
         },
         children: appendix
           ? [
-              createParagraph(
-                textBold("PHỤ LỤC - DỰ TOÁN CHI PHÍ MUA SẮM"),
-                { pageBreakBefore: true }
-              ),
+              createParagraph(textBold("PHỤ LỤC - DỰ TOÁN CHI PHÍ MUA SẮM"), {
+                pageBreakBefore: true,
+              }),
               createParagraph(
                 textItalics(
                   `(Kèm theo Tờ trình ngày     tháng    năm ${new Date().getFullYear()})`
@@ -440,33 +431,36 @@ const createProjectBasicInfo = (form: FormInstance): Paragraph[] => {
 /**
  * Create appendix table
  */
-export const createAppendixTable = (form: FormInstance): Table => {
-  const appendixRows = form.getFieldValue("appendixRows") || [];
+export const createAppendixTable = (estimateData: EstimateCostData): Table => {
+  const appendixRows = estimateData.rows || [];
   // console.log(appendixRows)
 
   const WIDTHS = {
-    STT: 1000,  
+    STT: 1000,
     NOI_DUNG: 2400,
-    DIEN_GIAI: 2000,
+    DIEN_GIAI: 2400,
     GIA_TRI: 2100,
     GHI_CHU: 8700,
   };
 
   // Helper: Create cell with custom options
-  const cell = (content: string) => {
+  const cell = (contents: string) => {
     return new TableCell({
       children: [
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: content,
-              font: "Times New Roman",
-              size: 28,
-            }),
-          ],
-          alignment: AlignmentType.LEFT,
-          spacing: { after: 0, before: 0 },
-        }),
+        ...contents.split("<br>").map(
+          (content) =>
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: content,
+                  font: "Times New Roman",
+                  size: 24,
+                }),
+              ],
+              alignment: AlignmentType.LEFT,
+              spacing: { after: 0, before: 0 },
+            })
+        ),
       ],
       verticalAlign: VerticalAlign.CENTER,
       margins: { top: 80, bottom: 80, left: 100, right: 100 },
@@ -508,14 +502,14 @@ export const createAppendixTable = (form: FormInstance): Table => {
 
   // Data rows
   const dataRows = appendixRows.map(
-    (row: AppendixRow) =>
+    (row: EstimateCostRow, index) =>
       new TableRow({
         children: [
-          cell(String(row.stt)),
-          cell(row.noiDung),
-          cell(row.dienGiai || ""),
-          cell(formatNumberWithDots(row.giaTriTamTinh)),
-          cell(row.ghiChu || ""),
+          cell(String(index + 1)),
+          cell(row.costName),
+          cell(row.formula || ""),
+          cell(formatNumberWithDots(row.moneyBeforeTax)),
+          cell(row.note || ""),
         ],
       })
   );
@@ -543,15 +537,15 @@ export const createAppendixTable = (form: FormInstance): Table => {
   });
 };
 
-
 /**
  * Template 1
  */
 export const createTemplate1 = (
   form: FormInstance,
-  legalInfo: string[] = [],
-  itemLabels: { [key: string]: string } = {}
+  legalInfo: string[] = []
 ): Document => {
+  const estimateData = form.getFieldValue("estimateCosts");
+  console.log(estimateData);
   const content: FileChild[] = [
     // Title
     createParagraph(textBold("TỜ TRÌNH"), {
@@ -621,23 +615,19 @@ export const createTemplate1 = (
         )} đồng`
       ),
       textItalics(
-        `(${numberToVietnameseMoney(form.getFieldValue("tongHopDuToan") || "")})`
+        `(${numberToVietnameseMoney(
+          form.getFieldValue("tongHopDuToan") || ""
+        )})`
       ),
       createText(
         ", trong đó dự toán giai đoạn chuẩn bị đầu tư cụ thể như sau:"
       ),
     ]),
     ...createMultilineSections(
-      formatAdditionalEstimate(
-        form.getFieldValue("selectedItems") || [],
-        form.getFieldValue("itemAmounts") || [],
-        itemLabels
-      ),
+      formatAdditionalEstimate(estimateData.rows || []),
       paragraphJustify
     ),
-    createParagraph(
-      textItalics("(Chi tiết dự toán theo Phụ lục đính kèm)")
-    ),
+    createParagraph(textItalics("(Chi tiết dự toán theo Phụ lục đính kèm)")),
 
     // Kiến nghị
     paragraphLeft(textBold("5. Kiến nghị")),
@@ -653,7 +643,7 @@ export const createTemplate1 = (
     documentFooter(["Nơi nhận:", "- Như trên;", "- Lưu VT."], "………"),
   ];
 
-  return createDocument(content, createAppendixTable(form));
+  return createDocument(content, createAppendixTable(estimateData));
 };
 
 /**
@@ -661,22 +651,20 @@ export const createTemplate1 = (
  */
 export const createTemplate2 = (
   form: FormInstance,
-  legalInfo: string[] = [],
-  itemLabels: { [key: string]: string } = {}
+  legalInfo: string[] = []
 ): Document => {
   const nguoiNhan = form.getFieldValue("nguoiNhan") || "";
   const tenDuAn = form.getFieldValue("tenDuAn") || "";
   const currentYear = new Date().getFullYear();
-
+  const estimateData = form.getFieldValue("estimateCosts");
+  console.log(estimateData);
   const content: FileChild[] = [
     // Header
     createParagraph(textBold("QUYẾT ĐỊNH"), {
       spacing: { after: 100, before: 500 },
     }),
     createParagraph(
-      textBold(
-        `Phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}"`
-      )
+      textBold(`Phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}"`)
     ),
     createParagraph(`Kính gửi: ${nguoiNhan.toUpperCase()}`),
     createParagraph(""),
@@ -709,10 +697,7 @@ export const createTemplate2 = (
     ]),
 
     // Nội dung quyết định
-    paragraphJustify([
-      textBold("1) Tên dự án: "),
-      createText(tenDuAn),
-    ]),
+    paragraphJustify([textBold("1) Tên dự án: "), createText(tenDuAn)]),
     paragraphJustify([
       textBold("2) Chủ đầu tư: "),
       createText(form.getFieldValue("chuDauTu") || ""),
@@ -734,16 +719,10 @@ export const createTemplate2 = (
       ),
     ]),
     ...createMultilineSections(
-      formatAdditionalEstimate(
-        form.getFieldValue("selectedItems") || [],
-        form.getFieldValue("itemAmounts") || [],
-        itemLabels
-      ),
+      formatAdditionalEstimate(estimateData.rows || []),
       paragraphJustify
     ),
-    createParagraph(
-      textItalics("(Chi tiết dự toán theo Phụ lục đính kèm)")
-    ),
+    createParagraph(textItalics("(Chi tiết dự toán theo Phụ lục đính kèm)")),
 
     paragraphLeft([
       textBold("4) Nguồn vốn: "),
@@ -779,14 +758,10 @@ export const createTemplate2 = (
     ]),
 
     // Footer
-    documentFooter(
-      ["Nơi nhận:", "- Như trên;", "- Lưu: VT."],
-      "GIÁM ĐỐC"
-    ),
+    documentFooter(["Nơi nhận:", "- Như trên;", "- Lưu: VT."], "GIÁM ĐỐC"),
   ];
 
-   return createDocument(content, createAppendixTable(form));
-
+  return createDocument(content, createAppendixTable(estimateData));
 };
 
 /**
@@ -799,7 +774,6 @@ export const createTemplate4 = (
   const nguoiNhan = form.getFieldValue("nguoiNhan") || "";
   const tenDuAn = form.getFieldValue("tenDuAn") || "";
   const currentYear = new Date().getFullYear();
-  // createWorkValueTable(form)
 
   const content: FileChild[] = [
     // Header
@@ -882,7 +856,7 @@ export const createTemplate4 = (
  */
 export const createTemplate6 = (
   form: FormInstance,
-    legalInfo: string[] = []
+  legalInfo: string[] = []
 ): Document => {
   const nguoiNhan = form.getFieldValue("nguoiNhan") || "";
   const tenDuAn = form.getFieldValue("tenDuAn") || "";
@@ -949,10 +923,7 @@ export const createTemplate6 = (
     ]),
 
     // Footer
-    documentFooter(
-      ["Nơi nhận:", "- Như Điều 3;", "- Lưu: VT."],
-      "GIÁM ĐỐC"
-    ),
+    documentFooter(["Nơi nhận:", "- Như Điều 3;", "- Lưu: VT."], "GIÁM ĐỐC"),
   ];
 
   return createDocument(content);

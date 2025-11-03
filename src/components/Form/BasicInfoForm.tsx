@@ -12,7 +12,6 @@ import {
 } from "antd";
 import {
   ProjectOutlined,
-  DollarOutlined,
   // EnvironmentOutlined,
 } from "@ant-design/icons";
 import {
@@ -151,7 +150,8 @@ export default function BasicInfoForm({ form }: { form: FormInstance }) {
               // parser={(value: any) => value?.replace(/\./g, "") + " đồng"}
             >
               <InputNumber
-                prefix={<DollarOutlined />}
+                // prefix={<DollarOutlined />}
+                addonAfter="VNĐ"
                 placeholder="Nhập tổng hợp dự toán (VNĐ)"
                 className="!w-full"
                 formatter={(value) =>

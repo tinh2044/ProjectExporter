@@ -26,11 +26,11 @@ export default function EstimateCosts({
         projectSpecificity: "",
         projectPhase: "",
         language: "",
+        costReportOptions: [],
       },
       categories: [
         {
           id: Date.now().toString(),
-          name: "",
           money: 0,
           vat: 8,
           costType: "",
@@ -39,9 +39,13 @@ export default function EstimateCosts({
       rows: [
         {
           id: (Date.now() + 1).toString(),
+          costName: "",
+          calculationType: "standard",
           costType: "",
-          money: 0,
+          moneyBeforeTax: 0,
+          moneyAfterTax: 0,
           note: "",
+          vat: 0,
         },
       ],
     };
@@ -82,11 +86,17 @@ export default function EstimateCosts({
         projectSpecificity: "normal",
         projectPhase: "ktkt",
         language: "vietnamese",
+        costReportOptions: [
+          "quanLyDuAn",
+          "lapBaoCaoKTKT",
+          "thamTraBaoCaoKTKT",
+          "thamDinhGia",
+        ],
       },
       categories: [
         {
           id: defaultCategoryId,
-          name: "Chi phí xây dựng phần mềm",
+          // name: "Chi phí xây dựng phần mềm",
           money: 7636363636,
           vat: 8,
           costType: "b",
@@ -94,16 +104,24 @@ export default function EstimateCosts({
       ],
       rows: [
         {
+          costName: "Lập báo cáo kinh tế - kỹ thuật",
           id: (Date.now() + 1).toString(),
+          calculationType: "standard",
           costType: "lapBaoCaoKTKT",
-          money: 0,
+          moneyBeforeTax: 0,
+          moneyAfterTax: 0,
           note: "",
+          vat: 0,
         },
         {
+          costName: "Thẩm tra báo cáo kinh tế - kỹ thuật",
           id: (Date.now() + 2).toString(),
+          calculationType: "composite",
           costType: "thamTraBaoCaoKTKT",
-          money: 0,
+          moneyBeforeTax: 0,
+          moneyAfterTax: 0,
           note: "",
+          vat: 0,
         },
       ],
     };
@@ -114,11 +132,15 @@ export default function EstimateCosts({
   const addRow = useCallback(
     () => {
       const newRow: EstimateCostRow = {
+        costName: "",
         id: Date.now().toString(),
+        calculationType: "standard",
         costType: "",
-        money: 0,
+        moneyBeforeTax: 0,
+        moneyAfterTax: 0,
         note: "",
         formula: "",
+        vat: 0
       };
 
       setLocalData((prev) => ({

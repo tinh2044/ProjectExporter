@@ -1,4 +1,4 @@
-import { Table, Input, Select, Button } from "antd";
+import { Table, Select, Button, InputNumber } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 // import CategoryDetails from "./CategoryDetails";
 import type {
@@ -21,7 +21,7 @@ export default function CategoryManagement({
   const addCategory = () => {
     const newCategory: EstimateCostCategory = {
       id: Date.now().toString(),
-      name: "",
+      // name: "",
       money: 0,
       vat: 8,
       costType: "",
@@ -55,19 +55,19 @@ export default function CategoryManagement({
 
 
   const categoryColumns = [
-    {
-      title: "Tên chi phí",
-      dataIndex: "tenChiPhi",
-      width: 250,
-      render: (_: unknown, record: EstimateCostCategory) => (
-        <Input
-          value={record.name}
-          onChange={(e) => updateCategory(record.id, "name", e.target.value)}
-          placeholder="Nhập tên chi phí (VD: Chi phí phần mềm)"
-          style={{ width: "100%" }}
-        />
-      ),
-    },
+    // {
+    //   title: "Tên chi phí",
+    //   dataIndex: "tenChiPhi",
+    //   width: 250,
+    //   render: (_: unknown, record: EstimateCostCategory) => (
+    //     <Input
+    //       value={record.name}
+    //       onChange={(e) => updateCategory(record.id, "name", e.target.value)}
+    //       placeholder="Nhập tên chi phí (VD: Chi phí phần mềm)"
+    //       style={{ width: "100%" }}
+    //     />
+    //   ),
+    // },
     {
       title: "Loại chi phí",
       dataIndex: "costType",
@@ -93,19 +93,30 @@ export default function CategoryManagement({
       },
     },
     {
-      title: "Tổng tiền (VNĐ)",
+      title: "Tiền trước thuế",
       dataIndex: "money",
       width: 180,
       render: (_: unknown, record: EstimateCostCategory) => (
-        <Input
-          type="number"
+        <InputNumber
           value={record.money}
-          onChange={(e) =>
-            updateCategory(record.id, "money", Number(e.target.value) || 0)
-          }
-          placeholder="Nhập tổng tiền"
-          addonAfter="VNĐ"
+          onChange={(e) => {
+            const numValue = Number(e) || 0;
+            updateCategory(record.id, "money", numValue);
+          }}
+          placeholder="Nhập tiền trước thuế"
           style={{ width: "100%" }}
+          onFocus={(e) => {
+            if (record.money === 0) {
+              e.target.select();
+            }
+          }}
+          parser={(value) => {
+            if (!value) return 0;
+            return Number(value.replace(/[^\d.-]/g, "")) || 0;
+          }}
+          formatter={(value) =>
+            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          }
         />
       ),
     },
@@ -123,6 +134,22 @@ export default function CategoryManagement({
             { value: 10, label: "10%" },
           ]}
           style={{ width: "100%" }}
+        />
+      ),
+    },
+    {
+      title: "Tiền sau thuế (VNĐ)",
+      dataIndex: "moneyAfterTax",
+      width: 180,
+      render: (_: unknown, record: EstimateCostCategory) => (
+        <InputNumber
+          value={Math.round(record.money * (1 + record.vat / 100))}
+          addonAfter="VNĐ"
+          readOnly
+          style={{ width: "100%" }}
+          formatter={(value) =>
+            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          }
         />
       ),
     },
@@ -167,8 +194,8 @@ export default function CategoryManagement({
       />
 
       {/* Category Details Section */}
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-4">Bảng chi tiết dự toán</h3>
+      {/* <div className="mt-6">
+        <h3 className="text-lg font-semibold mb-4">Bảng chi tiết dự toán</h3> */}
         {/* <Collapse
           items={localData.categories.map(category => ({
             key: category.id,
@@ -183,7 +210,7 @@ export default function CategoryManagement({
         {/* ),
           }))}
         /> */}
-      </div>
+      {/* </div> */}
     </div>
   );
 }

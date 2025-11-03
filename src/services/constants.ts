@@ -785,6 +785,7 @@ export const costReportOptions = [
     label: "Chi phí quản lý dự án",
     calculationType: "standard",
     tableKey: "1",
+
   },
   {
     value: "lapBaoCaoNghienCuuKhaThi",
@@ -841,11 +842,17 @@ export const projectForms = [
   }
 ];
 
-// Loại tài liệu/dự án để người dùng xác định nhanh kịch bản
 export const projectDocTypes = [
-  { value: 'baoCaoKTKT', label: 'Báo cáo KT-KT' },
-  { value: 'keHoachThue', label: 'Kế hoạch thuê dịch vụ' },
-  { value: 'nghienCuuKhaThi', label: 'Báo cáo nghiên cứu khả thi' },
+  {
+    value: 'baoCaoKTKT', label: 'Báo cáo KT-KT', 
+    costReportOptions: ["quanLyDuAn", "lapBaoCaoKTKT", "thamTraBaoCaoKTKT", "thamDinhGia"]
+   },
+  { value: 'keHoachThue', label: 'Kế hoạch thuê dịch vụ',
+    costReportOptions: ["quanLyDuAn","lapKeHoachThue", "thamTraKeHoachThue", "thamDinhGia"]
+   },
+  { value: 'nghienCuuKhaThi', label: 'Báo cáo nghiên cứu khả thi',
+    costReportOptions: ["quanLyDuAn","lapBaoCaoNghienCuuKhaThi", "thamTraBaoCaoNghienCuuKhaThi", "thamDinhGia"]
+   },
 ];
 
 export const geographicLocationOptions = [

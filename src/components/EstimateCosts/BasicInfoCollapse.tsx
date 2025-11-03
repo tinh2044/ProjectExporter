@@ -1,7 +1,7 @@
 import { Select, Collapse, Row, Col } from "antd";
 import {
   // projectCategoryOptions,
-  projectForms,
+  // projectForms,
   projectDocTypes,
   // projectCategoryOptions,
   geographicLocationOptions,
@@ -48,6 +48,7 @@ export default function BasicInfoCollapse({
         ...prev.basicInfo,
         projectDocType: value,
         projectForm: mappedForm,
+        costReportOptions: projectDocTypes.find((docType) => docType.value === value)?.costReportOptions || [] as string[],
       },
     }));
   };
@@ -57,7 +58,12 @@ export default function BasicInfoCollapse({
       <Panel header="Thông tin cơ bản của dự án" key="basic-info">
         <Row gutter={[16, 16]}>
           {/* Dòng trên cùng: Xác định loại dự án */}
-          <Col span={24}>
+          {/* <Col span={24}>
+            
+          </Col> */}
+
+          {/* Cột 1 */}
+          <Col span={12}>
             <div>
               <label className="block font-medium text-gray-700 mb-2">
                 Xác định loại dự án:
@@ -76,10 +82,6 @@ export default function BasicInfoCollapse({
                 }
               />
             </div>
-          </Col>
-
-          {/* Cột 1 */}
-          <Col span={12}>
             {/* Loại dự án */}
             {/* <div>
               <label className="block font-medium text-gray-700 mb-2">
@@ -105,7 +107,7 @@ export default function BasicInfoCollapse({
               />
             </div> */}
 
-            <div>
+            {/* <div>
               <label className="block font-medium text-gray-700 mb-2">
                 Hình thức dự án:
               </label>
@@ -127,7 +129,7 @@ export default function BasicInfoCollapse({
                     .includes(input.toLowerCase())
                 }
               />
-            </div>
+            </div> */}
 
             <div>
               <label className="block font-medium text-gray-700 mb-2">

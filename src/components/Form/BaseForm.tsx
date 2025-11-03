@@ -2,7 +2,6 @@ import React from "react";
 import { Card, Form, Button, type FormInstance, Collapse, Divider } from "antd";
 import { useAppMessage } from "@/contexts/AppMessage/hook";
 import { Packer, type Document as DocxDocument } from "docx";
-import { costReportOptions } from "@/services/constants";
 
 type NamePath = string | number | (string | number)[];
 
@@ -22,7 +21,6 @@ type BaseFormProps = {
   createFormCallBack: (
     form: FormInstance,
     legalList?: string[],
-    itemLabels?: { [key: string]: string }
   ) => DocxDocument;
 };
 
@@ -47,11 +45,7 @@ export default function BaseForm(props: BaseFormProps) {
     try {
       await form.validateFields(requiredKeys as never);
 
-      const itemLabels = costReportOptions.reduce((acc, option) => {
-        acc[option.value] = option.label;
-        return acc;
-      }, {} as { [key: string]: string });
-      const doc = createFormCallBack(form, legalList || [], itemLabels);
+      const doc = createFormCallBack(form, legalList || []);
       const blob = await Packer.toBlob(doc);
 
       const url = window.URL.createObjectURL(blob);

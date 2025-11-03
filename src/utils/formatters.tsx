@@ -1,3 +1,4 @@
+import type { EstimateCostRow } from "@/types";
 import dayjs, { type Dayjs } from "dayjs";
 
 /**
@@ -130,21 +131,16 @@ export function findIndicesByKey<T, K extends keyof T>(
 }
 
 export function formatAdditionalEstimate(
-  selectedItems: string[],
-  itemAmounts: number[],
-  itemLabels: { [key: string]: string }
+  estimateData: EstimateCostRow[]
 ) {
-  // const itemLabels: { [key: string]: string } = itemLabels;
-
   const lines =
-    selectedItems
+    estimateData
       ?.map(
-        (item, index) =>
-          `- ${itemLabels[item] || item}: ${formatNumberWithDots(
-            String(itemAmounts[index] || 0)
+        (item) =>
+          `- ${item.costName}: ${formatNumberWithDots(
+            String(item.moneyBeforeTax || 0)
           )} đồng`
       )
       .join("\n") || "";
-
   return lines;
 }

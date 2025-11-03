@@ -5,12 +5,11 @@ import { NotepadTextIcon } from "lucide-react";
 import { findIndicesInArray } from "@/utils/formatters";
 import SelectLegal from "./SelectLegal";
 import BaseForm from "./BaseForm";
-import { getBaseRequiredKeys, costReportOptions } from "@/services/constants";
 import { createTemplate1 } from "@/services/docx";
-import AppendixModal from "./AppendixModal";
+import { getBaseRequiredKeys } from "@/services/constants";
+// import AppendixModal from "./AppendixModal";
+// import EstimateNotes from "./EstimateNotes";
 // import EstimateCosts from "@/components/EstimateCosts";
-import EstimateNotes from "./EstimateNotes";
-
 
 const { TextArea } = Input;
 const defaultLegals = [
@@ -28,7 +27,7 @@ const defaultLegals = [
 export default function ProposalEstimateForm({ form }: { form: FormInstance }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [appendixOpen, setAppendixOpen] = useState(false);
+  // const [appendixOpen, setAppendixOpen] = useState(false);
 
   useEffect(() => {
     fetchLegalData();
@@ -61,15 +60,15 @@ export default function ProposalEstimateForm({ form }: { form: FormInstance }) {
     searchText: text.toLowerCase(),
   }));
 
-  // Create labels mapping from costReportOptions
-  const appendixItemLabels: { [key: string]: string } = costReportOptions.reduce((acc, option) => {
-    acc[option.value] = option.label;
-    return acc;
-  }, {} as { [key: string]: string });
+  // // Create labels mapping from costReportOptions
+  // const appendixItemLabels: { [key: string]: string } = costReportOptions.reduce((acc, option) => {
+  //   acc[option.value] = option.label;
+  //   return acc;
+  // }, {} as { [key: string]: string });
 
-  // Reactively watch form values so UI updates and modal receives correct data
-  const selectedItemsWatch = Form.useWatch("selectedItems", form) || [];
-  const itemAmountsWatch = Form.useWatch("itemAmounts", form) || [];
+  // // Reactively watch form values so UI updates and modal receives correct data
+  // const selectedItemsWatch = Form.useWatch("selectedItems", form) || [];
+  // const itemAmountsWatch = Form.useWatch("itemAmounts", form) || [];
 
   const requiredKeys: Array<string | string[]> = [
     ...getBaseRequiredKeys(),
@@ -187,15 +186,15 @@ export default function ProposalEstimateForm({ form }: { form: FormInstance }) {
             </Form.Item>
           </Col>
 
-          <Col xs={24}>
+          {/* <Col xs={24}>
             <EstimateNotes
               form={form}
               itemLabels={appendixItemLabels}
               onOpenAppendix={() => setAppendixOpen(true)}
             />
-          </Col>
+          </Col> */}
         
-          <Col xs={24}>
+          {/* <Col xs={24}>
             <AppendixModal
               form={form}
               open={appendixOpen}
@@ -205,7 +204,7 @@ export default function ProposalEstimateForm({ form }: { form: FormInstance }) {
               itemAmounts={itemAmountsWatch}
               appendixFieldName="appendixRows"
             />
-          </Col>
+          </Col> */}
         </Row>
       </Row>
     </BaseForm>
