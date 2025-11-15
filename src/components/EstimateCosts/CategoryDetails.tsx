@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button } from "antd";
+import { Button, Checkbox } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { costReportOptions } from "@/services/constants";
 import { formatNumberWithDots } from "@/utils/formatters";
@@ -8,25 +8,21 @@ import type {
   EstimateCostRow,
   EstimateCostData,
 } from "@/types";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import RowItem from "./RowItem";
+
+const COL_WIDTH = ["w-[25%]", "w-2/12", "w-[20%]", "w-5/12", "w-[5%]"];
 
 type CategoryDetailsProps = {
   localData: EstimateCostData;
-  rows: EstimateCostRow[];
+  setLocalData: React.Dispatch<React.SetStateAction<EstimateCostData>>;
   basicInfo: BasicProjectInfo;
-  onAddRow: () => void;
-  onRemoveRow: (rowId: string) => void;
-  onUpdateRow: (rowId: string, rowUpdate: Partial<EstimateCostRow>) => void;
 };
 
 export default function CategoryDetails({
   localData,
-  rows,
+  setLocalData,
   basicInfo,
-  onAddRow,
-  onRemoveRow,
-  onUpdateRow,
 }: CategoryDetailsProps) {
   // Memoize categories to ensure stable reference
   const categories = useMemo(
@@ -34,65 +30,136 @@ export default function CategoryDetails({
     [localData.categories]
   );
 
+    const handleAddRow = useCallback(() => {
+      const newRow: EstimateCostRow = {
+        costName: "",
+        id: Date.now().toString(),
+        // calculationType: "standard",
+        costType: "",
+        moneyBeforeTax: 0,
+        moneyAfterTax: 0,
+        note: "",
+        formula: "",
+        vat: 0,
+      };
+
+      setLocalData((prev) => ({
+        ...prev,
+        rows: [...(prev?.rows || []), newRow],
+      }));
+    }, [setLocalData]);
+
+    const handleRemoveRow = useCallback(
+      (rowId: string) => {
+        setLocalData((prev) => ({
+          ...prev,
+          rows: (prev?.rows || []).filter((row) => !(row.id === rowId)),
+        }));
+      },
+      [setLocalData]
+    );
+
+    const handleUpdateRow = useCallback(
+      (rowId: string, rowUpdate: Partial<EstimateCostRow>) => {
+        setLocalData((prev) => ({
+          ...prev,
+          rows: (prev?.rows || []).map((row) =>
+            row.id === rowId ? { ...row, ...rowUpdate } : row
+          ),
+        }));
+      },
+      [setLocalData]
+    );
+
+
   const availableOptionsByRowId = useMemo(() => {
-    const selectedValuesByRow = new Map<string, string>();
-    (rows || []).forEach((r) => {
-      if (r.costType) selectedValuesByRow.set(r.id, r.costType);
-    });
+    const rows = localData?.rows || [];
+    const allowed =
+      basicInfo.costReportOptions || costReportOptions.map((o) => o.value);
+
+    const usedCountByType = rows.reduce<Record<string, number>>((acc, r) => {
+      if (r.costType) acc[r.costType] = (acc[r.costType] || 0) + 1;
+      return acc;
+    }, {});
+
     return new Map(
-      (rows || []).map((row) => {
-        const selectedOthers = (rows || [])
-          .filter((r) => r.id !== row.id && r.costType)
-          .map((r) => r.costType);
-        const allowed = (basicInfo as any).costReportOptions || costReportOptions.map(o => o.value);
+      rows.map((row) => {
         const options = costReportOptions
-          .filter((option) => !selectedOthers.includes(option.value))
-          .filter((option) => allowed.includes(option.value))
+          .filter((o) => allowed.includes(o.value))
+          .filter((o) => {
+            const count = usedCountByType[o.value] || 0;
+            return count === 0 || o.value === row.costType;
+          })
           .map((o) => ({ value: o.value, label: o.label }));
         return [row.id, options] as const;
       })
     );
-  }, [rows, basicInfo]);
+  }, [localData?.rows, basicInfo.costReportOptions]);
 
-  const usedCount = (rows || []).filter((r) => r.costType).length;
-  const colWidth = ['w-[25%]', 'w-2/12', 'w-[20%]', 'w-5/12', 'w-[5%]'];
+  const isManual = basicInfo.calculationType === "manual";
+
+  const handleChangeCalculationType = useCallback(
+    (checked: boolean) => {
+      const newCalculationType = checked ? "manual" : "standard";
+      setLocalData((prev) => {
+        const rows = (prev?.rows || []).map((r) => ({
+          ...r,
+          calculationType: newCalculationType,
+          moneyAfterTax: 0,
+          moneyBeforeTax: 0,
+          formula: "",
+          note: "",
+          kFactor: [],
+        }));
+        return {
+          ...prev,
+          basicInfo: { ...prev.basicInfo, calculationType: newCalculationType },
+          rows,
+        };
+      });
+    },
+    [setLocalData]
+  );
+
+  const allowedValues =
+    basicInfo.costReportOptions || costReportOptions.map((o) => o.value);
+  const usedCount = (localData?.rows || []).filter((r) => r.costType).length;
+  const isAddDisabled = usedCount >= allowedValues.length;
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold">Bảng chi tiết dự toán</h3>
-        <Button
-          type="dashed"
-          icon={<PlusOutlined />}
-          onClick={() => onAddRow()}
-          disabled={usedCount >= costReportOptions.length}
-        >
-          Thêm chi phí
-        </Button>
+        <div className="flex justify-start items-center gap-2">
+          <div className="flex justify-start items-center gap-2">
+            <Checkbox
+              
+              checked={isManual}
+              onChange={(e) => {handleChangeCalculationType(e.target.checked)}}
+            />
+            <span className="text-sm">Theo báo giá</span>
+          </div>
+          <Button
+            type="dashed"
+            icon={<PlusOutlined />}
+            onClick={handleAddRow}
+            disabled={isAddDisabled}
+          >
+            Thêm chi phí
+          </Button>
+        </div>
       </div>
 
-      {/* Header */}
-      {/* <div className="flex gap-4 text-xs font-medium text-gray-600">
-        <div className={`${colWidth[0]}`}>TT cơ bản</div>
-        <div>Hệ số k</div>
-        <div className={`${colWidth[1]}`}>Diễn giải</div>
-        <div className={`${colWidth[2]}`}>Số tiền</div>
-        <div>Số tiền sau thuế</div>
-        <div className={`${colWidth[3]}`}>Ghi chú</div>
-        <div className={`${colWidth[4]}`}>Thao tác</div>
-      </div> */}
-
-      {/* Rows */}
       <div className="space-y-2">
-        {(rows || []).map((row) => (
+        {(localData?.rows || []).map((row) => (
           <RowItem
-            colWidth={colWidth}
+            colWidth={COL_WIDTH}
             key={row.id}
             record={row as any}
             availableOptions={availableOptionsByRowId.get(row.id) || []}
             categories={categories}
             basicInfo={basicInfo}
-            onUpdateRow={onUpdateRow}
-            onRemoveRow={onRemoveRow}
+            onUpdateRow={handleUpdateRow}
+            onRemoveRow={handleRemoveRow}
           />
         ))}
       </div>
@@ -101,7 +168,7 @@ export default function CategoryDetails({
         <div className="text-lg font-semibold">
           Tổng cộng:{" "}
           {formatNumberWithDots(
-            (rows || []).reduce((s, r) => s + (r.moneyAfterTax || 0), 0)
+            (localData?.rows || []).reduce((s, r) => s + (r.moneyAfterTax || 0), 0)
           )}{" "}
           VNĐ
         </div>

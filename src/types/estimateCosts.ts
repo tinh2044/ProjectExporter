@@ -13,7 +13,7 @@ export interface EstimateCostRow {
     value?: number;
   }[];
   vat: number;
-  calculationType: string;
+  // calculationType: string;
 };
 
 export interface EstimateCostCategory {
@@ -54,6 +54,6 @@ export interface BasicProjectInfo {
     projectSpecificity?: string; // normal, special
     projectPhase?: string; // normal, ktkt, other
   language?: string; // vietnamese, foreign
-  
+  calculationType: "manual" | "standard";
   costReportOptions: string[];
 }

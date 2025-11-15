@@ -1,8 +1,8 @@
 import { Modal, Button } from "antd";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import ProjectTypeSelection from "./BasicInfoCollapse";
 import CategoryManagement from "./CategoryManagement";
-import type { EstimateCostsProps, EstimateCostData, EstimateCostRow } from "@/types";
+import type { EstimateCostsProps, EstimateCostData } from "@/types";
 import CategoryDetails from "./CategoryDetails";
 
 export default function EstimateCosts({ 
@@ -26,6 +26,7 @@ export default function EstimateCosts({
         projectSpecificity: "",
         projectPhase: "",
         language: "",
+        calculationType: "standard",
         costReportOptions: [],
       },
       categories: [
@@ -40,7 +41,7 @@ export default function EstimateCosts({
         {
           id: (Date.now() + 1).toString(),
           costName: "",
-          calculationType: "standard",
+          // calculationType: "standard",
           costType: "",
           moneyBeforeTax: 0,
           moneyAfterTax: 0,
@@ -86,6 +87,7 @@ export default function EstimateCosts({
         projectSpecificity: "normal",
         projectPhase: "ktkt",
         language: "vietnamese",
+        calculationType: "standard",
         costReportOptions: [
           "quanLyDuAn",
           "lapBaoCaoKTKT",
@@ -106,7 +108,7 @@ export default function EstimateCosts({
         {
           costName: "Lập báo cáo kinh tế - kỹ thuật",
           id: (Date.now() + 1).toString(),
-          calculationType: "standard",
+          // calculationType: "standard",
           costType: "lapBaoCaoKTKT",
           moneyBeforeTax: 0,
           moneyAfterTax: 0,
@@ -116,7 +118,7 @@ export default function EstimateCosts({
         {
           costName: "Thẩm tra báo cáo kinh tế - kỹ thuật",
           id: (Date.now() + 2).toString(),
-          calculationType: "composite",
+          // calculationType: "composite",
           costType: "thamTraBaoCaoKTKT",
           moneyBeforeTax: 0,
           moneyAfterTax: 0,
@@ -129,56 +131,7 @@ export default function EstimateCosts({
     setLocalData(defaultData);
   };
 
-  const addRow = useCallback(
-    () => {
-      const newRow: EstimateCostRow = {
-        costName: "",
-        id: Date.now().toString(),
-        calculationType: "standard",
-        costType: "",
-        moneyBeforeTax: 0,
-        moneyAfterTax: 0,
-        note: "",
-        formula: "",
-        vat: 0
-      };
 
-      setLocalData((prev) => ({
-        ...prev,
-        rows: [...(prev.rows || []), newRow],
-      }));
-    },
-    [setLocalData]
-  );
-
-  const removeRow = useCallback(
-    (rowId: string) => {
-      setLocalData((prev) => ({
-        ...prev,
-        rows: (prev.rows || []).filter(
-          (row) => !(row.id === rowId)
-        ),
-      }));
-    },
-    [setLocalData]
-  );
-
-  const updateRow = useCallback(
-    (
-      rowId: string,
-      rowUpdate: Partial<EstimateCostRow>
-    ) => {
-      setLocalData((prev) => ({
-        ...prev,
-        rows: (prev.rows || []).map((row) =>
-          row.id === rowId 
-            ? { ...row, ...rowUpdate }
-            : row
-        ),
-      }));
-    },
-    [setLocalData]
-  );
 
   return (
     <Modal
@@ -217,11 +170,8 @@ export default function EstimateCosts({
 
         <CategoryDetails
           localData={localData}
-          rows={localData.rows || []}
           basicInfo={localData.basicInfo}
-          onAddRow={addRow}
-          onRemoveRow={removeRow}
-          onUpdateRow={updateRow}
+          setLocalData={setLocalData}
         />
 
         {/* <TotalSummary localData={localData} /> */}

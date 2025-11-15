@@ -1,6 +1,5 @@
 import { Select, Button, InputNumber } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import Checkbox from "antd/es/checkbox";
 import { useCallback, useEffect, useMemo } from "react";
 import { costReportOptions } from "@/services/constants";
 import { calculateCost } from "@/utils/math";
@@ -30,7 +29,6 @@ function RowItem({
   basicInfo,
   onUpdateRow,
   onRemoveRow,
-
 }: RowItemProps) {
   const hasNoOptions = useMemo(
     () => availableOptions.length === 0 && !record.costType,
@@ -39,6 +37,17 @@ function RowItem({
 
   const onSelectType = useCallback(
     (value: string) => {
+      if (basicInfo.calculationType === "manual") {
+        onUpdateRow(record.id, {
+          costType: value,
+          moneyAfterTax: 0,
+          moneyBeforeTax: 0,
+          formula: "",
+          note: "",
+          kFactor: [],
+        });
+        return;
+      };
       const r = calculateCost(
         value,
         record as unknown as EstimateCostRow,
@@ -62,10 +71,9 @@ function RowItem({
     [basicInfo, categories, onUpdateRow, record]
   );
 
-  // Recalculate row when categories/basicInfo change (for non-manual rows)
   useEffect(() => {
     if (!record.costType) return;
-    if (record.calculationType === "manual") return;
+    if (basicInfo.calculationType === "manual") return;
     const r = calculateCost(
       record.costType,
       record as unknown as EstimateCostRow,
@@ -105,7 +113,7 @@ function RowItem({
     onUpdateRow,
   ]);
 
-  const isManual = record.calculationType === "manual";
+  const isManual = basicInfo.calculationType === "manual";
 
   return (
     <div
@@ -133,7 +141,20 @@ function RowItem({
         <Select
           className="!my-2"
           value={record.vat}
-          onChange={(value) => onUpdateRow(record.id, { vat: value })}
+          onChange={(value) =>
+            onUpdateRow(
+              record.id,
+              isManual
+                ? {
+                    vat: value,
+                    moneyAfterTax:
+                      Math.round(
+                        Number(record.moneyBeforeTax || 0) * (1 + Number(value) / 100)
+                      ) || 0,
+                  }
+                : { vat: value }
+            )
+          }
           options={[
             { value: 0, label: "VAT 0%" },
             { value: 8, label: "VAT 8%" },
@@ -152,38 +173,6 @@ function RowItem({
             </span>
           ) : null}
         </div>
-
-        {/* Theo báo giá */}
-        <div className="flex justify-start items-center gap-2">
-          <Checkbox
-            checked={isManual}
-            onChange={(e) => {
-              const checked = e.target.checked;
-              const newCalculationType = checked ? "manual" : "standard";
-              if (newCalculationType === "manual") {
-                onUpdateRow(record.id, {
-                  calculationType: newCalculationType,
-                  moneyAfterTax: 0,
-                  moneyBeforeTax: 0,
-                  formula: "",
-                  note: "",
-                  kFactor: [],
-                });
-              } else {
-                onUpdateRow(record.id, {
-                  calculationType: "standard",
-                  moneyAfterTax: record.moneyAfterTax,
-                  moneyBeforeTax: record.moneyBeforeTax,
-                  formula: record.formula,
-                  note: record.note,
-                  kFactor: record.kFactor || [],
-                });
-              }
-            }}
-            // title={isManual ? "Theo báo giá" : "Tính định mức"}
-          />
-          <span className="text-sm">Theo báo giá</span>
-        </div>
       </div>
 
       {/* Diễn giải */}
@@ -196,21 +185,27 @@ function RowItem({
           <InputNumber
             value={record.moneyBeforeTax}
             onChange={(value) =>
-              onUpdateRow(record.id, { moneyBeforeTax: Number(value) || 0 })
+              onUpdateRow(
+                record.id,
+                !isManual
+                  ? { moneyAfterTax: Number(value) || 0 }
+                  : {
+                      moneyAfterTax:
+                        Math.round(Number(value) * (1 + record.vat / 100)) || 0,
+                      moneyBeforeTax: Number(value) || 0,
+                    }
+              )
             }
             addonAfter="VNĐ"
             style={{ width: "100%" }}
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
-            readOnly={record.calculationType !== "manual"}
+          readOnly={basicInfo.calculationType !== "manual"}
           />
           <div> Sau VAT: </div>
           <InputNumber
             value={record.moneyAfterTax}
-            onChange={(value) =>
-              onUpdateRow(record.id, { moneyAfterTax: Number(value) || 0 })
-            }
             addonAfter="VNĐ"
             style={{ width: "100%" }}
             formatter={(value) =>

@@ -42,15 +42,33 @@ export default function BasicInfoCollapse({
         ? "baoCaoKTKT"
         : "duAnDauTu";
 
-    setLocalData((prev) => ({
-      ...prev,
-      basicInfo: {
-        ...prev.basicInfo,
-        projectDocType: value,
-        projectForm: mappedForm,
-        costReportOptions: projectDocTypes.find((docType) => docType.value === value)?.costReportOptions || [] as string[],
-      },
-    }));
+    setLocalData((prev) => {
+      const nextAllowed =
+        projectDocTypes.find((docType) => docType.value === value)
+          ?.costReportOptions || ([] as string[]);
+      const sanitizedRows = (prev.rows || []).map((r) => {
+        if (!r.costType || nextAllowed.includes(r.costType)) return r;
+        return {
+          ...r,
+          costType: "",
+          moneyAfterTax: 0,
+          moneyBeforeTax: 0,
+          formula: "",
+          note: "",
+          kFactor: [],
+        };
+      });
+      return {
+        ...prev,
+        basicInfo: {
+          ...prev.basicInfo,
+          projectDocType: value,
+          projectForm: mappedForm,
+          costReportOptions: nextAllowed,
+        },
+        rows: sanitizedRows,
+      };
+    });
   };
 
   return (
