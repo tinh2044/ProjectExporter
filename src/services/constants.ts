@@ -785,6 +785,7 @@ export const costReportOptions = [
     label: "Chi phí quản lý dự án",
     calculationType: "standard",
     tableKey: "1",
+    decs: "Chi phí quản lý dự án đầu tư ứng dụng CNTT"
 
   },
   {
@@ -792,18 +793,21 @@ export const costReportOptions = [
     label: "Lập báo cáo nghiên cứu khả thi",
     calculationType: "standard",
     tableKey: "2",
+    decs: "Lập báo cáo nghiên cứu khả thi dự án đầu tư ứng dụng CNTT"
   },
   {
     value: "thamTraBaoCaoNghienCuuKhaThi",
     label: "Thẩm tra báo cáo nghiên cứu khả thi",
     calculationType: "standard",
     tableKey: "4",
+    decs: "Thẩm tra báo cáo nghiên cứu khả thi dự án đầu tư ứng dụng CNTT"
   },
   {
     value: "lapBaoCaoKTKT",
     label: "Lập báo cáo kinh tế - kỹ thuật",
     calculationType: "standard",
     tableKey: "2",
+    decs: "Lập báo cáo kinh tế - kỹ thuật dự án đầu tư ứng dụng CNTT"
   },
   {
     value: "thamTraBaoCaoKTKT",
@@ -816,17 +820,20 @@ export const costReportOptions = [
     label: "Lập kế hoạch thuê dịch vụ",
     calculationType: "adjusted",
     tableKey: "3",
+    decs: "Lập kế hoạch thuê dịch vụ dự án đầu tư ứng dụng CNTT"
   },
   {
     value: "thamTraKeHoachThue",
     label: "Thẩm tra kế hoạch thuê dịch vụ",
     calculationType: "composite",
     tableKey: ["4", "5", "6"],
+    decs: "Thẩm tra kế hoạch thuê dịch vụ dự án đầu tư ứng dụng CNTT"
   },
   {
     value: "thamDinhGia",
     label: "Chi phí thẩm định giá",
     calculationType: "manual",
+    decs: "Chi phí thẩm định giá dự án đầu tư ứng dụng CNTT"
   },
 ];
 

@@ -17,7 +17,6 @@ export default function EstimateCosts({
       basicInfo: {
         projectType: "",
         projectForm: "",
-        projectDocType: "",
         projectCategory: "",
         geographicLocation: "",
         projectScope: "",
@@ -41,17 +40,16 @@ export default function EstimateCosts({
         {
           id: (Date.now() + 1).toString(),
           costName: "",
-          // calculationType: "standard",
           costType: "",
           moneyBeforeTax: 0,
           moneyAfterTax: 0,
           note: "",
           vat: 0,
+          costDesc: "",
         },
       ],
     };
   });
-  // Initialize from form data when modal opens
   useEffect(() => {
     if (!open) return;
     
@@ -60,7 +58,6 @@ export default function EstimateCosts({
     if (formData && typeof formData === 'object' && formData.categories && formData.categories.length > 0) {
       setLocalData(formData);
     }
-    // If no form data, keep the default initialized state
   }, [open, form, fieldName]);
 
   const handleOk = () => {
@@ -76,7 +73,6 @@ export default function EstimateCosts({
     const defaultCategoryId = Date.now().toString();
     const defaultData: EstimateCostData = {
       basicInfo: {
-        projectDocType: "baoCaoKTKT",
         projectType: "b",
         projectForm: "baoCaoKTKT",
         projectCategory: "software",
@@ -98,8 +94,7 @@ export default function EstimateCosts({
       categories: [
         {
           id: defaultCategoryId,
-          // name: "Chi phí xây dựng phần mềm",
-          money: 7636363636,
+          money: 6190909091,
           vat: 8,
           costType: "b",
         },
@@ -108,22 +103,22 @@ export default function EstimateCosts({
         {
           costName: "Lập báo cáo kinh tế - kỹ thuật",
           id: (Date.now() + 1).toString(),
-          // calculationType: "standard",
           costType: "lapBaoCaoKTKT",
           moneyBeforeTax: 0,
           moneyAfterTax: 0,
           note: "",
-          vat: 0,
+          vat: 8,
+          costDesc: "Lập báo cáo kinh tế - kỹ thuật dự án đầu tư ứng dụng CNTT",
         },
         {
           costName: "Thẩm tra báo cáo kinh tế - kỹ thuật",
           id: (Date.now() + 2).toString(),
-          // calculationType: "composite",
           costType: "thamTraBaoCaoKTKT",
           moneyBeforeTax: 0,
           moneyAfterTax: 0,
           note: "",
-          vat: 0,
+          vat: 8,
+          costDesc: "Thẩm tra báo cáo kinh tế - kỹ thuật dự án đầu tư ứng dụng CNTT",
         },
       ],
     };
@@ -174,7 +169,6 @@ export default function EstimateCosts({
           setLocalData={setLocalData}
         />
 
-        {/* <TotalSummary localData={localData} /> */}
       </div>
     </Modal>
   );

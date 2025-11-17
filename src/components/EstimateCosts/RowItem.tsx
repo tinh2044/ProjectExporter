@@ -59,6 +59,7 @@ function RowItem({
           ?.calculationType || "standard";
       onUpdateRow(record.id, {
         costName: r.costName,
+        costDesc: r.costDesc,
         costType: value,
         moneyAfterTax: Math.round(r.totalCost) || 0,
         moneyBeforeTax: Math.round(r.costBeforeTax) || 0,

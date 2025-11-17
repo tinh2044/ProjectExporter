@@ -1,12 +1,9 @@
 import { Table, Select, Button, InputNumber } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-// import CategoryDetails from "./CategoryDetails";
 import type {
   EstimateCostCategory,
   EstimateCostData,
-  // EstimateCostRow,
 } from "@/types";
-// import { useCallback } from "react";
 import { projectCategoryOptions } from "@/services/constants";
 
 type CategoryManagementProps = {
@@ -21,7 +18,6 @@ export default function CategoryManagement({
   const addCategory = () => {
     const newCategory: EstimateCostCategory = {
       id: Date.now().toString(),
-      // name: "",
       money: 0,
       vat: 8,
       costType: "",
@@ -55,19 +51,6 @@ export default function CategoryManagement({
 
 
   const categoryColumns = [
-    // {
-    //   title: "Tên chi phí",
-    //   dataIndex: "tenChiPhi",
-    //   width: 250,
-    //   render: (_: unknown, record: EstimateCostCategory) => (
-    //     <Input
-    //       value={record.name}
-    //       onChange={(e) => updateCategory(record.id, "name", e.target.value)}
-    //       placeholder="Nhập tên chi phí (VD: Chi phí phần mềm)"
-    //       style={{ width: "100%" }}
-    //     />
-    //   ),
-    // },
     {
       title: "Loại chi phí",
       dataIndex: "costType",
@@ -162,7 +145,6 @@ export default function CategoryManagement({
           danger
           icon={<DeleteOutlined />}
           onClick={() => removeCategory(record.id)}
-          // disabled={localData.categories.length === 1}
         />
       ),
     },
@@ -192,25 +174,6 @@ export default function CategoryManagement({
         bordered
         scroll={{ x: "max-content" }}
       />
-
-      {/* Category Details Section */}
-      {/* <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-4">Bảng chi tiết dự toán</h3> */}
-        {/* <Collapse
-          items={localData.categories.map(category => ({
-            key: category.id,
-            label: (
-              <div className="flex justify-between items-center w-full">
-                <span className="font-semibold">
-                  {category.name || "Danh mục chưa đặt tên"}
-                </span>
-              </div>
-            ),
-            children: ( */}
-        {/* ),
-          }))}
-        /> */}
-      {/* </div> */}
     </div>
   );
 }

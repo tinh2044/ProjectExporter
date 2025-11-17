@@ -4,6 +4,7 @@ export interface EstimateCostRow {
   id: string;
   costName: string;
   costType: string;
+  costDesc: string;
   moneyBeforeTax: number;
   moneyAfterTax: number;
   note?: string;
@@ -13,15 +14,12 @@ export interface EstimateCostRow {
     value?: number;
   }[];
   vat: number;
-  // calculationType: string;
 };
 
 export interface EstimateCostCategory {
   id: string;
-  // name: string;
   money: number;
-  vat: number; //  (8 or 10)
-  // rows: EstimateCostRow[];
+  vat: number;
   costType: string
 };  
 
@@ -40,12 +38,9 @@ export interface EstimateCostsProps {
 }
 
 export interface BasicProjectInfo {
-    // Original fields
     projectType: string;
     projectForm: string;
-    projectDocType?: string; // baoCaoKTKT | keHoachThue | nghienCuuKhaThi
     
-    // New detailed selection criteria
     projectCategory?: string; // infrastructure, software, combined
     geographicLocation?: string; // urban, island, other
     projectScope?: string; // local, multiProvince, special

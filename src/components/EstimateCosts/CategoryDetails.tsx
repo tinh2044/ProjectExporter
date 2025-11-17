@@ -24,7 +24,6 @@ export default function CategoryDetails({
   setLocalData,
   basicInfo,
 }: CategoryDetailsProps) {
-  // Memoize categories to ensure stable reference
   const categories = useMemo(
     () => localData.categories,
     [localData.categories]
@@ -34,8 +33,8 @@ export default function CategoryDetails({
       const newRow: EstimateCostRow = {
         costName: "",
         id: Date.now().toString(),
-        // calculationType: "standard",
         costType: "",
+        costDesc: "",
         moneyBeforeTax: 0,
         moneyAfterTax: 0,
         note: "",

@@ -8,7 +8,6 @@ type TotalSummaryProps = {
 export default function TotalSummary({ localData }: TotalSummaryProps) {
   const totalAmount = localData.categories.reduce((sum, cat) =>  sum + cat.money, 0);
   
-  // Calculate total with VAT
   const totalWithVAT = localData.categories.reduce((sum, cat) => {
     const tongCong = cat.money + (cat.money * cat.vat / 100);
     return sum + tongCong;
