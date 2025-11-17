@@ -334,6 +334,7 @@ export const calculateKFactor = (
 
 interface CalculationResult {
   costName: string;
+  costDesc: string;
   costType: string;
   costBeforeTax: number;
   vatAmount: number;
@@ -540,6 +541,7 @@ const calculateCostPerCategory = (
     projectType: "",
     projectForm: "",
     costReportOptions: [],
+    calculationType: "standard",
   }
 ) : CalculationResult =>  {
   const { money } = category;
@@ -549,6 +551,7 @@ const calculateCostPerCategory = (
   if (!costType) {
     return {
       costName: "",
+      costDesc: "",
       costType: "Không xác định",
       note: "Loại tính toán không được hỗ trợ.",
       totalCost: 0,
@@ -564,6 +567,7 @@ const calculateCostPerCategory = (
   if (costType.calculationType === "manual") {
     return {
       costName: costType.label,
+      costDesc: costType.decs || "",
       costType: costType.value,
       note: "Chi phí này lấy theo báo giá",
       totalCost: 0,
@@ -584,6 +588,7 @@ const calculateCostPerCategory = (
 
   const result: Partial<CalculationResult> = {
     costType: costType.label,
+    costDesc: costType.decs || "",
     baseCost: money,
     kFactor: kInfo,
   };
@@ -611,6 +616,7 @@ const calculateCostPerCategory = (
       return {
         costName: costType.label,
         costType: costType.value,
+        costDesc: costType.decs || "",
         note: "Loại tính toán không được hỗ trợ.",
         totalCost: 0,
         formula: "",
@@ -643,6 +649,7 @@ const calculateCostPerCategory = (
 
   return {
     costName: costType.label,
+    costDesc: costType.decs,
     ...result,
     costBeforeTax,
     vatAmount,
@@ -658,6 +665,7 @@ export const calculateCost = (
     projectType: "",
     projectForm: "",
     costReportOptions: [],
+    calculationType: "standard",
   }
 ): CalculationResult => {
   const calResult = categories.map((cat) =>
@@ -681,6 +689,7 @@ export const calculateCost = (
        baseCost: 0,
        rate: 0,
        costName: calResult[0].costName,
+       costDesc: calResult[0].costDesc,
      } 
 
      newResult.formula = calResult.map((result) => `[${result.formula}]`).join(" + ");
@@ -692,7 +701,6 @@ export const calculateCost = (
      newResult.rate = calResult.reduce((acc, result) => acc + result.rate, 0);
 
      newResult.note = calResult.map((result) => result.note).join(" <br> ");
-
      return newResult;
    }
 

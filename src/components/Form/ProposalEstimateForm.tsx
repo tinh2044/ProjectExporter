@@ -7,9 +7,6 @@ import SelectLegal from "./SelectLegal";
 import BaseForm from "./BaseForm";
 import { createTemplate1 } from "@/services/docx";
 import { getBaseRequiredKeys } from "@/services/constants";
-// import AppendixModal from "./AppendixModal";
-// import EstimateNotes from "./EstimateNotes";
-// import EstimateCosts from "@/components/EstimateCosts";
 
 const { TextArea } = Input;
 const defaultLegals = [
@@ -27,7 +24,6 @@ const defaultLegals = [
 export default function ProposalEstimateForm({ form }: { form: FormInstance }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  // const [appendixOpen, setAppendixOpen] = useState(false);
 
   useEffect(() => {
     fetchLegalData();
@@ -60,16 +56,6 @@ export default function ProposalEstimateForm({ form }: { form: FormInstance }) {
     searchText: text.toLowerCase(),
   }));
 
-  // // Create labels mapping from costReportOptions
-  // const appendixItemLabels: { [key: string]: string } = costReportOptions.reduce((acc, option) => {
-  //   acc[option.value] = option.label;
-  //   return acc;
-  // }, {} as { [key: string]: string });
-
-  // // Reactively watch form values so UI updates and modal receives correct data
-  // const selectedItemsWatch = Form.useWatch("selectedItems", form) || [];
-  // const itemAmountsWatch = Form.useWatch("itemAmounts", form) || [];
-
   const requiredKeys: Array<string | string[]> = [
     ...getBaseRequiredKeys(),
     "thongTinPhapLiChuanBi",
@@ -86,7 +72,6 @@ export default function ProposalEstimateForm({ form }: { form: FormInstance }) {
       requiredKeys={requiredKeys}
       legalFieldKey="thongTinPhapLiChuanBi"
       legalList={legalData}
-      // templateRelativeUrl="../../assets/template1.docx"
       createFormCallBack={createTemplate1}
       outputFileName="template-1.docx"
       submitText="Tạo mẫu 1"
@@ -186,25 +171,6 @@ export default function ProposalEstimateForm({ form }: { form: FormInstance }) {
             </Form.Item>
           </Col>
 
-          {/* <Col xs={24}>
-            <EstimateNotes
-              form={form}
-              itemLabels={appendixItemLabels}
-              onOpenAppendix={() => setAppendixOpen(true)}
-            />
-          </Col> */}
-        
-          {/* <Col xs={24}>
-            <AppendixModal
-              form={form}
-              open={appendixOpen}
-              onClose={() => setAppendixOpen(false)}
-              selectedItems={selectedItemsWatch}
-              itemLabels={appendixItemLabels}
-              itemAmounts={itemAmountsWatch}
-              appendixFieldName="appendixRows"
-            />
-          </Col> */}
         </Row>
       </Row>
     </BaseForm>
