@@ -1,10 +1,12 @@
-import { Modal, Form, Input, Table, type FormInstance } from "antd";
+import { Modal, Form, Table, type FormInstance, InputNumber } from "antd";
+import { useEffect } from "react";
+import type { EstimateCostData } from "@/types/estimateCosts";
 
 type WorkValueTableProps = {
   form: FormInstance;
   open: boolean;
   onClose: () => void;
-  fieldName?: string; // default: "workValues"
+  fieldName?: string;
 };
 
 type RowData = {
@@ -33,6 +35,19 @@ const ROWS: RowData[] = [
 ];
 
 export default function WorkValueTable({form, open, onClose, fieldName = "workValues" }: WorkValueTableProps) {
+  const estimateCosts: EstimateCostData | undefined = form.getFieldValue("estimateCosts");
+  const totalCosts = estimateCosts?.rows?.reduce((acc, row) => acc + row.moneyAfterTax, 0) ?? 0; 
+  useEffect(() => {
+      const row1Value = form.getFieldValue([fieldName, 0]);
+      if (row1Value === undefined || row1Value === null) {
+        form.setFieldValue([fieldName, 0], 0);
+      }
+      const row2Value = form.getFieldValue([fieldName, 1]);
+      if (row2Value === undefined || row2Value === null) {
+        form.setFieldValue([fieldName, 1], 0);
+      }
+      form.setFieldValue([fieldName, 2], totalCosts);
+  }, [totalCosts, fieldName, form]);
   const columns = [
     {
       title: "STT",
@@ -52,23 +67,37 @@ export default function WorkValueTable({form, open, onClose, fieldName = "workVa
       width: 240,
       render: (_: unknown, _record: RowData, index: number) => (
         <Form.Item name={[fieldName, index]} noStyle>
-          <Input type="number" placeholder="Nhập giá trị" addonAfter="VNĐ" />
+          {index == 2 ? (
+            <InputNumber
+              placeholder="Nhập giá trị"
+              addonAfter="VNĐ"
+              readOnly
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+            />
+          ) : (
+            <InputNumber
+              placeholder="Nhập giá trị"
+              addonAfter="VNĐ"
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+            />
+          )}
         </Form.Item>
       ),
     },
   ];
 
     const handleOk = () => {
-      // Lưu dữ liệu từ các input vào form
       const formValues: Record<string, number[]> = {};
       ROWS.forEach((_row, index) => {
-        formValues[fieldName] = formValues[fieldName] || [];
-        // Lấy giá trị từ Form.Item trong modal
+        formValues[fieldName] = formValues[fieldName] || [];  
         const inputValue = form.getFieldValue([fieldName, index]) as number;
         formValues[fieldName][index] = inputValue || 0;
       });
 
-      // Cập nhật form với dữ liệu mới
       form.setFieldValue(fieldName, formValues[fieldName]);
 
       onClose();
@@ -94,15 +123,13 @@ export default function WorkValueTable({form, open, onClose, fieldName = "workVa
         },
       }}
     >
-      <Form layout="vertical">
-        <Table
-          dataSource={ROWS}
-          columns={columns as never}
-          pagination={false}
-          rowKey={(row) => row.key}
-          scroll={{ x: "max-content" }}
-        />
-      </Form>
+      <Table
+        dataSource={ROWS}
+        columns={columns as never}
+        pagination={false}
+        rowKey={(row) => row.key}
+        scroll={{ x: "max-content" }}
+      />
     </Modal>
   );
 }
