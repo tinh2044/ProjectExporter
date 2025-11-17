@@ -1,221 +1,10 @@
+import { Document, PageOrientation, Paragraph, SectionType, WidthType, type FileChild, type Table } from "docx";
+import { createParagraph, createText, paragraphJustify, paragraphLeft, paragraphNoIndent, textBold, textItalics } from "./builders";
 import type { FormInstance } from "antd";
-import {
-  Document,
-  Paragraph,
-  TextRun,
-  AlignmentType,
-  Table,
-  TableRow,
-  TableCell,
-  WidthType,
-  VerticalAlign,
-  BorderStyle,
-  FileChild,
-  type IParagraphOptions,
-  type IRunOptions,
-  type ITableOptions,
-  type ITableRowOptions,
-  type ITableCellOptions,
-  TableLayoutType,
-  PageOrientation,
-  SectionType,
-} from "docx";
-import {
-  formatAdditionalEstimate,
-  formatYearRangeFromPicker,
-  formatNumberWithDots,
-  numberToVietnameseMoney,
-} from "@/utils/formatters";
-// import type { AppendixRow } from "@/components/Form/AppendixModal";
-import type { EstimateCostData, EstimateCostRow } from "@/types";
-
-const CONSTANTS = {
-  FONT: "Times New Roman",
-  FONT_SIZE: 28,
-  SPACING: {
-    AFTER: 100,
-    BEFORE: 200,
-    NONE: 0,
-  },
-  INDENT: {
-    FIRST_LINE: 540,
-    NONE: 0,
-  },
-  MARGIN: {
-    TOP: 1417,
-    RIGHT: 754,
-    BOTTOM: 1417,
-    LEFT: 1700,
-  },
-} as const;
-
-const baseTableOpts = {
-  width: { size: 100, type: WidthType.PERCENTAGE },
-  borders: {
-    top: { style: BorderStyle.NONE },
-    bottom: { style: BorderStyle.NONE },
-    left: { style: BorderStyle.NONE },
-    right: { style: BorderStyle.NONE },
-    insideHorizontal: { style: BorderStyle.NONE },
-    insideVertical: { style: BorderStyle.NONE },
-  },
-};
-
-const baseTableCellOpts = {
-  verticalAlign: VerticalAlign.TOP,
-};
-
-const baseRunOpts: IRunOptions = {
-  font: CONSTANTS.FONT,
-  size: CONSTANTS.FONT_SIZE,
-};
-
-const baseParagraphOpts: IParagraphOptions = {
-  spacing: {
-    after: CONSTANTS.SPACING.AFTER,
-    before: CONSTANTS.SPACING.BEFORE,
-  },
-  alignment: AlignmentType.CENTER,
-  indent: { firstLine: CONSTANTS.INDENT.FIRST_LINE },
-};
-
-/**
- * Create table with custom options
- */
-const createTable = (
-  rows: TableRow[],
-  options?: Partial<ITableOptions>
-): Table => {
-  return new Table({
-    ...baseTableOpts,
-    ...options,
-    rows,
-  });
-};
-
-/**
- * Create TableRow with custom options
- */
-const createTableRow = (
-  cells: TableCell[],
-  options?: ITableRowOptions
-): TableRow => {
-  return new TableRow({
-    ...options,
-    children: cells,
-  });
-};
-
-/**
- * Create TableCell with custom options
- */
-const createTableCell = (
-  children: FileChild[],
-  options?: Partial<ITableCellOptions>
-): TableCell => {
-  return new TableCell({
-    children,
-    ...baseTableCellOpts,
-    ...options,
-  });
-};
-/**
- * Create TextRun with custom options
- */
-const createText = (text: string, options?: Partial<IRunOptions>): TextRun => {
-  return new TextRun({
-    text,
-    ...baseRunOpts,
-    ...options,
-  });
-};
-
-/**
- * Create TextRun in bold
- */
-const textBold = (text: string, options?: Partial<IRunOptions>): TextRun => {
-  return createText(text, { ...options, bold: true });
-};
-
-/**
- * Create TextRun in italics
- */
-const textItalics = (text: string, options?: Partial<IRunOptions>): TextRun => {
-  return createText(text, { ...options, italics: true });
-};
-
-/**
- * Create Paragraph with multiple input types
- */
-const createParagraph = (
-  content: string | TextRun | TextRun[],
-  paragraphOpts?: Partial<IParagraphOptions>,
-  runOpts?: Partial<IRunOptions>
-): Paragraph => {
-  let children: TextRun[];
-
-  if (typeof content === "string") {
-    children = [createText(content, runOpts)];
-  } else if (Array.isArray(content)) {
-    children = content;
-  } else {
-    children = [content];
-  }
-
-  return new Paragraph({
-    children,
-    ...baseParagraphOpts,
-    ...paragraphOpts,
-  });
-};
-
-/**
- * Create Paragraph with both sides aligned
- */
-const paragraphJustify = (
-  content: string | TextRun | TextRun[],
-  paragraphOpts?: Partial<IParagraphOptions>,
-  runOpts?: Partial<IRunOptions>
-): Paragraph => {
-  return createParagraph(
-    content,
-    { ...paragraphOpts, alignment: AlignmentType.JUSTIFIED },
-    runOpts
-  );
-};
-
-/**
- * Create Paragraph with left alignment
- */
-const paragraphLeft = (
-  content: string | TextRun | TextRun[],
-  paragraphOpts?: Partial<IParagraphOptions>,
-  runOpts?: Partial<IRunOptions>
-): Paragraph => {
-  return createParagraph(
-    content,
-    { ...paragraphOpts, alignment: AlignmentType.LEFT },
-    runOpts
-  );
-};
-
-/**
- * Create Paragraph with no indent
- */
-const paragraphNoIndent = (
-  content: string | TextRun | TextRun[],
-  paragraphOpts?: Partial<IParagraphOptions>,
-  runOpts?: Partial<IRunOptions>
-): Paragraph => {
-  return createParagraph(
-    content,
-    {
-      ...paragraphOpts,
-      indent: { firstLine: CONSTANTS.INDENT.NONE },
-    },
-    runOpts
-  );
-};
+import { createAppendixTable, createContractorPlanAppendixTable, createContractorSelectionTable, createPlanImplementationAppendixTable, createTable, createTableCell, createTableRow } from "./table";
+import { CONSTANTS } from "./constanst";
+import { formatAdditionalEstimate, formatNumberWithDots, formatYearRangeFromPicker, numberToVietnameseMoney } from "@/utils/formatters";
+import type { EstimateCostData } from "@/types";
 
 /**
  * Create header standard for all documents
@@ -300,7 +89,7 @@ const documentFooter = (
  */
 export const createDocument = (
   children: FileChild[],
-  appendix?: Table
+  appendix?: FileChild[]
 ): Document => {
   return new Document({
     sections: [
@@ -338,19 +127,7 @@ export const createDocument = (
             },
           },
         },
-        children: appendix
-          ? [
-              createParagraph(textBold("PHỤ LỤC - DỰ TOÁN CHI PHÍ MUA SẮM"), {
-                pageBreakBefore: true,
-              }),
-              createParagraph(
-                textItalics(
-                  `(Kèm theo Tờ trình ngày     tháng    năm ${new Date().getFullYear()})`
-                )
-              ),
-              appendix,
-            ]
-          : [],
+        children: appendix ? appendix : [],
       },
     ],
   });
@@ -423,118 +200,9 @@ const createProjectBasicInfo = (form: FormInstance): Paragraph[] => {
     ]),
     paragraphJustify([
       createText("- Quy mô thực hiện: "),
-      createText(form.getFieldValue("quyMo") || ""),
+      createText(form.getFieldValue("tenDuAn") || ""),
     ]),
   ];
-};
-
-/**
- * Create appendix table
- */
-export const createAppendixTable = (estimateData: EstimateCostData): Table => {
-  const appendixRows = estimateData.rows || [];
-  // console.log(appendixRows)
-
-  const WIDTHS = {
-    STT: 1000,
-    NOI_DUNG: 2400,
-    DIEN_GIAI: 2400,
-    GIA_TRI: 2100,
-    GHI_CHU: 8700,
-  };
-
-  // Helper: Create cell with custom options
-  const cell = (contents: string) => {
-    return new TableCell({
-      children: [
-        ...contents.split("<br>").map(
-          (content) =>
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: content,
-                  font: "Times New Roman",
-                  size: 24,
-                }),
-              ],
-              alignment: AlignmentType.LEFT,
-              spacing: { after: 0, before: 0 },
-            })
-        ),
-      ],
-      verticalAlign: VerticalAlign.CENTER,
-      margins: { top: 80, bottom: 80, left: 100, right: 100 },
-    });
-  };
-
-  // Helper: Create bold cell
-  const boldCell = (content: string) => {
-    return new TableCell({
-      children: [
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: content,
-              font: "Times New Roman",
-              size: 26,
-              bold: true,
-            }),
-          ],
-          alignment: AlignmentType.LEFT,
-          spacing: { after: 0, before: 0 },
-        }),
-      ],
-      verticalAlign: VerticalAlign.CENTER,
-      margins: { top: 80, bottom: 80, left: 100, right: 100 },
-    });
-  };
-
-  // Header row
-  const headerRow = new TableRow({
-    children: [
-      boldCell("STT"),
-      boldCell("Nội dung"),
-      boldCell("Diễn giải"),
-      boldCell("Giá trị tạm tính (đồng)"),
-      boldCell("Ghi chú"),
-    ],
-  });
-
-  // Data rows
-  const dataRows = appendixRows.map(
-    (row: EstimateCostRow, index) =>
-      new TableRow({
-        children: [
-          cell(String(index + 1)),
-          cell(row.costName),
-          cell(row.formula || ""),
-          cell(formatNumberWithDots(row.moneyBeforeTax)),
-          cell(row.note || ""),
-        ],
-      })
-  );
-
-  // Create table
-  return new Table({
-    rows: [headerRow, ...dataRows],
-    width: { size: 100, type: WidthType.PERCENTAGE },
-    layout: TableLayoutType.FIXED,
-    columnWidths: [
-      WIDTHS.STT,
-      WIDTHS.NOI_DUNG,
-      WIDTHS.DIEN_GIAI,
-      WIDTHS.GIA_TRI,
-      WIDTHS.GHI_CHU,
-    ],
-    borders: {
-      top: { style: BorderStyle.SINGLE, size: 6 },
-      bottom: { style: BorderStyle.SINGLE, size: 6 },
-      left: { style: BorderStyle.SINGLE, size: 6 },
-      right: { style: BorderStyle.SINGLE, size: 6 },
-      insideHorizontal: { style: BorderStyle.SINGLE, size: 6 },
-      insideVertical: { style: BorderStyle.SINGLE, size: 6 },
-    },
-  });
 };
 
 /**
@@ -545,7 +213,7 @@ export const createTemplate1 = (
   legalInfo: string[] = []
 ): Document => {
   const estimateData = form.getFieldValue("estimateCosts");
-  console.log(estimateData);
+  // console.log(estimateData);
   const content: FileChild[] = [
     // Title
     createParagraph(textBold("TỜ TRÌNH"), {
@@ -643,7 +311,17 @@ export const createTemplate1 = (
     documentFooter(["Nơi nhận:", "- Như trên;", "- Lưu VT."], "………"),
   ];
 
-  return createDocument(content, createAppendixTable(estimateData));
+  return createDocument(content, [
+    createParagraph(textBold("PHỤ LỤC - DỰ TOÁN CHI PHÍ MUA SẮM"), {
+      pageBreakBefore: true,
+    }),
+    createParagraph(
+      textItalics(
+        `(Kèm theo Tờ trình ngày     tháng    năm ${new Date().getFullYear()})`
+      )
+    ),
+    createAppendixTable(estimateData),
+  ]);
 };
 
 /**
@@ -761,7 +439,7 @@ export const createTemplate2 = (
     documentFooter(["Nơi nhận:", "- Như trên;", "- Lưu: VT."], "GIÁM ĐỐC"),
   ];
 
-  return createDocument(content, createAppendixTable(estimateData));
+  return createDocument(content, [createAppendixTable(estimateData)]);
 };
 
 /**
@@ -775,6 +453,15 @@ export const createTemplate4 = (
   const tenDuAn = form.getFieldValue("tenDuAn") || "";
   const currentYear = new Date().getFullYear();
 
+  const estimateCosts: EstimateCostData = form.getFieldValue("estimateCosts");
+  const totalCosts = estimateCosts.rows.reduce(
+    (acc, row) => acc + row.moneyAfterTax,
+    0
+  );
+
+  const workValues = form.getFieldValue("workValues");
+  workValues[2] = workValues == 0 ? totalCosts : workValues[2];
+
   const content: FileChild[] = [
     // Header
     createParagraph(textBold("TỜ TRÌNH"), {
@@ -787,16 +474,13 @@ export const createTemplate4 = (
     ),
     createParagraph(`Kính gửi: ${nguoiNhan}`),
     createParagraph(""),
-
     // Giới thiệu
     paragraphJustify(
       `Phòng ………… kính trình Giám đốc xem xét, phê duyệt kế hoạch lựa chọn nhà thầu dự án "${tenDuAn}" trên cơ sở những nội dung dưới đây:`
     ),
-
     // I. Mô tả tóm tắt dự toán
     paragraphLeft(textBold("I. Mô tả tóm tắt dự toán")),
     ...createProjectBasicInfo(form),
-
     // II. Căn cứ pháp lý
     paragraphLeft(textBold("II. Căn cứ pháp lý")),
     ...createLegalBasis(
@@ -813,13 +497,11 @@ export const createTemplate4 = (
         ` của ${nguoiNhan} về phê duyệt dự toán giai đoạn chuẩn bị đầu tư dự án "${tenDuAn}".`
       ),
     ]),
-
     // III. Phần công việc đã thực hiện
     paragraphLeft([
       textBold("III. Phần công việc đã thực hiện: "),
       createText(form.getFieldValue("congViecDaThucHien") || ""),
     ]),
-
     // IV. Phần công việc không áp dụng
     paragraphLeft([
       textBold(
@@ -827,7 +509,6 @@ export const createTemplate4 = (
       ),
       createText(form.getFieldValue("congViecKhongApDung") || ""),
     ]),
-
     // V. Phần công việc thuộc kế hoạch
     paragraphLeft([
       textBold("V. Phần công việc thuộc kế hoạch lựa chọn nhà thầu: "),
@@ -836,7 +517,9 @@ export const createTemplate4 = (
         .split("\n")
         .map((item: string) => createText(item, { break: 1 })),
     ]),
-
+    // VI.	Tổng giá trị các phần công việc
+    paragraphLeft([textBold("VI.	Tổng giá trị các phần công việc: ")]),
+    createContractorSelectionTable(...workValues),
     // VII. Kiến nghị
     paragraphLeft(textBold("VII. Kiến nghị")),
     paragraphJustify(
@@ -848,9 +531,35 @@ export const createTemplate4 = (
     documentFooter(["Nơi nhận:", "- Như trên;", "- Lưu VT."], "………"),
   ];
 
-  return createDocument(content);
+  return createDocument(content, [
+    createParagraph(textBold("Phụ lục I"), {
+      pageBreakBefore: true,
+    }),
+    createParagraph(textBold(" KẾ HOẠCH LỰA CHỌN NHÀ THẦU")),
+    createParagraph(
+      textItalics(
+        `(Kèm theo Tờ trình ngày     tháng    năm ${new Date().getFullYear()})`,
+        { color: "FF0000" }
+      )
+    ),
+    createContractorPlanAppendixTable(
+      estimateCosts,
+      form.getFieldValue("chuDauTu") || "",
+      form.getFieldValue("nguonKinhPhi") || ""
+    ),
+    createParagraph(textBold("Phụ lục II"), {
+      pageBreakBefore: true,
+    }),
+    createParagraph(textBold("GIẢI TRÌNH NỘI DUNG KẾ HOẠCH LỰA CHỌN NHÀ THẦU")),
+    createParagraph(
+      textItalics(
+        `(Kèm theo Tờ trình ngày     tháng    năm ${new Date().getFullYear()})`,
+        { color: "FF0000" }
+      )
+    ),
+    createPlanImplementationAppendixTable(estimateCosts, form),
+  ]);
 };
-
 /**
  * Template 6
  */
