@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { costReportOptions, decision1688Data } from "@/services/constants";
-import type { BasicProjectInfo, EstimateCostCategory, EstimateCostRow } from "@/types";
+import type {
+  BasicProjectInfo,
+  EstimateCostCategory,
+  EstimateCostRow,
+} from "@/types";
 import { formatNumberWithDots } from "./formatters";
 
 const round = (num: number, decimals = 0): number => {
@@ -378,9 +382,8 @@ const calculateStandardCost = (
   const { vat, money } = category;
   const { projectType, projectForm } = basicInfo;
   const symbolMoney = projectType == "a" ? "Gpc" : "Gpm";
-  const baseLabel = projectType == "a"
-    ? "Chi phí phần cứng"
-    : "Chi phí phần mềm";
+  const baseLabel =
+    projectType == "a" ? "Chi phí phần cứng" : "Chi phí phần mềm";
   const tableKey = `table${costType.tableKey}${projectType}`;
   const rate = getRate(tableKey, money, projectForm);
 
@@ -412,7 +415,7 @@ const calculateStandardCost = (
   const costBeforeTax = money * (finalRate / 100);
   formula += ` x ${symbolMoney} + ${vat}% VAT ${
     kFactor === 1 ? "" : `x ${dot2Percent(kFactor)}`
-  }`
+  }`;
 
   return {
     costBeforeTax,
@@ -436,7 +439,6 @@ const calculateAdjustedCost = (
   let formula = "";
   const symbolMoney = projectType == "a" ? "Gpc" : "Gpm";
   if (costType.value === "lapKeHoachThue") {
-
     if (projectType === "a") {
       // Hạ tầng: dùng 2a và nhân 1.65
       rate = getRate("table2a", money, projectForm);
@@ -458,11 +460,14 @@ const calculateAdjustedCost = (
     }
   } else {
     // Mặc định logic cũ cho adjusted
-    rate =
-      getRate(`table${costType.tableKey}${projectType}`, money, projectForm)
-      formula = `${dot2Percent(rate)}%`;
-      rate *= 1.65;
-      formula += ` x 1.65`;
+    rate = getRate(
+      `table${costType.tableKey}${projectType}`,
+      money,
+      projectForm
+    );
+    formula = `${dot2Percent(rate)}%`;
+    rate *= 1.65;
+    formula += ` x 1.65`;
   }
   formula += ` x ${symbolMoney} + ${vat}% VAT ${
     kFactor === 1 ? "" : `x ${dot2Percent(kFactor)}`
@@ -484,8 +489,8 @@ const calculateCompositeCost = (
   kInfo: Array<{ note?: string; value?: number }>
 ): Partial<CalculationResult> => {
   const { vat, money } = category;
-  const { projectType, projectForm } = basicInfo;
-  // const projectForm = projectDocType || "";
+  const { projectType } = basicInfo;
+  const projectForm = projectDocType || "";
   const rate4 = getRate(`table4${projectType}`, money, projectForm);
   const rate5 = getRate(`table5${projectType}`, money, projectForm);
   const rate6 = getRate(`table6${projectType}`, money, projectForm);
@@ -497,17 +502,19 @@ const calculateCompositeCost = (
   const costBeforeTax = costPart4 + costPart5 + costPart6;
   const moneyFormatted = formatNumberWithDots(money);
   const symbolMoney = projectType == "a" ? "Gpc" : "Gpm";
-  const baseLabel = projectType == "a" 
-    ? "Chi phí phần cứng"
-    : "Chi phí phần mềm";
-  const typeLabel = _costType?.value === "thamTraBaoCaoKTKT"
-    ? "thẩm tra báo cáo kinh tế - kỹ thuật"
-    : "thẩm tra kế hoạch thuê dịch vụ";
+  const baseLabel =
+    projectType == "a" ? "Chi phí phần cứng" : "Chi phí phần mềm";
+  const typeLabel =
+    _costType?.value === "thamTraBaoCaoKTKT"
+      ? "thẩm tra báo cáo kinh tế - kỹ thuật"
+      : "thẩm tra kế hoạch thuê dịch vụ";
 
   const formula = `
     [40% x (${dot2Percent(rate4)}% x ${symbolMoney}) + 70% x (${dot2Percent(
     rate5
-  )}% x ${symbolMoney}) + 70% x (${dot2Percent(rate6)}% x ${symbolMoney})] + ${vat}% VAT ${
+  )}% x ${symbolMoney}) + 70% x (${dot2Percent(
+    rate6
+  )}% x ${symbolMoney})] + ${vat}% VAT ${
     kFactor === 1 ? "" : `x ${dot2Percent(kFactor)}`
   }
   `;
@@ -543,11 +550,11 @@ const calculateCostPerCategory = (
     costReportOptions: [],
     calculationType: "standard",
   }
-) : CalculationResult =>  {
+): CalculationResult => {
   const { money } = category;
 
   const costType = costReportOptions.find((c) => c.value === field);
-  
+
   if (!costType) {
     return {
       costName: "",
@@ -669,39 +676,56 @@ export const calculateCost = (
   }
 ): CalculationResult => {
   const calResult = categories.map((cat) =>
-    calculateCostPerCategory(field, {...cat, vat: row.vat }, {
-      ...basicInfo,
-      projectType: cat.costType,
-    })
+    calculateCostPerCategory(
+      field,
+      { ...cat, vat: row.vat },
+      {
+        ...basicInfo,
+        projectType: cat.costType,
+      }
+    )
   );
 
-   if (calResult.length == 1) {
-     return calResult[0]
-   } else {
-     const newResult: CalculationResult = {
-       costType: "Tổng chi phí",
-       note: "",
-       totalCost: 0,
-       formula: "",
-       kFactor: [],
-       costBeforeTax: 0,
-       vatAmount: 0,
-       baseCost: 0,
-       rate: 0,
-       costName: calResult[0].costName,
-       costDesc: calResult[0].costDesc,
-     } 
+  if (calResult.length == 1) {
+    return calResult[0];
+  } else {
+    const newResult: CalculationResult = {
+      costType: "Tổng chi phí",
+      note: "",
+      totalCost: 0,
+      formula: "",
+      kFactor: [],
+      costBeforeTax: 0,
+      vatAmount: 0,
+      baseCost: 0,
+      rate: 0,
+      costName: calResult[0].costName,
+      costDesc: calResult[0].costDesc,
+    };
 
-     newResult.formula = calResult.map((result) => `[${result.formula}]`).join(" + ");
-     newResult.kFactor = calResult.flatMap((result) => result.kFactor);
-     newResult.costBeforeTax = calResult.reduce((acc, result) => acc + result.costBeforeTax, 0);
-     newResult.vatAmount = calResult.reduce((acc, result) => acc + result.vatAmount, 0);
-     newResult.totalCost = calResult.reduce((acc, result) => acc + result.totalCost, 0);
-     newResult.baseCost = calResult.reduce((acc, result) => acc + result.baseCost, 0);
-     newResult.rate = calResult.reduce((acc, result) => acc + result.rate, 0);
+    newResult.formula = calResult
+      .map((result) => `[${result.formula}]`)
+      .join(" + ");
+    newResult.kFactor = calResult.flatMap((result) => result.kFactor);
+    newResult.costBeforeTax = calResult.reduce(
+      (acc, result) => acc + result.costBeforeTax,
+      0
+    );
+    newResult.vatAmount = calResult.reduce(
+      (acc, result) => acc + result.vatAmount,
+      0
+    );
+    newResult.totalCost = calResult.reduce(
+      (acc, result) => acc + result.totalCost,
+      0
+    );
+    newResult.baseCost = calResult.reduce(
+      (acc, result) => acc + result.baseCost,
+      0
+    );
+    newResult.rate = calResult.reduce((acc, result) => acc + result.rate, 0);
 
-     newResult.note = calResult.map((result) => result.note).join(" <br> ");
-     return newResult;
-   }
-
+    newResult.note = calResult.map((result) => result.note).join(" <br> ");
+    return newResult;
+  }
 };
