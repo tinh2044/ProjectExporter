@@ -1,10 +1,14 @@
+import type { TinhTrangDuAn } from "@/types/du-an";
 import dayjs, { type Dayjs } from "dayjs";
 
 /**
  * Format RangePicker value (2 dates) to: "Năm {yyyy} - Năm {yyyy}"
  */
 export function formatYearRangeFromPicker(
-  range: [Dayjs | Date | string | null | undefined, Dayjs | Date | string | null | undefined]
+  range: [
+    Dayjs | Date | string | null | undefined,
+    Dayjs | Date | string | null | undefined
+  ]
 ): string {
   const [start, end] = (Array.isArray(range) ? range : [null, null]) as [
     Dayjs | Date | string | null | undefined,
@@ -30,8 +34,21 @@ export function formatNumberWithDots(input: number | string): string {
 
 // Money number to Vietnamese words
 function threeDigitsToWords(n: number): string {
-  const ones = ["không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
-  const hundreds = Math.floor(n / 100), tens = Math.floor((n % 100) / 10), units = n % 10;
+  const ones = [
+    "không",
+    "một",
+    "hai",
+    "ba",
+    "bốn",
+    "năm",
+    "sáu",
+    "bảy",
+    "tám",
+    "chín",
+  ];
+  const hundreds = Math.floor(n / 100),
+    tens = Math.floor((n % 100) / 10),
+    units = n % 10;
 
   const parts: string[] = [];
   if (hundreds > 0) {
@@ -92,16 +109,19 @@ export function numberToVietnameseMoney(input: number | string): string {
  * @param smallArray - Small array containing elements to find
  * @returns Array of indices in large array
  */
-export function findIndicesInArray<T>(largeArray: T[], smallArray: T[]): number[] {
+export function findIndicesInArray<T>(
+  largeArray: T[],
+  smallArray: T[]
+): number[] {
   const indices: number[] = [];
-  
+
   for (const item of smallArray) {
-    const index = largeArray.findIndex(largeItem => largeItem === item);
+    const index = largeArray.findIndex((largeItem) => largeItem === item);
     if (index !== -1) {
       indices.push(index);
     }
   }
-  
+
   return indices;
 }
 
@@ -113,19 +133,21 @@ export function findIndicesInArray<T>(largeArray: T[], smallArray: T[]): number[
  * @returns Array of indices in large array
  */
 export function findIndicesByKey<T, K extends keyof T>(
-  largeArray: T[], 
-  smallArray: T[], 
+  largeArray: T[],
+  smallArray: T[],
   key: K
 ): number[] {
   const indices: number[] = [];
-  
+
   for (const item of smallArray) {
-    const index = largeArray.findIndex(largeItem => largeItem[key] === item[key]);
+    const index = largeArray.findIndex(
+      (largeItem) => largeItem[key] === item[key]
+    );
     if (index !== -1) {
       indices.push(index);
     }
   }
-  
+
   return indices;
 }
 
@@ -147,4 +169,17 @@ export function formatAdditionalEstimate(
       .join("\n") || "";
 
   return lines;
+}
+
+export function formatTinhTrangDuAnColor(tinhTrangDuAn: TinhTrangDuAn) {
+  switch (tinhTrangDuAn) {
+    case "Đang thực hiện":
+      return "processing";
+    case "Đã hoàn thành":
+      return "success";
+    case "Dừng thực hiện":
+      return "error";
+    default:
+      return "default";
+  }
 }

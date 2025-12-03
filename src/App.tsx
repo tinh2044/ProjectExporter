@@ -1,17 +1,13 @@
 import { ConfigProvider } from "antd";
 import routes from "./routes";
 import { RouterProvider } from "react-router";
-import {AppMessageProvider} from "./contexts/AppMessage";
-// import ToTrinhWordGenerator from "./pages/Sample";
+import { AppMessageProvider } from "./contexts/AppMessage";
 
 function App() {
   return (
-    <ConfigProvider
-      
-    >
+    <ConfigProvider>
       <AppMessageProvider>
         <RouterProvider router={routes} />
-        {/* <ToTrinhWordGenerator /> */}
       </AppMessageProvider>
     </ConfigProvider>
   );
