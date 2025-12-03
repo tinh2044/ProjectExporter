@@ -65,9 +65,9 @@ export default function EstimateCosts({
     onClose();
   };
 
-  const handleCancel = () => {
-    onClose();
-  };
+  // const handleCancel = () => {
+  //   onClose();
+  // };
 
   const fillDefaultValues = () => {
     const defaultCategoryId = Date.now().toString();
@@ -133,7 +133,7 @@ export default function EstimateCosts({
       title={title}
       open={open}
       onOk={handleOk}
-      onCancel={handleCancel}
+      onCancel={handleOk}
       width="95vw"
       centered
       styles={{

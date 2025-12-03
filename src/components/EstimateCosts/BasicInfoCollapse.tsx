@@ -75,7 +75,7 @@ export default function BasicInfoCollapse({
                 Xác định loại dự án:
               </label>
               <Select
-                value={basicInfo.projectDocType}
+                value={basicInfo.projectForm}
                 onChange={onChangeDocType}
                 placeholder="Chọn loại dự án (KT-KT / Kế hoạch thuê / NCKT)"
                 options={projectDocTypes}

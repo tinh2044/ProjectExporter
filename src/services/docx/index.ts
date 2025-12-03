@@ -459,8 +459,8 @@ export const createTemplate4 = (
     0
   );
 
-  const workValues = form.getFieldValue("workValues");
-  workValues[2] = workValues == 0 ? totalCosts : workValues[2];
+  // const workValues = form.getFieldValue("workValues");
+  // workValues[2] = workValues == 0 ? totalCosts : workValues[2];
 
   const content: FileChild[] = [
     // Header
@@ -519,7 +519,7 @@ export const createTemplate4 = (
     ]),
     // VI.	Tổng giá trị các phần công việc
     paragraphLeft([textBold("VI.	Tổng giá trị các phần công việc: ")]),
-    createContractorSelectionTable(...workValues),
+    createContractorSelectionTable(0, 0, totalCosts),
     // VII. Kiến nghị
     paragraphLeft(textBold("VII. Kiến nghị")),
     paragraphJustify(
