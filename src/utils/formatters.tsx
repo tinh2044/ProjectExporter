@@ -1,4 +1,5 @@
-import type { TinhTrangDuAn } from "@/types/du-an";
+// import type { TinhTrangDuAn } from "@/types/du-an";
+import type { EstimateCostRow } from "@/types";
 import dayjs, { type Dayjs } from "dayjs";
 
 /**
@@ -151,35 +152,28 @@ export function findIndicesByKey<T, K extends keyof T>(
   return indices;
 }
 
-export function formatAdditionalEstimate(
-  selectedItems: string[],
-  itemAmounts: number[],
-  itemLabels: { [key: string]: string }
-) {
-  // const itemLabels: { [key: string]: string } = itemLabels;
-
+export function formatAdditionalEstimate(estimateData: EstimateCostRow[]) {
   const lines =
-    selectedItems
+    estimateData
       ?.map(
-        (item, index) =>
-          `- ${itemLabels[item] || item}: ${formatNumberWithDots(
-            String(itemAmounts[index] || 0)
+        (item) =>
+          `- ${item.costName}: ${formatNumberWithDots(
+            String(item.moneyBeforeTax || 0)
           )} đồng`
       )
       .join("\n") || "";
-
   return lines;
 }
 
-export function formatTinhTrangDuAnColor(tinhTrangDuAn: TinhTrangDuAn) {
-  switch (tinhTrangDuAn) {
-    case "Đang thực hiện":
-      return "processing";
-    case "Đã hoàn thành":
-      return "success";
-    case "Dừng thực hiện":
-      return "error";
-    default:
-      return "default";
-  }
-}
+// export function formatTinhTrangDuAnColor(tinhTrangDuAn: TinhTrangDuAn) {
+//   switch (tinhTrangDuAn) {
+//     case "Đang thực hiện":
+//       return "processing";
+//     case "Đã hoàn thành":
+//       return "success";
+//     case "Dừng thực hiện":
+//       return "error";
+//     default:
+//       return "default";
+//   }
+// }

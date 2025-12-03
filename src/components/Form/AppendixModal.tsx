@@ -3,23 +3,21 @@ import { useEffect, useMemo, useState } from "react";
 import { formatNumberWithDots } from "@/utils/formatters";
 
 export type AppendixRow = {
-  stt: number; // auto-generated
-  noiDung: string; // label of selected item
-  giaTriTamTinh: number; // from itemAmounts corresponding to noiDung
-  dienGiai?: string; // input by user
-  ghiChu?: string; // input by user
+  stt: number;
+  noiDung: string;
+  giaTriTamTinh: number;
+  dienGiai?: string;
+  ghiChu?: string;
 };
 
 type AppendixModalProps = {
   form: FormInstance;
   open: boolean;
   onClose: () => void;
-  // keys and values coming from the same form
   selectedItems: string[];
   itemLabels: Record<string, string>;
   itemAmounts: number[];
-  // name in the main form to persist appendix values
-  appendixFieldName?: string; // default: "appendixRows"
+  appendixFieldName?: string;
 };
 
 export default function AppendixModal(props: AppendixModalProps) {
@@ -32,25 +30,20 @@ export default function AppendixModal(props: AppendixModalProps) {
     itemAmounts,
     appendixFieldName = "appendixRows",
   } = props;
-  // console.log(selectedItems, itemAmounts);
   const [localRows, setLocalRows] = useState<AppendixRow[]>(() => []);
 
-
-  // Initialize and sync rows when modal opens or when inputs change
   useEffect(() => {
     if (!open) return;
-    
-    setLocalRows(prevRows => {
-      // Check if we have persisted data first
-      const persisted = (form.getFieldValue(appendixFieldName) || []) as AppendixRow[];
+
+    setLocalRows((prevRows) => {
+      const persisted = (form.getFieldValue(appendixFieldName) ||
+        []) as AppendixRow[];
       if (Array.isArray(persisted) && persisted.length > 0) {
         return persisted;
       }
-      
-      // Otherwise create new rows from current inputs
+
       const nextRows: AppendixRow[] = (selectedItems || []).map((key, idx) => {
         const noiDung = itemLabels[key] || key;
-        // Try to find existing row with same content to preserve user input
         const existing = prevRows.find((r) => r.noiDung === noiDung);
         return {
           stt: idx + 1,
@@ -65,9 +58,8 @@ export default function AppendixModal(props: AppendixModalProps) {
     });
   }, [open, selectedItems, itemAmounts, itemLabels, appendixFieldName, form]);
 
-  // ensure syncing STT when rows change
-  const normalizedRows = useMemo(() =>
-    localRows.map((r, idx) => ({ ...r, stt: idx + 1 })),
+  const normalizedRows = useMemo(
+    () => localRows.map((r, idx) => ({ ...r, stt: idx + 1 })),
     [localRows]
   );
 
@@ -149,16 +141,14 @@ export default function AppendixModal(props: AppendixModalProps) {
       onOk={handleOk}
       onCancel={handleCancel}
       width="95vw"
-      // style={{ top: '5vh' }}
       centered
       styles={{
         body: {
-          maxHeight: '80vh',
-          overflowY: 'auto',
-          padding: '16px'
-        }
+          maxHeight: "80vh",
+          overflowY: "auto",
+          padding: "16px",
+        },
       }}
-      // className="max-h-[80vh] overflow-y-auto p-4"
     >
       <Form layout="vertical">
         <Table
@@ -166,11 +156,9 @@ export default function AppendixModal(props: AppendixModalProps) {
           columns={columns as never}
           pagination={false}
           rowKey={(row) => `${row.stt}-${row.noiDung}`}
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: "max-content" }}
         />
       </Form>
     </Modal>
   );
 }
-
-

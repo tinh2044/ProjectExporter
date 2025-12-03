@@ -1,14 +1,12 @@
-import { Form, Input, Row, Col, type FormInstance, Select, Button } from "antd";
+import { Form, Input, Row, Col, type FormInstance } from "antd";
 import { useState, useEffect } from "react";
 import { loadLegalInfo } from "@/services/legal";
 import { NotepadTextIcon } from "lucide-react";
 import { findIndicesInArray } from "@/utils/formatters";
 import SelectLegal from "./SelectLegal";
 import BaseForm from "./BaseForm";
-import { getBaseRequiredKeys, costReportOptions } from "@/services/constants";
 import { createTemplate1 } from "@/services/docx";
-import AppendixModal from "./AppendixModal";
-
+import { getBaseRequiredKeys } from "@/services/constants";
 
 const { TextArea } = Input;
 const defaultLegals = [
@@ -23,10 +21,9 @@ const defaultLegals = [
   "Căn cứ Công văn số 490/UBND-VX ngày 24 tháng 7 năm 2025 của Ủy ban nhân dân Thành phố về điều chỉnh chủ trương thực hiện các hoạt động ứng dụng công nghệ thông tin sử dụng kinh phí chi thường xuyên năm 2025;",
 ];
 
-export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
+export default function ProposalEstimateForm({ form }: { form: FormInstance }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [appendixOpen, setAppendixOpen] = useState(false);
 
   useEffect(() => {
     fetchLegalData();
@@ -59,16 +56,6 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
     searchText: text.toLowerCase(),
   }));
 
-  // Create labels mapping from costReportOptions
-  const appendixItemLabels: { [key: string]: string } = costReportOptions.reduce((acc, option) => {
-    acc[option.value] = option.label;
-    return acc;
-  }, {} as { [key: string]: string });
-
-  // Reactively watch form values so UI updates and modal receives correct data
-  const selectedItemsWatch = Form.useWatch("selectedItems", form) || [];
-  const itemAmountsWatch = Form.useWatch("itemAmounts", form) || [];
-
   const requiredKeys: Array<string | string[]> = [
     ...getBaseRequiredKeys(),
     "thongTinPhapLiChuanBi",
@@ -85,7 +72,6 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
       requiredKeys={requiredKeys}
       legalFieldKey="thongTinPhapLiChuanBi"
       legalList={legalData}
-      // templateRelativeUrl="../../assets/template1.docx"
       createFormCallBack={createTemplate1}
       outputFileName="template-1.docx"
       submitText="Tạo mẫu 1"
@@ -185,82 +171,6 @@ export default function PreparationPhaseForm({ form }: { form: FormInstance }) {
             </Form.Item>
           </Col>
 
-          <Col xs={24}>
-            <Form.Item label="Ghi chú dự toán">
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="block mb-2 font-bold">
-                    Chọn loại báo cáo chi phí:
-                  </label>
-                  <Form.Item name="selectedItems">
-                    <Select
-                      mode="multiple"
-                      className="w-full"
-                      placeholder="Chọn loại báo cáo chi phí"
-                      options={costReportOptions}
-                    />
-                  </Form.Item>
-                </div>
-
-                <Form.Item
-                  noStyle
-                  shouldUpdate={(prev, curr) =>
-                    prev.selectedItems !== curr.selectedItems
-                  }
-                >
-                  {({ getFieldValue }) => {
-                    const selectedItems = getFieldValue("selectedItems") || [];
-                    const itemLabels = appendixItemLabels;
-                    console.log(itemLabels);
-                    return (
-                      <div className="flex flex-col gap-4">
-                        {selectedItems.map((item: string, index: number) => (
-                          <Row key={item} gutter={16} className="mb-4">
-                            <Col xs={24} sm={12}>
-                              <label>{itemLabels[item]}:</label>
-                            </Col>
-                            <Col xs={24} sm={12}>
-                              <Form.Item
-                                name={["itemAmounts", index]}
-                                noStyle
-                                className="w-full"
-                              >
-                                <Input
-                                  type="number"
-                                  placeholder="Nhập số tiền"
-                                  addonAfter="VNĐ"
-                                />
-                              </Form.Item>
-                            </Col>
-                          </Row>
-                        ))}
-                      </div>
-                    );
-                  }}
-                </Form.Item>
-                <div className="flex justify-end">
-                  <Button
-                    type="default"
-                    onClick={() => setAppendixOpen(true)}
-                    disabled={!selectedItemsWatch.length}
-                  >
-                    Tạo Phụ lục
-                  </Button>
-                </div>
-              </div>
-            </Form.Item>
-          </Col>
-          <Col xs={24}>
-            <AppendixModal
-              form={form}
-              open={appendixOpen}
-              onClose={() => setAppendixOpen(false)}
-              selectedItems={selectedItemsWatch}
-              itemLabels={appendixItemLabels}
-              itemAmounts={itemAmountsWatch}
-              appendixFieldName="appendixRows"
-            />
-          </Col>
         </Row>
       </Row>
     </BaseForm>

@@ -1,9 +1,9 @@
 import { Form } from "antd";
 import BasicInfoForm from "@/components/Form/BasicInfoForm";
-import PreparationPhaseForm from "@/components/Form/PreparationPhaseForm";
-import DecisionForm from "@/components/Form/DecisionForm";
-import ContractorSelectionForm from "@/components/Form/ContractorSelectionForm";
-import ApprovalDecisionForm from "@/components/Form/ApprovalDecisionForm";
+import ProposalEstimateForm from "@/components/Form/ProposalEstimateForm";
+import DecisionEstimateForm from "@/components/Form/DecisionEstimateForm";
+import ProposalBiddingPlanForm from "@/components/Form/ProposalBiddingPlanForm";
+import DecisionBiddingPlanForm from "@/components/Form/DecisionBiddingPlanForm";
 
 const FullFormPage = () => {
   const [form] = Form.useForm();
@@ -18,10 +18,10 @@ const FullFormPage = () => {
       }}
     >
       <BasicInfoForm form={form} />
-      <PreparationPhaseForm form={form} />
-      <DecisionForm form={form} />
-      <ContractorSelectionForm form={form} />
-      <ApprovalDecisionForm form={form} />
+      <ProposalEstimateForm form={form} />
+      <DecisionEstimateForm form={form} />
+      <ProposalBiddingPlanForm form={form} />
+      <DecisionBiddingPlanForm form={form} />
     </div>
   );
 };

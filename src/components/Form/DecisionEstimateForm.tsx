@@ -14,7 +14,7 @@ const defaultLegals = [
   "Căn cứ Luật số 90/2025/QH15 ngày 25 tháng 6 năm 2025 về sửa đổi bổ sung một số điều của luật đấu thầu, luật đầu tư theo phương thức đối tác công tư, luật hải quan, luật thuế giá trị gia tăng, luật thuế xuất khẩu, thuế nhập khẩu, luật đầu tư, luật đầu tư công, luật quản lý; sử dụng tài sản công;",
   "Căn cứ Nghị định số 214/2025/NĐ-CP ngày 04 tháng 8 năm 2025 của Chính phủ về quy định chi tiết một số điều và biện pháp thi hành luật đấu thầu về lựa chọn nhà thầu;",
 ];
-export default function DecisionForm({ form }: { form: FormInstance }) {
+export default function DecisionEstimateForm({ form }: { form: FormInstance }) {
   const [legalData, setLegalData] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
