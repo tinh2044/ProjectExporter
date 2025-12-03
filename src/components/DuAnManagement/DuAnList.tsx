@@ -6,6 +6,7 @@ import {
   DeleteOutlined,
   SearchOutlined,
   FileTextOutlined,
+  ExportOutlined,
 } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -15,6 +16,7 @@ import DuAnForm from "./DuAnForm";
 import HopDongModal from "./HopDongModal";
 import { deleteDuAn, fetchDuAns } from "@/features/duAns/duAnsThunks";
 import { useAppMessage } from "@/contexts/AppMessage/hook";
+import { useNavigate } from "react-router";
 
 export default function DuAnList() {
   const dispatch = useAppDispatch();
@@ -32,6 +34,19 @@ export default function DuAnList() {
   const [selectedDuAnId, setSelectedDuAnId] = useState<number | null>(null);
 
   const messageApi = useAppMessage();
+
+  
+  const navigate = useNavigate();
+
+  const exportDuAn = (record: DuAn) => {
+    navigate(`/form`, {
+      state: {
+        tenDuAn: record.ten,
+        chuDauTu: record.chuDauTu,
+      },
+      replace: false    
+    });
+  };
 
   useEffect(() => {
     dispatch(fetchDuAns({ page, limit, search, sort }));
@@ -82,12 +97,20 @@ export default function DuAnList() {
           >
             Hợp đồng
           </Button>
+
           <Button
             type="link"
             icon={<EditOutlined />}
             onClick={() => {
               setEditingDuAn(record);
               setIsFormOpen(true);
+            }}
+          />
+          <Button
+            type="link"
+            icon={<ExportOutlined />}
+            onClick={() => {
+              exportDuAn(record);
             }}
           />
           <Popconfirm

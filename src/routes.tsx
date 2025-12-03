@@ -8,14 +8,14 @@ const routes = createBrowserRouter([
     element: <HomeLayout />,
     children: [
       {
-        path: "/",
+        path: "/form",
         element: <FullForm />,
       },
     ],
   },
   {
     element: <DuAnManagementPage />,
-    path: "/dashboard",
+    path: "/",
   },
 ]);
 

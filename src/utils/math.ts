@@ -489,8 +489,8 @@ const calculateCompositeCost = (
   kInfo: Array<{ note?: string; value?: number }>
 ): Partial<CalculationResult> => {
   const { vat, money } = category;
-  const { projectType } = basicInfo;
-  const projectForm = projectDocType || "";
+  const { projectType, projectForm } = basicInfo;
+  // const projectForm = projectDocType || "";
   const rate4 = getRate(`table4${projectType}`, money, projectForm);
   const rate5 = getRate(`table5${projectType}`, money, projectForm);
   const rate6 = getRate(`table6${projectType}`, money, projectForm);
